@@ -1,0 +1,4 @@
+const TOGGLE_MODAL: string = 'TOGGLE_MODAL'
+const SET_MODAL_DATA: string = 'SET_MODAL_DATA'
+
+export { TOGGLE_MODAL, SET_MODAL_DATA }

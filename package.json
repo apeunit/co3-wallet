@@ -1,0 +1,86 @@
+{
+  "name": "co3-wallet-react",
+  "version": "0.0.1",
+  "author": "shekhar-shubhendu <connect@shubhendu.de>",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.9.1",
+    "@material-ui/icons": "^4.9.1",
+    "axios": "^0.19.2",
+    "bignumber.js": "^9.0.0",
+    "bip39": "^3.0.2",
+    "connected-react-router": "^6.7.0",
+    "emotion-theming": "^10.0.27",
+    "ethereumjs-util": "^6.2.0",
+    "ethereumjs-wallet": "^0.6.3",
+    "framer-motion": "^1.8.4",
+    "i18next": "^19.3.2",
+    "i18next-browser-languagedetector": "^4.0.2",
+    "i18next-xhr-backend": "^3.2.2",
+    "inter-ui": "^3.12.0",
+    "qrcode.react": "^1.0.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-i18next": "^11.3.3",
+    "react-qr-reader": "^2.2.1",
+    "react-redux": "^7.1.3",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "^3.4.0",
+    "rebass": "^4.0.7",
+    "redux": "^4.0.5",
+    "redux-actions": "^2.6.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "web3": "^1.2.6"
+  },
+  "devDependencies": {
+    "@storybook/addon-actions": "^5.3.10",
+    "@storybook/addon-backgrounds": "^5.3.12",
+    "@storybook/addon-links": "^5.3.10",
+    "@storybook/addon-notes": "^5.3.12",
+    "@storybook/addon-viewport": "^5.3.10",
+    "@storybook/addons": "^5.3.10",
+    "@storybook/preset-create-react-app": "^1.5.2",
+    "@storybook/react": "^5.3.10",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/jest": "^25.1.1",
+    "@types/node": "^13.7.0",
+    "@types/qrcode.react": "^1.0.0",
+    "@types/react": "^16.9.19",
+    "@types/react-dom": "^16.9.5",
+    "@types/react-qr-reader": "^2.1.2",
+    "@types/react-redux": "^7.1.7",
+    "@types/react-router-dom": "^5.1.3",
+    "@types/rebass": "^4.0.4",
+    "@types/redux-actions": "^2.6.1",
+    "@types/redux-mock-store": "^1.0.2",
+    "jest-localstorage-mock": "^2.4.0",
+    "redux-mock-store": "^1.5.4",
+    "typescript": "^3.7.5"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
