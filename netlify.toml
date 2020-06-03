@@ -1,0 +1,24 @@
+[build.environment]
+  # default location
+  REACT_APP_USER_LOCATION     = "turin"
+  REACT_APP_CO3UUM_URL        = "https://co3.liquidfeedback.com/"
+  # REACT_APP_LISTENER_URL      = "http://co3-pantheon.di.unito.it:4000/graphql"
+  # UniTO node
+  REACT_APP_TOKEN_FACTORY     = "0x4EE74201998b35CE3f38d7462ee11d7b55A791E2"
+  REACT_APP_CROWDSALE_FACTORY = "0xd21d09AEE6B39D52573154Fe4f3Ac55B384637Fc"
+  REACT_APP_NODE              = "wss://co3:Co3Blockchain_2019@co3-pantheon.di.unito.it:8545/ws/"
+  # Unit8 node
+  # REACT_APP_TOKEN_FACTORY     = "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab"
+  # REACT_APP_CROWDSALE_FACTORY = "0x5b1869D9A4C187F2EAa108f3062412ecf0526b24"
+  # REACT_APP_NODE              = "https://node.co3.u8.apeunit.com"
+
+[[headers]]
+  for = "/*"
+
+  [headers.values]
+    # disable caching for the app
+    cache-control = '''
+    max-age=0,
+    no-cache,
+    no-store,
+    must-revalidate'''

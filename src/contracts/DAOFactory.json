@@ -1,0 +1,244 @@
+{
+  "contractName": "DAOFactory",
+  "source": "https://gitlab.di.unito.it/co3/smart-contracts/-/tree/4211ad944297dbd8a92a657f83794bb3495bf3dd",
+  "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_crowdsaleID",
+          "type": "string"
+        },
+        {
+          "name": "_firstlifePlaceID",
+          "type": "string"
+        },
+        {
+          "name": "_tokenToGive",
+          "type": "string"
+        },
+        {
+          "name": "_tokenToAccept",
+          "type": "string"
+        },
+        {
+          "name": "_start",
+          "type": "uint256"
+        },
+        {
+          "name": "_end",
+          "type": "uint256"
+        },
+        {
+          "name": "_acceptRatio",
+          "type": "uint256"
+        },
+        {
+          "name": "_giveRatio",
+          "type": "uint256"
+        },
+        {
+          "name": "_maxCap",
+          "type": "uint256"
+        }
+      ],
+      "name": "createCrowdsale",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "name": "_firstlifePlaceID",
+          "type": "string"
+        },
+        {
+          "name": "_tokenFactory",
+          "type": "address"
+        },
+        {
+          "name": "_crowdsaleFactory",
+          "type": "address"
+        }
+      ],
+      "name": "createDAO",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_firstlifePlaceID",
+          "type": "string"
+        },
+        {
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "name": "_symbol",
+          "type": "string"
+        },
+        {
+          "name": "_decimals",
+          "type": "uint8"
+        },
+        {
+          "name": "_logoURL",
+          "type": "string"
+        },
+        {
+          "name": "_logoHash",
+          "type": "bytes32"
+        },
+        {
+          "name": "_hardCap",
+          "type": "uint256"
+        },
+        {
+          "name": "_contractHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "createToken",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "makeAdmin",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_crowdsaleID",
+          "type": "string"
+        },
+        {
+          "name": "_firstlifePlaceID",
+          "type": "string"
+        }
+      ],
+      "name": "stopCrowdsale",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_crowdsaleID",
+          "type": "string"
+        },
+        {
+          "name": "_firstlifePlaceID",
+          "type": "string"
+        }
+      ],
+      "name": "unlockCrowdsale",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "_contractAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "_firstlifePlaceID",
+          "type": "string"
+        }
+      ],
+      "name": "DAOAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "name": "_who",
+          "type": "address"
+        }
+      ],
+      "name": "AdminAdded",
+      "type": "event"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "_firstlifePlaceID",
+          "type": "string"
+        }
+      ],
+      "name": "getDAO",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+}

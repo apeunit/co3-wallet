@@ -1,23 +1,44 @@
-import React from 'react'
-import { Flex } from 'rebass'
-import TokenListItem from './TokenListItem'
-import { Tokens, Token } from '../interfaces'
+import React from 'react';
+import { Box, Flex } from 'rebass';
+import TokenListItem from './TokenListItem';
+import { IToken, ITokens } from '../interfaces';
+import TokenListPlaceholder from './TokenListPlaceholder';
+import { useSelector } from 'react-redux';
 
-const TokenList=(props: Tokens)=>{
-    return(
+const TokenList = (props: ITokens) => {
+  const { tokenLoading, ethAddress } = useSelector(({ chain, wallet }: any) => {
+    return {
+      tokenLoading: chain.tokenLoading,
+      ethAddress: wallet.ethAddress,
+    };
+  });
+
+  return (
     <Flex
-        width="100%"            
-        color='text'
-        flexDirection="column"
-        paddingX={6}
+      width="100%"
+      color="text"
+      flexDirection="column"
+      maxHeight={props.tokens.find((tkn) => tkn.decimals == 0) ? 155 : 280}
+      sx={{
+        overflowY: 'auto',
+      }}
     >
-        {
-            props.tokens.map( (token: Token) => {
-                return <TokenListItem {...token} />
+      {tokenLoading ? (
+        <TokenListPlaceholder counter={2} />
+      ) : (
+        <Box>
+          {props.tokens
+            .map((token: IToken, index: number) => {
+              return (
+                ((token.amount && token.amount > 0) || token.owner === ethAddress) &&
+                token.decimals > 0 && <TokenListItem {...token} key={index} />
+              );
             })
-        }
-    
+            .reverse()}
+        </Box>
+      )}
     </Flex>
-    )}
+  );
+};
 
-export default TokenList
+export default TokenList;

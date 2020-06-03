@@ -1,4 +1,9 @@
+
+@import url("./assets/fonts/inter.css");
+
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
+
+
 
 /* Document
    ========================================================================== */
@@ -11,6 +16,10 @@
 html {
   line-height: 1.15; /* 1 */
   -webkit-text-size-adjust: 100%; /* 2 */
+}
+
+body{
+  font-family:'Inter-regular', sans-serif;
 }
 
 /* Sections
@@ -413,9 +422,10 @@ ul {
  * 2. Use Tailwind's default "normal" line-height so the user isn't forced
  *    to override it to ensure consistency even when using the default theme.
  */
+/* font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; 1 */
 
 html {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; /* 1 */
+  font-family:'Inter-regular', sans-serif;
   line-height: 1.5; /* 2 */
 }
 
@@ -444,6 +454,7 @@ html {
  *
  *    https://github.com/tailwindcss/tailwindcss/pull/116
  */
+
 
 *,
 ::before,
@@ -586,32 +597,3 @@ video {
   max-width: 100%;
   height: auto;
 }
-
-/* -------------------------------------------------------
-Variable font.
-Usage:
-  html { font-family: 'Inter', sans-serif; }
-  @supports (font-variation-settings: normal) {
-    html { font-family: 'Inter var', sans-serif; }
-  }
-
-
-@font-face {
-	font-family: 'Inter var';
-	font-weight: 100 900;
-	font-style: normal;
-	font-named-instance: 'Regular';
-	src: url("Inter (web)/Inter-roman.var.woff2") format("woff2 supports variations(gvar)"),
-		 url("Inter (web)/Inter-roman.var.woff2") format("woff2-variations"),
-		 url("Inter (web)/Inter-roman.var.woff2") format("woff2");
-  }
-  
-  @font-face {
-	font-family: 'Inter var';
-	font-weight: 100 900;
-	font-style: italic;
-	font-named-instance: 'Italic';
-	src: url("Inter (web)/Inter-italic.var.woff2") format("woff2 supports variations(gvar)"),
-		 url("Inter (web)/Inter-italic.var.woff2") format("woff2-variations"),
-		 url("Inter (web)/Inter-italic.var.woff2") format("woff2");
-  }*/

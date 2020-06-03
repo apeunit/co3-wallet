@@ -1,39 +1,74 @@
-import { handleActions, combineActions } from 'redux-actions'
-import { ChainState, TokenData } from '../../../interfaces'
-import { INIT_WEB3, GET_ALL_TOKEN, CREATE_TOKEN, MINT_TOKEN, TRANSFER_TOKEN, GET_TOKEN_BALANCE, GET_TOKEN_DETAIL } from '../../actions/Chain/ActionTypes'
+import { combineActions, handleActions } from 'redux-actions';
+import { IChainState, ITokenData } from '../../../interfaces';
+import {
+  CREATE_TOKEN,
+  ERROR_WEB3,
+  GET_ALL_TOKEN,
+  GET_TOKEN_BALANCE,
+  GET_TOKEN_DETAIL,
+  GET_TRANSACTION_HISTORY,
+  INIT_WEB3,
+  MINT_TOKEN,
+  TOKEN_LOADING,
+  TRANSFER_TOKEN,
+  TXN_LOADING,
+} from '../../actions/Chain/ActionTypes';
 
-const defaultState: ChainState = {
-    contracts: null,
-    web3: null,
-    tokenList: [],
-    tokenCreated: null,
-    tokenMinted: null,
-    tokenTransferred: {},
-    tokenBalance: {}
-}
+const defaultState: IChainState = {
+  contracts: null,
+  web3: null,
+  tokenList: [],
+  transactionHistory: [],
+  tokenCreated: null,
+  tokenMinted: null,
+  tokenTransferred: {},
+  tokenBalance: {},
+  errorWeb3: null,
+  tokenLoading: false,
+  txnLoading: true,
+};
 
-const combinedActions: any = combineActions(INIT_WEB3, GET_ALL_TOKEN, CREATE_TOKEN, MINT_TOKEN, TRANSFER_TOKEN)
+const combinedActions: any = combineActions(
+  INIT_WEB3,
+  GET_ALL_TOKEN,
+  GET_TRANSACTION_HISTORY,
+  CREATE_TOKEN,
+  MINT_TOKEN,
+  TRANSFER_TOKEN,
+  TOKEN_LOADING,
+  TXN_LOADING,
+);
 
-const reducer = handleActions({
-    [combinedActions]: (state: Object, action: any): ChainState => {
-        return Object.assign({}, state as ChainState, action.payload)
+const reducer = handleActions(
+  {
+    [combinedActions]: (state: Object, action: any): IChainState => {
+      return { ...(state as IChainState), ...action.payload };
     },
-    [GET_TOKEN_BALANCE]: (state: ChainState, action: any): ChainState => {
-        const bal = action.payload.balance
-        const tokenBalance = { ...state.tokenBalance, ...bal }
-        return  Object.assign({}, state as ChainState, { tokenBalance })
-    },
-    [GET_TOKEN_DETAIL]: (state: ChainState, action: any): ChainState => {
-        const tokenInfo: TokenData = action.payload.tokenInfo
-        let tokenList: TokenData[] =  state.tokenList
-        let index = tokenList.findIndex((o: TokenData) => o.symbol === tokenInfo.symbol)
-        if(index) {
-            tokenList[index] = tokenInfo
-        } else {
-            tokenList = [...tokenList, tokenInfo]
-        }
-        return  Object.assign({}, state as ChainState, { tokenList })
-    }
-}, defaultState)
+    [ERROR_WEB3]: (state: Object, action: any): IChainState => {
+      const errorWeb3 = { connected: action.payload.connected };
 
-export default reducer
+      return { ...(state as IChainState), errorWeb3 };
+    },
+    [GET_TOKEN_BALANCE]: (state: IChainState, action: any): IChainState => {
+      const bal = action.payload.balance;
+      const tokenBalance = { ...state.tokenBalance, ...bal };
+
+      return { ...state, tokenBalance };
+    },
+    [GET_TOKEN_DETAIL]: (state: IChainState, action: any): IChainState => {
+      const tokenInfo: ITokenData = action.payload.tokenInfo;
+      let tokenList: ITokenData[] = state.tokenList;
+      const index = tokenList.findIndex((o: ITokenData) => o.symbol === tokenInfo.symbol);
+      if (index) {
+        tokenList[index] = tokenInfo;
+      } else {
+        tokenList = [...tokenList, tokenInfo];
+      }
+
+      return { ...state, ...tokenList };
+    },
+  },
+  defaultState,
+);
+
+export default reducer;

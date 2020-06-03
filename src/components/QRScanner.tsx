@@ -1,9 +1,9 @@
-import React from 'react'
-import QrReader from 'react-qr-reader'
-import { QRCode } from '../interfaces'
+import React from 'react';
+import QrReader from 'react-qr-reader';
+import { IQRCode } from '../interfaces';
 
-const QrScanner = (props: QRCode) => {
-	return <QrReader delay={300} facingMode={'environment'} {...props} />
-}
+const QrScanner = (props: IQRCode) => {
+  return <QrReader delay={300} facingMode={'environment'} {...props} />;
+};
 
-export default QrScanner
+export default QrScanner;

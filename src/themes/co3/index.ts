@@ -10,48 +10,49 @@ export const preset = {
     gray: '#dddddf',
     highlight: 'hsla(205, 100%, 40%, 0.125)',
     shadow: 'rgba(0, 0, 0, 0.12)',
-    current:'currentColor',
-    blue100:'#F0F3FF',
-    blue200:'#E2E6FC',
-    blue500:'#3948FF',
-    blue600:'#323FE5',
-    gray100:'#F0F0F0',
-    white:'#ffffff',
+    current: 'currentColor',
+    blue100: '#F0F3FF',
+    blue200: '#E2E6FC',
+    blue500: '#3948FF',
+    blue600: '#323FE5',
+    gray100: '#F0F0F0',
+    white: '#ffffff',
     white70: 'rgba(255, 255, 255, 0.7)',
-    black:'#000000',
-    overlay20: 'rgba(27, 32, 106, 0.2)'
+    black: '#000000',
+    overlay20: 'rgba(27, 32, 106, 0.2)',
+    dark: '#191919',
+    lightGray: '#474747',
+    gray200: '#F1F3F6',
   },
   fonts: {
-    sans: "'Inter var', sans-serif",
-    mono: "monospace",
+    sans: "'Inter-regular', sans-serif",
+    mono: 'monospace',
   },
-  fontSizes: [
-    11, 13, 16, 20, 24, 32, 40, 90
-  ],
+  fontSizes: [11, 13, 16, 20, 24, 32, 40, 90],
   fontWeights: {
     extraLight: 200,
     light: 300,
     regular: 400,
-    medium: 500
+    medium: 500,
   },
   lineHeights: {
     body: 1.4,
     heading: 1.2,
-    solid: 1.1
+    solid: 1.1,
   },
   letterSpacing: {
-    xxNarrow: "-.05em",
-    xNarrow: "-.03em",
-    xTracked : ".06em"
+    xxNarrow: '-.05em',
+    xNarrow: '-.03em',
+    xTracked: '.06em',
   },
-  space: [0, 2, 4, 8, 10, 12, 16, 20, 24, 32,40, 64, 128, 256, 512],
+  space: [0, 2, 4, 8, 10, 12, 16, 20, 24, 32, 40, 64, 128, 256, 512],
   sizes: {
     s8: 32,
     s10: 40,
     s12: 48,
     s14: 56,
-    s30:120,
-    s40:160,
+    s30: 120,
+    s40: 160,
     s50: 200,
     s64: 256,
     s2: 8,
@@ -64,43 +65,43 @@ export const preset = {
     r10: 40,
     full: 99999,
   },
- 
+
   shadows: {
     card: '0 0 4px rgba(0, 0, 0, .125)',
-    base:'0 0 20px rgba(0, 0, 0, .1)'
+    base: '0 0 20px rgba(0, 0, 0, .1)',
   },
   // rebass variants
   text: {
-    base :{
+    base: {
       fontFamily: 'sans',
       lineHeight: 'body',
       fontWeight: 'regular',
     },
     heading: {
-      fontFamily:'sans',
+      fontFamily: 'sans',
       fontSize: 3,
-      letterSpacing:'xNarrow',
+      letterSpacing: 'xNarrow',
       fontWeight: 'medium',
     },
     headingXl: {
-      fontFamily:'sans',
-			fontSize:5,
-      fontWeight:'regular',
+      fontFamily: 'sans',
+      fontSize: 5,
+      fontWeight: 'regular',
       letterSpacing: 'xNarrow',
-      lineHeight:'solid'
+      lineHeight: 'solid',
     },
-    headingX2l:{
-      fontFamily:'sans',
-      fontSize:7,
-      fontWeight:'extraLight',
+    headingX2l: {
+      fontFamily: 'sans',
+      fontSize: 7,
+      fontWeight: 'extraLight',
       letterSpacing: 'xxNarrow',
-      lineHeight:'solid'
+      lineHeight: 'solid',
     },
     display: {
       fontFamily: 'heading',
       fontWeight: 'heading',
       lineHeight: 'heading',
-      fontSize: [ 5, 6, 7 ],
+      fontSize: [5, 6, 7],
     },
     caps: {
       textTransform: 'uppercase',
@@ -130,14 +131,14 @@ export const preset = {
       textDecoration: 'none',
       ':hover,:focus,.active': {
         color: 'primary',
-      }
+      },
     },
   },
   buttons: {
     primary: {
       fontSize: 2,
       fontWeight: 'medium',
-      p:7,
+      p: 7,
       color: 'background',
       bg: 'primary',
       borderRadius: 'default',
@@ -166,6 +167,6 @@ export const preset = {
       lineHeight: 'body',
     },
   },
-}
+};
 
-export default preset
+export default preset;

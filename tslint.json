@@ -1,0 +1,62 @@
+{
+  "defaultSeverity": "error",
+  "rulesDirectory": ["tslint-microsoft-contrib"],
+  "extends": [
+    "tslint:recommended", "tslint-react", "tslint-microsoft-contrib",
+    "tslint-plugin-prettier", "tslint-config-prettier"
+  ],
+  "rules": {
+    "prettier": true,
+    "ordered-imports": [true, {
+      "import-sources-order": "any",
+      "named-imports-order": "case-insensitive"
+    }],
+    "whitespace": [
+      true, "check-branch", "check-decl", "check-operator", "check-module",
+      "check-preblock"
+    ],
+    "indent": [true, "spaces", 2],
+    "no-reserved-keywords": false,
+    "no-consecutive-blank-lines": true,
+    "max-file-line-count": [true, 500],
+    "no-http-string": false,
+    "trailing-comma": [true, {"multiline": "", "singleline": "never"}],
+    "semi": ["error", "always"],
+    "no-backbone-get-set-outside-model": false,
+    "completed-docs": false,
+    "no-console": false,
+    "quotemark": [true, "single", "jsx-double"],
+    "object-literal-sort-keys": false,
+    "jsx-wrap-multiline": false,
+    "export-name": [false],
+    "variable-name": [true, "check-format", "allow-pascal-case", "allow-leading-underscore"],
+    "import-name": false,
+    "prefer-type-cast": false,
+    "arrow-parens": true,
+    "jsx-no-multiline-js": false,
+    "jsx-no-lambda": false,
+    "no-submodule-imports":false,
+    "no-any":false,
+    "no-unsafe-any":false,
+    "no-relative-imports":false,
+    "await-promise": true,
+    "use-simple-attributes":false,
+    "no-import-side-effect": [true, {"ignore-module": "(\\.html|\\.css|\\.scss)$"}],
+    "no-suspicious-comment": false,
+    "typedef": false,
+    "strict-boolean-expressions": false,
+    "no-implicit-dependencies": false,
+    "no-default-export": false,
+    "react-this-binding-issue": false,
+    "max-func-body-length": false,
+    "newline-per-chained-call": false,
+    "no-void-expression": false,
+    "prefer-array-literal": false,
+    "no-redundant-jsdoc": false,
+    "array-type": false,
+    "match-default-export-name": false
+  },
+  "linterOptions": {
+    "exclude": ["node_modules", "server.js"]
+  }
+}
