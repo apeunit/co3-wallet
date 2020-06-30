@@ -14,17 +14,22 @@ import ErrorMsg from '../components/ErrorMsg';
 import _get from 'lodash/get';
 import { motion } from 'framer-motion';
 import FramerSlide from '../components/FrameMotion/Slide';
-import CouponImageCard from '../components/NewCoupon/CouponImageCard';
+import CouponImageCard from '../components/Coupons/CreateCoupon/CouponImageCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { uploadImage } from '../utils/uploadImage';
+import { getPermalink, saveResource } from '../api/firstlife';
 import { createNewToken } from '../redux/actions/Chain';
 import { setModalData } from '../redux/actions/Modal';
+import { useTranslation } from 'react-i18next';
+import Loading from '../components/Loading';
 
 const NewCoupon: React.FC = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const [loader, setLoader] = useState(false);
   const [step, setStep] = useState(1);
-  const [title, setTitle] = useState('New Coupon');
+  const [title, setTitle] = useState<string>(t('new_coupon.label'));
   const [contractLabel, changeContractLabel] = useState('');
   const randomSymbol = Math.random()
     .toString(36)
@@ -46,16 +51,17 @@ const NewCoupon: React.FC = () => {
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
 
-  const { web3, tokenFactory } = useSelector(({ chain }: any) => {
+  const { web3, tokenFactory, accessToken } = useSelector(({ chain, co3uum }: any) => {
     return {
       web3: chain.web3,
       tokenFactory: chain.contracts.tokenFactory,
+      accessToken: co3uum.accessToken,
     };
   });
 
   const checkError = (_step: number, value: string, text: string) => {
     if (step === _step && value === '') {
-      setError(`${text} is required`);
+      setError(`${text} ${t('common.is_required')}`);
 
       return true;
     }
@@ -74,17 +80,18 @@ const NewCoupon: React.FC = () => {
     setError('');
     if (step <= 9) {
       if (
-        checkError(1, coupon.name, 'Name') ||
-        checkError(2, coupon.headline, 'headline') ||
-        checkError(5, coupon.icon, 'Icon') ||
+        checkError(1, coupon.name, t('common.name')) ||
+        checkError(2, coupon.headline, t('new_coupon.headline')) ||
+        checkError(5, coupon.icon, t('common.icon')) ||
         checkError(6, coupon.contractType, '') ||
         checkError(7, coupon.couponType, '') ||
-        (coupon.contractType === 'Custom Contract' && checkError(6, coupon.contract, 'Contract')) ||
-        checkError(8, coupon.totalCoupon, 'Total Supply')
+        (coupon.contractType === 'Custom Contract' &&
+          checkError(6, coupon.contract, t('common.contract'))) ||
+        checkError(8, coupon.totalCoupon, t('new_coupon.total_coupon'))
       ) {
         return;
       }
-      step <= 8 && title.indexOf('Edit') > -1
+      step <= 8 && title.indexOf(t('common.edit')) > -1
         ? setStep(9)
         : step === 7 && coupon.couponType === 'Mintable Coupon'
         ? setStep(step + 2)
@@ -111,15 +118,23 @@ const NewCoupon: React.FC = () => {
     setUploading(true);
     setError('');
     if (e.target.files[0]) {
-      const res = uploadImage(e.target.files[0]);
+      if (!accessToken || accessToken === null) {
+        setUploading(false);
+        setError(t('common.access_token_error'));
+
+        return;
+      }
+      const res = saveResource(accessToken, e.target.files[0]);
       res
         .then(({ data }: any) => {
           setUploading(false);
-          data && data.link
-            ? onchangeCoupon({ ...coupon, icon: data.link })
-            : console.log(data.link);
+          const link = getPermalink(data);
+          link ? onchangeCoupon({ ...coupon, icon: link }) : console.log(data);
         })
-        .catch(console.log);
+        .catch((err: any) => {
+          setUploading(false);
+          setError('Invalid Token');
+        });
     } else {
       setUploading(false);
     }
@@ -134,7 +149,7 @@ const NewCoupon: React.FC = () => {
     if (e.target.value === 'Standard Contract') {
       setError('');
       onchangeCoupon({ ...coupon, contract: '', contractLabel: '' });
-    } else if (e.target.value === 'Mintable Token') {
+    } else if (e.target.value === 'Mintable Coupon') {
       onchangeCoupon({ ...coupon, totalCoupon: '' });
     }
     onchangeCoupon({ ...coupon, [key]: e.target.value });
@@ -143,19 +158,31 @@ const NewCoupon: React.FC = () => {
   const onChangeContract = (e: any) => {
     setUploading(true);
     setError('');
-    changeContractLabel(e.target.files[0].name);
-    onchangeCoupon({
-      ...coupon,
-      contract: window.URL.createObjectURL(e.target.files[0]),
-      contractLabel: e.target.files[0].name,
-    });
-    setTimeout(() => {
-      setUploading(false);
-    }, 1000);
+    if (e.target.files[0]) {
+      changeContractLabel(e.target.files[0].name);
+      onchangeCoupon({ ...coupon, contractLabel: e.target.files[0].name });
+      if (!accessToken || accessToken === null) {
+        setUploading(false);
+        setError(t('common.access_token_error'));
+
+        return;
+      }
+      const res = saveResource(accessToken, e.target.files[0]);
+      res
+        .then(({ data }: any) => {
+          setUploading(false);
+          const link = getPermalink(data);
+          link ? onchangeCoupon({ ...coupon, contract: link }) : console.log(data);
+        })
+        .catch((err: any) => {
+          setUploading(false);
+          setError('Invalid Token');
+        });
+    }
   };
 
   const handleEdit = (stepName: string) => {
-    setTitle(`Edit ${stepName}`);
+    setTitle(`${t('common.edit')} ${stepName}`);
     const stepData = createTokenSteps.find((_step: any) => stepName === _step.title);
     if (stepData) {
       setStep(stepData.stepId);
@@ -170,6 +197,7 @@ const NewCoupon: React.FC = () => {
   };
 
   const handleCreateCoupon = async () => {
+    setLoader(true);
     const receipt: any = dispatch(
       createNewToken(
         tokenFactory,
@@ -179,15 +207,34 @@ const NewCoupon: React.FC = () => {
         web3.utils.keccak256(coupon.icon),
         web3.utils.keccak256(coupon.icon),
         0,
-        web3.utils.toHex(parseInt(coupon.totalCoupon, 10) * 100 || 0),
+        web3.utils.toHex(parseInt(coupon.totalCoupon, 10) || 0),
       ),
     );
     receipt
       .then((res: any) => {
+        setLoader(false);
         history.push('/');
-        dispatch(setModalData('Coupon Created', 'Transaction Complete', 'permission'));
+        dispatch(
+          setModalData(
+            true,
+            t('new_coupon.coupon_created'),
+            t('common.transaction_complete'),
+            'permission',
+          ),
+        );
       })
-      .catch(console.log);
+      .catch((err: any) => {
+        setLoader(false);
+        console.log(err, 'NewCoupon');
+        dispatch(
+          setModalData(
+            true,
+            t('new_coupon.coupon_creation_failed'),
+            err.message.split('\n')[0],
+            'permission',
+          ),
+        );
+      });
   };
 
   return (
@@ -198,6 +245,7 @@ const NewCoupon: React.FC = () => {
       height="100%"
       style={{ overflow: 'hidden' }}
     >
+      <Loading loader={loader} />
       <Flex
         justifyContent="space-between"
         alignItems="center"
@@ -229,8 +277,8 @@ const NewCoupon: React.FC = () => {
               type="text"
               value={coupon.name}
               onChangeValue={(e: any) => handleChangeToken(e, 'name')}
-              label="Name"
-              placeholder="Enter coupon name"
+              label={t('common.name')}
+              placeholder={t('new_coupon.name_placeholder')}
               maxLength="30"
               msg=""
               error={error}
@@ -242,8 +290,8 @@ const NewCoupon: React.FC = () => {
               type="text"
               value={coupon.headline}
               onChangeValue={(e: any) => handleChangeToken(e, 'headline')}
-              label="Headline"
-              placeholder="Enter coupon headline"
+              label={t('new_coupon.headline')}
+              placeholder={t('new_coupon.headline_placeholder')}
               maxLength="35"
               msg=""
               error={error}
@@ -255,8 +303,8 @@ const NewCoupon: React.FC = () => {
               type="text"
               value={coupon.symbol}
               onChangeValue={(e: any) => handleChangeToken(e, 'symbol')}
-              label="Symbol"
-              placeholder="coupon symbol"
+              label={t('common.symbol')}
+              placeholder=""
               maxLength="4"
               msg=""
               error=""
@@ -269,8 +317,8 @@ const NewCoupon: React.FC = () => {
                 <TextArea
                   value={coupon.description}
                   onChangeValue={(e: any) => handleChangeToken(e, 'description')}
-                  label="Short description"
-                  placeholder="Enter short description"
+                  label={t('common.short_description')}
+                  placeholder={t('new_coupon.description_placeholder')}
                   maxLength="500"
                 />
               </Flex>
@@ -300,6 +348,7 @@ const NewCoupon: React.FC = () => {
                       accept="application/pdf"
                       icon={contractLabel ? 'clouddone' : 'cloud'}
                       onChange={onChangeContract}
+                      uploading={uploading}
                       placeholder={''}
                       padding={6}
                       marginLeft={20}
@@ -328,8 +377,8 @@ const NewCoupon: React.FC = () => {
               type="number"
               value={coupon.totalCoupon}
               onChangeValue={(e: any) => handleChangeToken(e, 'totalCoupon')}
-              label="Total Coupon"
-              placeholder="Enter total coupon"
+              label={t('new_coupon.total_coupon')}
+              placeholder={t('new_coupon.total_coupon_placeholder')}
               maxLength=""
               msg=""
               error={error}

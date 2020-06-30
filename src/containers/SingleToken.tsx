@@ -5,75 +5,59 @@ import ToolBar from '../components/ToolBar';
 import IconButton from '../components/IconButton';
 import ToolBarTitle from '../components/ToolBarTitle';
 import ActionButtonGroup from '../components/ActionButtonGroup';
-import TokenCard from '../components/TokenCard';
+import TokenCard from '../components/Tokens/NewToken/TokenCard';
 import { Flex } from 'rebass';
-import { loadTokenBalanceByList } from '../redux/actions/Chain';
-import _merge from 'lodash/merge';
 import STFooter from '../components/SingleTokenComponents/STFooter';
 import { setTransferToken } from '../redux/actions/Wallet';
 import { IToken } from '../interfaces';
+import { useLazyQuery } from '@apollo/react-hooks';
+import { BALANCE_NOTIFY_QUERY } from './query';
+import { useTranslation } from 'react-i18next';
 
 /**
  * TODO: Define props and state interface for component and remove all 'any(s)'
  */
 const SingleToken: React.FC = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch();
   const [token, setToken] = useState<IToken>();
-
+  const [tokenList, setTokenList] = useState([]);
   // -------------------------------------------------------------------------- */
   //                           Get data from the store                          */
   // -------------------------------------------------------------------------- */
 
-  const { tokenLoading, tokenList, ethAddress, tokenBalance } = useSelector(
-    ({ chain, wallet }: { chain: any; wallet: any; tokenBalance: any }) => {
-      return {
-        tokenList: chain.tokenList,
-        ethAddress: wallet.ethAddress,
-        tokenBalance: chain.tokenBalance,
-        tokenLoading: chain.tokenLoading,
-      };
+  const { ethAddress } = useSelector(({ wallet }: any) => {
+    return {
+      ethAddress: wallet.ethAddress,
+    };
+  });
+
+  const [balanceTokenQuery, { loading, data }] = useLazyQuery(BALANCE_NOTIFY_QUERY, {
+    fetchPolicy: 'no-cache',
+    variables: {
+      accountPk: ethAddress,
     },
-  );
+  });
 
   useEffect(() => {
-    if (tokenList.length > 0) {
-      // Load user balance for all the tokens return from TokenFactory.
-      // If the env is development set the owner address to
-      // `devAddress` define in env else provide the memonic address to the  `loadTokenBalanceByList`
-      dispatch(loadTokenBalanceByList(tokenList, ethAddress));
-      tokenList.map((token: any) =>
-        _merge(token, {
-          image: token.logoURL,
-        }),
-      );
+    if (ethAddress) {
+      balanceTokenQuery();
     }
-  }, [dispatch, ethAddress, tokenList]);
+  }, [balanceTokenQuery, ethAddress]);
 
   useEffect(() => {
-    if (
-      Object.keys(tokenBalance).length > 0 &&
-      tokenList.length === Object.keys(tokenBalance).length
-    ) {
-      // TokenList only containts the token information.
-      // So  we need to update the tokenlist with Balance and Image url.
-      tokenList.map((_token: IToken) => {
-        if (tokenBalance[_token.symbol] && tokenBalance[_token.symbol].balance > 0) {
-          dispatch(setTransferToken(_token));
-          setToken(_token);
-        }
-
-        return _merge(_token, {
-          amount: tokenBalance[_token.symbol] && tokenBalance[_token.symbol].balance,
-        });
-      });
-      if (!token) {
-        dispatch(setTransferToken(tokenList[0]));
-        setToken(tokenList[0]);
-      }
-      // --------------------------------------------------------------------------
+    if (data) {
+      setTokenList(data.balanceNotificationMany);
     }
-  }, [dispatch, token, tokenBalance, tokenList]);
+  }, [data]);
+
+  useEffect(() => {
+    if (!token && tokenList.length > 0) {
+      dispatch(setTransferToken(tokenList[0]));
+      setToken(tokenList[0]);
+    }
+  }, [dispatch, token, tokenList]);
 
   return (
     <Flex
@@ -85,19 +69,17 @@ const SingleToken: React.FC = () => {
       <Flex flexDirection="column">
         <ToolBar>
           <IconButton icon="menu" />
-          <ToolBarTitle>Wallet</ToolBarTitle>
-          <IconButton icon="ranking" />
-          <IconButton icon="notifications" dot={true} />
+          <ToolBarTitle>{t('multitoken.label')}</ToolBarTitle>
         </ToolBar>
       </Flex>
       <Flex flexDirection="column" paddingX={6}>
         {token && (
           <TokenCard
             key={token && token.contractAddress}
-            loading={tokenList === undefined || tokenLoading}
-            icon={token && token.image}
+            loading={tokenList === undefined || loading}
+            icon={token && token.logoURL}
             name={token && token.name}
-            symbol={token && token.symbol}
+            symbol={token && token.token_symbol}
             amount={token && token.amount}
           />
         )}
@@ -105,11 +87,11 @@ const SingleToken: React.FC = () => {
           marginTop={10}
           marginBottom="auto"
           gap={2}
-          loading={tokenList === undefined || tokenLoading}
+          loading={tokenList === undefined || loading}
           buttons={[
             {
               icon: 'pay',
-              label: 'Pay',
+              label: t('multitoken.pay'),
               key: 'pay',
               iconBg: 'blue600',
               iconColor: 'white',
@@ -119,7 +101,7 @@ const SingleToken: React.FC = () => {
             },
             {
               icon: 'receive',
-              label: 'Receive',
+              label: t('multitoken.receive'),
               key: 'receive',
               iconBg: 'blue600',
               iconColor: 'white',
@@ -132,7 +114,7 @@ const SingleToken: React.FC = () => {
             },
             {
               icon: 'history',
-              label: 'History',
+              label: t('multitoken.history'),
               key: 'history',
               iconBg: 'white',
               iconColor: 'blue600',
@@ -145,7 +127,7 @@ const SingleToken: React.FC = () => {
         />
       </Flex>
       <Flex flexDirection="column">
-        <STFooter />
+        <STFooter iconActive="walletIcon" />
       </Flex>
     </Flex>
   );

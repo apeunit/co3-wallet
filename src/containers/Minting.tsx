@@ -11,9 +11,13 @@ import IconButton from '../components/IconButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { mintNewToken } from '../redux/actions/Chain';
 import { setModalData } from '../redux/actions/Modal';
+import { useTranslation } from 'react-i18next';
+import Loading from '../components/Loading';
 
 const Minting = () => {
+  const { t } = useTranslation();
   const [supply, setSupply] = useState<number>();
+  const [loader, setLoader] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -24,15 +28,34 @@ const Minting = () => {
   });
 
   const handleConfirm = () => {
+    setLoader(true);
     if (supply) {
-      dispatch(mintNewToken(token, supply));
-      history.push('/');
-      dispatch(setModalData('Token Mint Info', 'Transaction Complete', 'permission'));
+      const receipt: any = dispatch(mintNewToken(token, supply));
+      receipt
+        .then((res: any) => {
+          setLoader(false);
+          history.push('/');
+          dispatch(
+            setModalData(
+              t('minting.token_mint_info'),
+              t('common.transaction_complete'),
+              'permission',
+            ),
+          );
+        })
+        .catch((err: any) => {
+          setLoader(false);
+          console.log(err, 'Mint');
+          dispatch(
+            setModalData(true, t('minting.token_mint_failed'), err.message.split('\n')[0], 'permission'),
+          );
+        });
     }
   };
 
   return (
     <Flex flexDirection="column" justifyContent="space-between" height="100vh">
+      <Loading loader={loader} />
       <Flex flexDirection="column">
         <ToolBar>
           <IconButton
@@ -41,20 +64,20 @@ const Minting = () => {
               history.push({ pathname: '/token-detail', state: { token } });
             }}
           />
-          <ToolBarTitle fontWeight="500">Minting</ToolBarTitle>
+          <ToolBarTitle fontWeight="500">{t('multitoken.label')}</ToolBarTitle>
         </ToolBar>
         {token && (
           <InfoBar>
-            <Badge>{token.symbol}</Badge>
-            <AvatarBadge image={token.image} label={token.name} />
+            <Badge>{token.token_symbol}</Badge>
+            <AvatarBadge image={token.logoURL} label={token.name} />
           </InfoBar>
         )}
       </Flex>
       <Flex padding={7}>
         <InputField
           type="number"
-          label="Supply"
-          placeholder="Enter token supply"
+          label={t('common.supply')}
+          placeholder={t('minting.supply_placeholder')}
           value={supply || undefined}
           onChangeValue={setSupply}
         />

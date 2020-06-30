@@ -26,6 +26,8 @@ const Modal = (props: any) => {
         size="100%"
         backgroundColor="overlay20"
         sx={{
+          maxWidth: '768px',
+          width: '768px',
           position: 'fixed',
           top: 0,
           zIndex: 100,

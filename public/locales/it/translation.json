@@ -1,0 +1,172 @@
+{
+  "app_settings": {
+    "label": "Impostazioni",
+    "token_factory_address": "Indirizzo del contratto di valuta",
+    "token_factory_address_placeholder": "Immettere l'indirizzo del contratto di valuta",
+    "token_factory_address_error": "È richiesto l'indirizzo del contratto di valuta",
+    "websocket_url": "URL del WebSocket",
+    "websocket_url_placeholder": "Inserisci l'URL del websocket",
+    "websocket_url_error": "È richiesto l'URL del socket Web"
+  },
+  "minting": {
+    "label": "Conio",
+    "supply_placeholder": "Inserisci la riserva della valuta",
+    "token_mint_info": "Informazioni sulla coniazione",
+    "token_mint_failed": "Coniazione non riuscita"
+  },
+  "multitoken": {
+    "label": "Portafoglio",
+    "creating_tokens": "Generazione in corso...",
+    "pay": "Trasferisci",
+    "receive": "Ricevi",
+    "history": "Cronologia",
+    "tokens_discounts": "Valute e sconti",
+    "coupons_passes": "Coupon e pass",
+    "error_login": "Autenticazione obbligatoria",
+    "error_login_msg": "Questa operazione richiede il login, vuoi procedere?"
+  },
+  "new_coupon": {
+    "label": "Nuovo coupon",
+    "name_placeholder": "Inserisci il nome del coupon",
+    "headline": "Titolo",
+    "headline_placeholder": "Inserisci il titolo del coupon",
+    "description_placeholder": "Inserisci una breve descrizione",
+    "total_coupon": "Disponibilità complessiva",
+    "total_coupon_placeholder": "Inserisci la disponibilità complessiva",
+    "coupon_created": "Coupon creato",
+    "coupon_creation_failed": "Creazione del coupon non riuscita"
+  },
+  "common": {
+    "name": "Nome",
+    "symbol": "Simbolo",
+    "icon": "Icona",
+    "short_description": "Breve descrizione",
+    "contract": "Contratto",
+    "is_required": "è obbligatorio",
+    "edit": "Modificare",
+    "transaction_complete": "Transazione completata",
+    "from": "Mittente",
+    "to": "Desitnatario",
+    "send": "Esegui",
+    "pending": "In corso",
+    "supply": "Riserva complessiva",
+    "private_key": "Chiave privata",
+    "private_key_placeholder": "Inserisci la chiave privata",
+    "private_key_error": "È necessaria la chiave privata",
+    "access_token": "Codice di accesso",
+    "access_token_error": "È richiesto il codice di accesso",
+    "no_connectivity": "Il servizio non è al momento disponibile, si prega di riprovare più tardi",
+    "reload": "Riprova"
+  },
+  "new_token": {
+    "label": "Nuova valuta",
+    "name_placeholder": "Inserisci il nome",
+    "symbol_placeholder": "Inserisci il simbolo",
+    "symbol_msg": "Il simbolo è un breve identificativo, ad es. ETH",
+    "symbol_already": "Questo simbolo è già utilizzato, scegline un altro",
+    "description_placeholder": "Inserisci una breve descrizione",
+    "total_supply": "Riserva complessiva",
+    "total_supply_placeholder": "Inserisci la riserva complessiva",
+    "token_created": "Valuta creata",
+    "token_creation_failed": "Creazione valuta non riuscita",
+    "type": "Tipologia",
+    "token_type": "Tipologia di valuta"
+  },
+  "node_error": {
+    "failure": "Errore",
+    "failure_connect": "Impossibile connettersi al nodo Ethereum",
+    "node_url": "Indirizzo nodo",
+    "retry": "Riprova"
+  },
+  "payment": {
+    "amount": "Importo",
+    "amount_error": "Importo insufficiente",
+    "payment_info": "Informazioni sul transferimento",
+    "payment_failed": "Trasferimento non riuscito",
+    "slide_to_send": "Trascina per inviare"
+  },
+  "receive": {
+    "ask_sender": "Chiedi al mittente",
+    "to_scan": "Scansionare"
+  },
+  "scan_qr": {
+    "scan": "Scansione",
+    "qr_code": "QR Code"
+  },
+  "token_details": {
+    "card_msg": "Saldo prepagato",
+    "send": "Trasferisci",
+    "sell": "Offri",
+    "mint": "Conia",
+    "terms_conditions": "Termini e condizioni"
+  },
+  "transaction": {
+    "transaction_details": "Dettagli sulle transazioni",
+    "transaction_history": "Cronologia delle transazioni",
+    "no_transaction": "Nessuna transazione trovata",
+    "event_name": "Nome dell'evento",
+    "token_mint": "Conia valuta",
+    "transfer_token": "Valuta di trasferimento",
+    "decimal": "Decimale",
+    "balance": "Saldo",
+    "token_symbol": "Simbolo valuta",
+    "timestamp": "Date e ora"
+  },
+  "asset_popup": {
+    "create_asset": "Crea risorsa",
+    "token": "Valuta",
+    "coupon": "Buono",
+    "task": "Attività",
+    "history": "Cronologia"
+  },
+  "settings": {
+    "label": "impostazioni",
+    "identity_msg": "Collega il tuo profilo CO3 per accedere alle funzioni avanzate!",
+    "identity_link": "CONNETI PROFILO",
+    "link": "CONNETTI",
+    "wallet_security": "gestione portafoglio",
+    "backup_wallet": "Copia di sicurezza",
+    "backup_wallet_error": "",
+    "import_wallet": "Importa",
+    "delete_wallet": "Elimina",
+    "slide_delete": "Trascina per eliminare",
+    "delete_wallet_txt": "Sei sicuro di voler eliminare il portafoglio? <br/> <br/> Puoi ri-attivarlo solo con la tua copia di sicurezza!",
+    "delete_wallet_success": "Portafoglio eliminato!",
+    "misk": "Misc",
+    "language": "lingua",
+    "italian": "Italiano",
+    "german": "Tedesco",
+    "english": "Inglese",
+    "greece": "Greco",
+    "french": "Francese",
+    "subtitle": "Sottotitolo 1",
+    "help": "Aiuto",
+    "about": "Informazioni",
+    "user_agreement": "Termini e condizioni"
+  },
+  "recovery_phrase": {
+    "label": "Copia di sicurezza",
+    "placeholder": "segnaposto Illustrazione",
+    "welcome_label": "Benvenuto nel tuo",
+    "co3_wallet": "Portafoglio CO3",
+    "welcome_msg": "Its Ultrices neque consequat dolor diam. Mattis vestibulum dictum in ullamcorper vel venenatis vitae auctor suscipit.",
+    "new_wallet": "Crea portafoglio",
+    "import_wallet": "Importa portafoglio",
+    "new_wallet_s1": "I cryptowallet non sono come la tua solita app. Sono decentralizzati, il che significa che solo tu puoi controllare il tuo account!",
+    "new_wallet_s2": "Poiché solo tu controlli il tuo account, gli sviluppatori di questa app non possono aiutarti a recuperare il tuo portafoglio se perdi o rompi il telefono. <br /><br /> ma c'è una soluzione!",
+    "new_wallet_s3": "Per consentirti di recuperare nuovamente il portafoglio, abbiamo preparato 12 parole uniche per te, con le quali puoi <span class='co3-link'> identificati </span> e sarà in grado di accedere nuovamente al tuo portafoglio.",
+    "new_wallet_s4": "Stiamo per mostrarti queste 12 parole, che devono essere <span class='co3-link'> scritti con cura e nell'ordine preciso in cui sono mostrati. </span> <br /><br /> Prendi un pezzo di carta e una penna, scrivili e conserva questo pezzo di carta in un luogo sicuro. <span class='co3-link'> È il tuo unico modo di recuperare un portafoglio perso! </span>",
+    "new_wallet_s7": "Dal momento che non vogliamo davvero che perdiate i vostri fondi, controlleremo rapidamente se avete scritto correttamente la vostra frase.",
+    "new_wallet_s5": "Scrivi tutte le parole nell'ordine in cui sono visualizzateScrivi tutte le parole nell'ordine in cui sono visualizzate.",
+    "new_wallet_s6": "Scrivi tutte le parole nell'ordine in cui sono visualizzate.",
+    "new_wallet_s8": "scorrere le parole e toccare la parola corrispondente allo spazio vuoto, evidenziato.",
+    "new_wallet_s9": "scorrere le parole e toccare la parola corrispondente allo spazio vuoto, evidenziato.",
+    "new_wallet_s10": "Grande! Ora sei pronto, divertiti molto con il tuo portafoglio!",
+    "phrase_error": "I tuoi input non erano corretti, toccare per riprovare!",
+    "import_wallet_s1": "Per importare il tuo portafoglio devi inserire la frase di recupero, le parole che dovevi scrivere mentre creavi il portafoglio. <br /><br /> In the next pages you will have to fill in the words in the correct order!",
+    "import_wallet_s2": "Si prega di inserire le parole della frase di recupero nell'ordine corretto!",
+    "import_wallet_s3": "Si prega di inserire le parole della frase di recupero nell'ordine corretto!",
+    "import_wallet_s4": "Grande! Tutto ha funzionato e il tuo portafoglio è stato creato in questo momento. Non appena sarà pronto, sarai inoltrato al tuo portafoglio.",
+    "import_wallet_error": "Copia di sicurezza non valida!"
+  }
+}

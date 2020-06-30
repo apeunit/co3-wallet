@@ -35,7 +35,7 @@ export const Screen04 = () => {
       <InfoBar border={true}>
         <Text variant="base">To</Text>
         <AvatarBadge
-          image="https://www.thispersondoesnotexist.com/image"
+          logoURL="https://www.thispersondoesnotexist.com/image"
           label="0x32Be343B94f860124dC4fEe278FDCBD38C102D88"
         />
       </InfoBar>
@@ -43,7 +43,7 @@ export const Screen04 = () => {
       <InfoBar>
         <Badge>GRC</Badge>
         <AvatarBadge
-          image="https://upload.wikimedia.org/wikipedia/fr/0/00/Logo_JO_d%27%C3%A9t%C3%A9_-_Mexico_1968.png"
+          logoURL="https://upload.wikimedia.org/wikipedia/fr/0/00/Logo_JO_d%27%C3%A9t%C3%A9_-_Mexico_1968.png"
           label="Grocery Credit"
         />
       </InfoBar>

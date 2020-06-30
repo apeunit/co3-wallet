@@ -1,7 +1,7 @@
 import React from 'react';
 import { addParameters } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import TokenListPlaceholder from '../components/TokenListPlaceholder';
+import TokenListPlaceholder from '../components/Tokens/TokensList/TokenListPlaceholder';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 addParameters({

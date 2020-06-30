@@ -1,6 +1,6 @@
 import React from 'react';
 import { addParameters } from '@storybook/react';
-import CouponListItemPlaceholder from '../components/CouponListItemPlaceholder';
+import CouponListItemPlaceholder from '../components/Coupons/CouponsList/CouponListItemPlaceholder';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 addParameters({

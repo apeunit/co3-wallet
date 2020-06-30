@@ -7,10 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SearchHeader } from '../components/SearchHeader';
 import { useHistory } from 'react-router-dom';
 import { setTransferAmount } from '../redux/actions/Wallet';
+import { useTranslation } from 'react-i18next';
 
 const amountRegex = new RegExp('^[0-9]+(.[0-9]{1,2})?$');
 
 const Payment: React.FC = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch();
   const [error, setError] = useState('');
@@ -58,7 +60,7 @@ const Payment: React.FC = () => {
       history.push('/confirmpayment');
       setError('');
     } else {
-      setError('Amount is not sufficient');
+      setError(t('payment.amount_error'));
     }
   };
 
@@ -76,10 +78,10 @@ const Payment: React.FC = () => {
 
   return (
     <Flex flexDirection="column" height="100vh">
-      <SearchHeader back={'/scan'} to={to || '0x32Be343B94f860124dC4fEe278FDCBD38C102D88...'} />
+      <SearchHeader back={'/scan'} to={to} />
       <InfoBar style={{ width: '100vw' }}>
-        <Text variant="base">From</Text>
-        <AvatarBadge image={token.image} label={token.name} />
+        <Text variant="base">{t('common.from')}</Text>
+        <AvatarBadge image={token.logoURL} label={token.name} />
       </InfoBar>
 
       <Text

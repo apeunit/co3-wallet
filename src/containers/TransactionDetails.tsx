@@ -1,10 +1,12 @@
 import React from 'react';
 import { Flex, Text } from 'rebass';
-import TransactionDetailsList from '../components/TransactionDetailsList';
+import TransactionDetailsList from '../components/Transactions/TransactionDetail/TransactionDetailsList';
 import IconButton from '../components/IconButton';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
-const TransactionsHistory: React.FC = () => {
+const TransactionsDetails: React.FC = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const state = history.location.state;
 
@@ -20,7 +22,7 @@ const TransactionsHistory: React.FC = () => {
           icon="back"
         />
         <Text fontSize={3} paddingLeft={1} variant="headingXl">
-          Transactions Details
+          {t('transaction.transaction_details')}
         </Text>
       </Flex>
 
@@ -29,4 +31,4 @@ const TransactionsHistory: React.FC = () => {
   );
 };
 
-export default TransactionsHistory;
+export default TransactionsDetails;

@@ -5,7 +5,16 @@ import Icon from './Icon';
 import { useLocation } from 'react-router-dom';
 
 const AddImage = (props: any) => {
-  const { uploading = false, label, placeholder, icon, padding, onChange, accept } = props;
+  const {
+    uploading = false,
+    label,
+    placeholder,
+    icon,
+    padding,
+    onChange,
+    accept,
+    uploadIcon,
+  } = props;
   const location = useLocation();
 
   return (
@@ -18,13 +27,9 @@ const AddImage = (props: any) => {
             onChange={accept === 'application/pdf' ? onChange : undefined}
             accept={accept}
             style={{
-              color: 'transparent',
-              display: 'block',
-              width: 'auto',
-              height: '55px',
               outline: 'none',
-              borderRadius: '100px',
-              overflow: 'hidden',
+              opacity: '0',
+              position: 'relative',
               flex: 1,
             }}
           />
@@ -40,6 +45,7 @@ const AddImage = (props: any) => {
         maxWidth="200px"
         width="max-content"
         height="55px"
+        className="image-section"
         style={{ pointerEvents: 'none' }}
       >
         {icon && (
@@ -76,14 +82,22 @@ const AddImage = (props: any) => {
         ) : (
           <Flex />
         )}
-        {onChange && (
+        {uploadIcon !== 'hide' && onChange && (
           <Box
+            width="24px"
+            height="24px"
             sx={{ position: 'absolute', right: 0, bottom: 0, borderRadius: 'full' }}
             backgroundColor="#3948ff"
             fontSize={1}
             color="white"
           >
-            {uploading ? <Icon name="uploading" /> : <Icon name="upload" />}
+            {uploading ? (
+              <Box className="upload-icon-loader">
+                <Icon name="uploading" />
+              </Box>
+            ) : (
+              <Icon name={uploadIcon ? uploadIcon : 'upload'} />
+            )}
           </Box>
         )}
       </Flex>

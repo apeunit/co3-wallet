@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Box, Flex, Text } from 'rebass';
 import ActionButtonGroup from '../components/ActionButtonGroup';
 import { useHistory } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const shade = {
   hidden: { opacity: 0 },
@@ -15,6 +16,7 @@ const modal = {
 };
 
 export const AssetPopup = ({ setCreateToken }: any) => {
+  const { t } = useTranslation();
   const history = useHistory();
 
   return (
@@ -54,14 +56,14 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                   boxShadow: 'base',
                 }}
               >
-                <Text paddingLeft={4} paddingY={9}>Create Asset</Text>
+                <Text paddingLeft={4} paddingY={9}>{t('asset_popup.create_asset')}</Text>
                 <ActionButtonGroup
                   paddingBottom={10}
                   marginBottom="auto"
                   buttons={[
                     {
                       icon: 'token',
-                      label: 'Token',
+                      label: t('asset_popup.token'),
                       key: 'token',
                       iconColor: 'white',
                       iconBg: 'blue600',
@@ -71,7 +73,7 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                     },
                     {
                       icon: 'coupen',
-                      label: 'Coupon',
+                      label: t('asset_popup.coupon'),
                       key: 'coupon',
                       iconColor: 'white',
                       iconBg: 'blue600',
@@ -81,7 +83,7 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                     },
                     {
                       icon: 'tag',
-                      label: 'Task',
+                      label: t('asset_popup.task'),
                       key: 'tag',
                       iconColor: 'white',
                       iconBg: 'blue600',
@@ -91,7 +93,7 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                     },
                     {
                       icon: 'history',
-                      label: 'History',
+                      label: t('asset_popup.history'),
                       key: 'history',
                       iconColor: 'white',
                       iconBg: 'blue600',

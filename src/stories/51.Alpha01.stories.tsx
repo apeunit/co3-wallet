@@ -5,7 +5,7 @@ import ToolBar from '../components/ToolBar';
 import IconButton from '../components/IconButton';
 import ToolBarTitle from '../components/ToolBarTitle';
 import ActionButtonGroup from '../components/ActionButtonGroup';
-import TokenCard from '../components/TokenCard';
+import TokenCard from '../components/Tokens/NewToken/TokenCard';
 import { Box, Flex, Text } from 'rebass';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
 

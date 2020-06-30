@@ -1,7 +1,7 @@
 export interface IToken {
-  image: string;
+  logoURL: string;
   name: string;
-  symbol: string;
+  token_symbol: string;
   amount?: number | string;
   decimals: number | string;
   owner?: string;
@@ -39,9 +39,12 @@ export interface IIconName {
 export interface IWalletState {
   mnemonic: string | null;
   privateKey: string | null;
+  nodeUrl: string | null;
+  tokenFactoryAddress: string | null;
   isValid: boolean;
   saved: boolean;
   ethAddress: string | null;
+  publicKey: string | null;
   transfer: {
     to?: string;
     token?: ITokenData;

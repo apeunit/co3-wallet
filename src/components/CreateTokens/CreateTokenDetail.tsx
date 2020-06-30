@@ -1,9 +1,10 @@
 import React from 'react';
-import { Flex, Text, Box } from 'rebass';
+import { Box, Flex, Text } from 'rebass';
 import { Divider } from '@material-ui/core';
 import Avatar from '../Avatar';
 import TokenDetailItems from './TokenDetailItems';
 import FramerSlide from '../../components/FrameMotion/Slide';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
   data: any;
@@ -11,13 +12,15 @@ interface IProps {
 }
 
 const CreateTokenDetail: React.FC<IProps> = ({ data, handleEdit }) => {
+  const { t } = useTranslation();
+
   return (
     <FramerSlide>
-      <Box style={{ overflowY: 'scroll', width: "100vw", height: '82vh', margin: '10vh -20px 0' }} >
+      <Box style={{ overflowY: 'scroll', width: '100vw', height: '82vh', margin: '10vh -20px 0' }} >
         <Flex flexDirection="column">
           <Flex padding={5} flexDirection="row" justifyContent="space-between">
             <Text fontSize={13} color="#9399A2">
-              Icon
+              {t('common.icon')}
             </Text>
             <Avatar image={data.icon} size="110px" />
             <Text
@@ -26,17 +29,21 @@ const CreateTokenDetail: React.FC<IProps> = ({ data, handleEdit }) => {
               fontSize={13}
               color="blue600"
             >
-              Edit
+              {t('common.edit')}
             </Text>
           </Flex>
           <Divider />
-          <TokenDetailItems handleEdit={handleEdit} title={'Name'} value={data.name} />
-          <Divider />
-          <TokenDetailItems handleEdit={handleEdit} title={'Symbol'} value={data.symbol} />
+          <TokenDetailItems handleEdit={handleEdit} title={t('common.name')} value={data.name} />
           <Divider />
           <TokenDetailItems
             handleEdit={handleEdit}
-            title={'Short description'}
+            title={t('common.symbol')}
+            value={data.symbol}
+          />
+          <Divider />
+          <TokenDetailItems
+            handleEdit={handleEdit}
+            title={t('common.short_description')}
             value={data.description}
           />
           <Divider />
@@ -44,21 +51,33 @@ const CreateTokenDetail: React.FC<IProps> = ({ data, handleEdit }) => {
             <>
               <TokenDetailItems
                 handleEdit={handleEdit}
-                title={'Contract'}
+                title={t('common.contract')}
                 value={data.contractLabel}
               />
               <Divider />
             </>
           )}
-          <TokenDetailItems handleEdit={handleEdit} title={'Type'} value={data.contractType} />
+          <TokenDetailItems
+            handleEdit={handleEdit}
+            title={t('new_token.type')}
+            value={data.contractType}
+          />
           <Divider />
           {data.tokenType === 'Mintable Token' ? (
             <>
-              <TokenDetailItems handleEdit={handleEdit} title={'Token Type'} value={data.tokenType} />
+              <TokenDetailItems
+                handleEdit={handleEdit}
+                title={t('new_token.token_type')}
+                value={data.tokenType}
+              />
             </>
           ) : (
             <>
-              <TokenDetailItems handleEdit={handleEdit} title={'Supply'} value={data.totalSupply} />
+              <TokenDetailItems
+                handleEdit={handleEdit}
+                title={t('common.supply')}
+                value={data.totalSupply}
+              />
             </>
           )}
         </Flex>

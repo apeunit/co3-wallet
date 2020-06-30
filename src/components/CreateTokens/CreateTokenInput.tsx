@@ -14,6 +14,7 @@ interface IProps {
   msg: string;
   error: string;
   handleKeyChange?: any;
+  autoFocus?: boolean;
 }
 
 const CreateTokenInput: React.FC<IProps> = ({
@@ -26,8 +27,8 @@ const CreateTokenInput: React.FC<IProps> = ({
   msg,
   error,
   handleKeyChange,
+  autoFocus,
 }) => {
-
   return (
     <FramerSlide>
       <Flex
@@ -47,6 +48,7 @@ const CreateTokenInput: React.FC<IProps> = ({
           msg={msg}
           notification={error}
           handleKeyChange={handleKeyChange}
+          autoFocus={autoFocus}
         />
         {error === 'This symbol is already taken' ? (
           <ErrorMsg style={{ top: '47vh' }} title={error} type="warning" />

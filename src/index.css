@@ -23,3 +23,9 @@ code {
 .dragger-wrapper .react-draggable{
   transition: transform .18s ease-out !important;
 }
+
+.upload-icon-loader {
+  animation: rotate 3s linear reverse infinite;
+}
+
+@keyframes rotate { 100% { transform:rotate(-360deg); } }

@@ -5,8 +5,6 @@ import { GET_USER_PROFILE_DATA, SAVE_ACCESS_TOKEN, UPDATE_USER_PUBKEY } from './
 const { saveAccessToken, getUserProfileData, updateUserPubkey, getLocation } = createActions({
   GET_LOCATION: () => {},
   [SAVE_ACCESS_TOKEN]: (accessToken: string) => {
-    localStorage.setItem('co3uum-access-token', accessToken);
-
     return {
       accessToken: accessToken,
     };

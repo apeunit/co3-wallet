@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Flex, Text } from 'rebass';
 import Icon from '../Icon';
 import Avatar from '../Avatar';
-import '../../assets/NewToken.css';
+import '../../assets/styles/NewToken.css';
 import { useHistory } from 'react-router-dom';
 
 interface IProps {

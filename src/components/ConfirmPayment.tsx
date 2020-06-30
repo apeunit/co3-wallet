@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Flex, Text } from 'rebass';
-import TokenCard from '../components/TokenCard';
+import TokenCard from './Tokens/NewToken/TokenCard';
 import { Slider } from '../components/Slider';
 import IconButton from './IconButton';
 import { useHistory } from 'react-router-dom';
@@ -10,10 +10,14 @@ import { setModalData } from '../redux/actions/Modal';
 import { SearchHeader } from './SearchHeader';
 import InfoBar from './InfoBar';
 import AvatarBadge from './AvatarBadge';
+import { useTranslation } from 'react-i18next';
+import Loading from '../components/Loading';
 
 const ConfirmPayment = (props: any) => {
+  const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch();
+  const [loader, setLoader] = useState(false);
 
   const { amount, token, to } = useSelector(({ wallet }: any) => {
     return {
@@ -24,14 +28,38 @@ const ConfirmPayment = (props: any) => {
   });
 
   const handleSendToken = () => {
+    setLoader(true);
     if (Object.keys(token).length && Number(amount) && to) {
       transferToken({});
       /**
        * TODO: check if these copy/conversion ops are needed
        */
-      dispatch(transferTokens({ ...token }, to, amount));
-      history.push('/');
-      dispatch(setModalData('Payment Info', 'Transaction Complete', 'permission'));
+      const receipt: any = dispatch(transferTokens({ ...token }, to, amount));
+      receipt
+        .then((res: any) => {
+          setLoader(false);
+          history.push('/');
+          dispatch(
+            setModalData(
+              true,
+              t('payment.payment_info'),
+              t('common.transaction_complete'),
+              'permission',
+            ),
+          );
+        })
+        .catch((err: any) => {
+          setLoader(false);
+          console.log(err, 'NewToken');
+          dispatch(
+            setModalData(
+              true,
+              t('payment.payment_failed'),
+              err.message.split('\n')[0],
+              'permission',
+            ),
+          );
+        });
     }
   };
 
@@ -44,22 +72,23 @@ const ConfirmPayment = (props: any) => {
       justifyContent="space-between"
       flexWrap="wrap"
     >
+      <Loading loader={loader} />
       <Box style={{ width: '100vw' }}>
         <SearchHeader back={'/payment'} to={to} />
         <InfoBar>
-          <Text variant="base">From</Text>
-          <AvatarBadge image={token.image} label={token.name} />
+          <Text variant="base">{t('common.from')}</Text>
+          <AvatarBadge image={token.logoURL} label={token.name} />
         </InfoBar>
       </Box>
       <Flex flexDirection="column" margin={5}>
         <TokenCard
-          icon={token.image || ''}
+          icon={token.logoURL || ''}
           name={token.name || ''}
-          symbol={token.symbol || ''}
+          symbol={token.token_symbol || ''}
           amount={token.amount || '0'}
         />
         <Flex marginTop="10px" justifyContent="space-between">
-          <Text fontSize="16px">Amount</Text>
+          <Text fontSize="16px">{t('payment.amount')}</Text>
           <Text fontSize="40px">{amount}</Text>
         </Flex>
       </Flex>
@@ -80,7 +109,7 @@ const ConfirmPayment = (props: any) => {
           }}
         />
         <Slider
-          title="Slide to Send"
+          title={t('payment.slide_to_send')}
           bgColor="#F1F3F6"
           btnColor="blue600"
           txtColor="#8E949E"

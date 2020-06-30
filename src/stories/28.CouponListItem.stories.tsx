@@ -4,7 +4,7 @@ import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from '../redux/configureStore';
-import CouponListItem from '../components/CouponListItem';
+import CouponListItem from '../components/Coupons/CouponsList/CouponListItem';
 
 addParameters({
   viewport: {
@@ -26,7 +26,7 @@ export default {
 export const Base = () => (
   <MemoryRouter>
     <CouponListItem
-      image="https://assets-global.website-files.com/5cb0ac9c57054973ac1bf1e4/5cd0585352e8411915dc1772_1759.png"
+      logoURL="https://assets-global.website-files.com/5cb0ac9c57054973ac1bf1e4/5cd0585352e8411915dc1772_1759.png"
       name="Status Coupon"
       symbol="SNT"
       amount={2.75}

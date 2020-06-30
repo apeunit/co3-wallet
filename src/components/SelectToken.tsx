@@ -1,59 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Flex } from 'rebass';
 import { SearchHeader } from '../components/SearchHeader';
-import TokenList from '../components/TokenList';
-import { useDispatch, useSelector } from 'react-redux';
-import { loadTokenBalanceByList } from '../redux/actions/Chain';
-import _merge from 'lodash/merge';
+import TokenList from './Tokens/TokensList/TokenList';
+import { useSelector } from 'react-redux';
+import { useLazyQuery } from '@apollo/react-hooks';
+import { BALANCE_NOTIFY_QUERY } from '../containers/query';
+import { IToken } from '../interfaces';
 
 export const SelectToken: React.FC = (props: any) => {
-  const { token } = props;
-  const { tokenList, ethAddress, tokenBalance, toAddress } = useSelector(
-    ({ chain, wallet }: { chain: any; wallet: any; tokenBalance: any; address: any }) => {
-      return {
-        tokenList: chain.tokenList,
-        ethAddress: wallet.ethAddress,
-        toAddress: wallet.transfer.to,
-        tokenBalance: chain.tokenBalance,
-      };
+  const [tokenList, setTokenList] = useState([]);
+  const { toAddress, ethAddress } = useSelector(({ wallet }: any) => {
+    return {
+      ethAddress: wallet.ethAddress,
+      toAddress: wallet.transfer.to,
+    };
+  });
+
+  const [balanceTokenQuery, { data }] = useLazyQuery(BALANCE_NOTIFY_QUERY, {
+    variables: {
+      accountPk: ethAddress,
     },
-  );
-
-  const dispatch = useDispatch();
+  });
 
   useEffect(() => {
-    if (tokenList.length > 0) {
-      // Load user balance for all the tokens return from TokenFactory.
-      // If the env is development set the owner address to
-      // `devAddress` define in env else provide the memonic address to the  `loadTokenBalanceByList`
-      dispatch(loadTokenBalanceByList(tokenList, ethAddress));
-      tokenList.map((_token: any) =>
-        _merge(_token, {
-          image: _token.logoURL,
-        }),
-      );
+    if (ethAddress) {
+      balanceTokenQuery();
     }
-  }, [tokenList, ethAddress, dispatch]);
+  }, [balanceTokenQuery, ethAddress]);
 
   useEffect(() => {
-    if (tokenList.length === Object.keys(tokenBalance).length) {
-      // TokenList only containts the token information.
-      // So  we need to update the tokenlist with Balance and Image url.
-      tokenList.map((_token: any) =>
-        _merge(_token, {
-          amount: tokenBalance[_token.symbol].balance,
-        }),
+    if (data) {
+      const list = data.balanceNotificationMany.filter(
+        (_token: IToken) => _token.amount && _token.amount > 0,
       );
+      setTokenList(list);
     }
-  }, [token, tokenBalance, tokenList]);
+  }, [data, tokenList]);
 
   return (
     <Flex flexDirection="column" backgroundColor="#eff3ff" height="100vh">
-      <SearchHeader
-        back={'scan'}
-        to={toAddress || '0x32Be343B94f860124dC4fEe278FDCBD38C102D88...'}
-      />
-      <Flex marginTop={5}>
+      <SearchHeader back={'scan'} to={toAddress} />
+      <Flex marginTop={5} className="selectTokenList">
         <TokenList tokens={tokenList} />
       </Flex>
     </Flex>

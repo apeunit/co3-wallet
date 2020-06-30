@@ -1,6 +1,6 @@
 import React from 'react';
 import { addParameters } from '@storybook/react';
-import TransactionHistoryListItem from '../components/TransactionHistoryListItem';
+import TransactionHistoryListItem from '../components/Transactions/TransactionList/TransactionHistoryListItem';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';

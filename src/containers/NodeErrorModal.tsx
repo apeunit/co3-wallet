@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Button, Flex, Text } from 'rebass';
 import Modal from '../components/Modal';
 import { AnimatePresence } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleModal } from '../redux/actions/Modal';
-import { Input } from '@rebass/forms';
-import IconButton from '../components/IconButton';
 import { initialSetup } from '../redux/actions/Chain';
-import { initWalletLocal } from '../redux/actions/Wallet';
+import { useTranslation } from 'react-i18next';
 
 const NodeErrorModal: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
-  const [url, setURL] = useState('');
+
 
   const { wallet: walletObj, modal: modalObj } = useSelector(({ wallet, modal }: any) => {
     return {
@@ -20,19 +19,8 @@ const NodeErrorModal: React.FC = () => {
     };
   });
 
-  useEffect(() => {
-    if (localStorage.getItem('wsUrl')) {
-      setURL(localStorage.getItem('wsUrl') || '');
-    }
-  }, []);
-
   const handleRetry = () => {
-    localStorage.setItem('wsUrl', url);
-    if (!localStorage.getItem('privateKey')) {
-      dispatch(initialSetup(walletObj && walletObj.privateKey));
-    } else {
-      dispatch(initWalletLocal());
-    }
+    dispatch(initialSetup(walletObj && walletObj.privateKey));
   };
 
   return (
@@ -41,36 +29,13 @@ const NodeErrorModal: React.FC = () => {
         {modalObj && modalObj.isOpen && (
           <Modal close={() => dispatch(toggleModal())}>
             <Flex justifyContent="center">
-              <IconButton
-                marginY={2}
-                size="s8"
-                backgroundColor={'red'}
-                color={'white'}
-                icon={'close'}
-                cursor={'default'}
-              />
             </Flex>
             <Text variant="heading" textAlign="center">
-              Failure
+              {t('node_error.failure')}
             </Text>
             <Text variant="base" textAlign="center" marginTop={4}>
-              Failure to connect to Ethereum node
+              {t('node_error.failure_connect')}
             </Text>
-
-            <Input
-              marginY={6}
-              paddingY={4}
-              sx={{
-                border: '1px solid #ccc',
-                borderRadius: '10px',
-              }}
-              value={url}
-              onChange={(e) => setURL(e.target.value)}
-              id="token"
-              name="token"
-              type="text"
-              placeholder="Node Url"
-            />
             <Button
               paddingY={4}
               sx={{
@@ -78,7 +43,7 @@ const NodeErrorModal: React.FC = () => {
               }}
               onClick={handleRetry}
             >
-              Retry
+              {t('node_error.retry')}
             </Button>
           </Modal>
         )}

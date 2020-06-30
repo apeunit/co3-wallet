@@ -4,7 +4,7 @@ import { Flex, Text } from 'rebass';
 import RadioButtonGroup from '../components/RadioButtonGroup';
 import AddImage from '../components/AddImage';
 import { useHistory } from 'react-router-dom';
-import TokenCard from '../components/TokenCard';
+import TokenCard from '../components/Tokens/NewToken/TokenCard';
 import TextArea from '../components/TextArea';
 import CreateTokenBuyStep from '../components/CreateTokens/CreateTokenBuyStep';
 import CreateTokenFooter from '../components/CreateTokens/CreateTokenFooter';
@@ -16,21 +16,22 @@ import _get from 'lodash/get';
 import { motion } from 'framer-motion';
 import FramerSlide from '../components/FrameMotion/Slide';
 import { useDispatch, useSelector } from 'react-redux';
-import { uploadImage } from '../utils/uploadImage';
+import { getPermalink, saveResource } from '../api/firstlife';
 import { setModalData } from '../redux/actions/Modal';
 import { createNewToken } from '../redux/actions/Chain';
-// tslint:disable-next-line: no-require-imports
-const EthereumTx = require('ethereumjs-tx');
-
-const tokenFactoryAddress: string =
-  localStorage.getItem('tokenFactoryAddress') || process.env.REACT_APP_TOKEN_FACTORY || '';
+import { useLazyQuery } from '@apollo/react-hooks';
+import { BALANCE_NOTIFY_QUERY } from './query';
+import { useTranslation } from 'react-i18next';
+import Loading from '../components/Loading';
 
 const NewToken: React.FC = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch();
   const [step, setStep] = useState(1);
-  const [title, setTitle] = useState('New Token');
+  const [title, setTitle] = useState<string>(t('new_token.label'));
   const [contractLabel, changeContractLabel] = useState('');
+  const [loader, setLoader] = useState(false);
 
   const [token, onchangeToken] = useState({
     name: '',
@@ -45,24 +46,50 @@ const NewToken: React.FC = () => {
   });
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [tokenList, setTokenList] = useState([]);
 
-  const { web3, tokenFactory, tokenList } = useSelector(({ chain }: any) => {
-    return {
-      web3: chain.web3,
-      tokenFactory: chain.contracts.tokenFactory,
-      tokenList: chain.tokenList,
-    };
+  const { ethAddress, web3, tokenFactory, accessToken } = useSelector(
+    ({ chain, wallet, co3uum }: any) => {
+      return {
+        web3: chain.web3,
+        tokenFactory: chain.contracts.tokenFactory,
+        ethAddress: wallet.ethAddress,
+        accessToken: co3uum.accessToken,
+      };
+    },
+  );
+
+  const [balanceTokenQuery, { data }] = useLazyQuery(BALANCE_NOTIFY_QUERY, {
+    variables: {
+      accountPk: ethAddress,
+    },
   });
+
+  useEffect(() => {
+    if (ethAddress) {
+      balanceTokenQuery();
+    }
+  }, [balanceTokenQuery, ethAddress]);
+
+  useEffect(() => {
+    if (data) {
+      setTokenList(data.balanceNotificationMany);
+    }
+  }, [data]);
 
   const checkError = (_step: number, value: string, text: string) => {
     if (step === _step && value === '') {
-      setError(`${text} is required`);
+      setError(`${text} ${t('common.is_required')}`);
 
       return true;
     }
     if (_step === 3 && token.symbol) {
-      if (tokenList.find((data: any) => token.symbol.toLowerCase() === data.symbol.toLowerCase())) {
-        setError(`This symbol is already taken`);
+      if (
+        tokenList.find(
+          (_token: any) => token.symbol.toLowerCase() === _token.token_symbol.toLowerCase(),
+        )
+      ) {
+        setError(t('new_token.symbol_already'));
 
         return true;
       }
@@ -81,17 +108,20 @@ const NewToken: React.FC = () => {
   const handleSteps = () => {
     if (step <= 8) {
       if (
-        checkError(1, token.name, 'Name') ||
-        checkError(2, token.symbol, 'Symbol') ||
-        checkError(3, token.icon, 'Icon') ||
+        checkError(1, token.name, t('common.name')) ||
+        checkError(2, token.symbol, t('common.symbol')) ||
+        checkError(3, token.icon, t('common.icon')) ||
         checkError(5, token.contractType, '') ||
+        (token.contractType === 'Custom Contract' &&
+          checkError(5, token.contract, t('common.contract'))) ||
         checkError(6, token.tokenType, '') ||
-        (token.contractType === 'Custom Contract' && checkError(5, token.contract, 'Contract')) ||
-        checkError(7, token.totalSupply, 'Total Supply')
+        checkError(7, token.totalSupply, t('new_token.total_supply'))
       ) {
+        setLoader(false);
+
         return;
       }
-      step <= 7 && title.indexOf('Edit') > -1
+      step <= 7 && title.indexOf(t('common.edit')) > -1
         ? setStep(8)
         : step === 6 && token.tokenType === 'Mintable Token'
         ? setStep(step + 2)
@@ -122,13 +152,24 @@ const NewToken: React.FC = () => {
     setUploading(true);
     setError('');
     if (e.target.files[0]) {
-      const res = uploadImage(e.target.files[0]);
+      if (!accessToken || accessToken === null) {
+        setUploading(false);
+        setError(t('common.access_token_error'));
+
+        return;
+      }
+      const res = saveResource(accessToken, e.target.files[0]);
       res
         .then(({ data }: any) => {
+          console.log(data, 'data')
           setUploading(false);
-          data && data.link ? onchangeToken({ ...token, icon: data.link }) : console.log(data.link);
+          const link = getPermalink(data);
+          link ? onchangeToken({ ...token, icon: link }) : console.log(data);
         })
-        .catch(console.log);
+        .catch((err: any) => {
+          setUploading(false);
+          setError('Invalid Token');
+        });
     } else {
       setUploading(false);
     }
@@ -154,19 +195,29 @@ const NewToken: React.FC = () => {
     setError('');
     if (e.target.files[0]) {
       changeContractLabel(e.target.files[0].name);
-      onchangeToken({
-        ...token,
-        contract: URL.createObjectURL(e.target.files[0]),
-        contractLabel: e.target.files[0].name,
-      });
+      onchangeToken({ ...token, contractLabel: e.target.files[0].name });
+      if (!accessToken || accessToken === null) {
+        setUploading(false);
+        setError(t('common.access_token_error'));
+
+        return;
+      }
+      const res = saveResource(accessToken, e.target.files[0]);
+      res
+        .then(({ data }: any) => {
+          setUploading(false);
+          const link = getPermalink(data);
+          link ? onchangeToken({ ...token, contract: link }) : console.log(data);
+        })
+        .catch((err: any) => {
+          setUploading(false);
+          setError('Invalid Token');
+        });
     }
-    setTimeout(() => {
-      setUploading(false);
-    }, 1000);
   };
 
   const handleEdit = (stepName: string) => {
-    setTitle(`Edit ${stepName}`);
+    setTitle(`${t('common.edit')} ${stepName}`);
     const stepData = createTokenSteps.find((_step: any) => stepName === _step.title);
     if (stepData) {
       setStep(stepData.stepId);
@@ -181,6 +232,7 @@ const NewToken: React.FC = () => {
   };
 
   const handleCreateToken = async () => {
+    setLoader(true);
     const receipt: any = dispatch(
       createNewToken(
         tokenFactory,
@@ -189,16 +241,35 @@ const NewToken: React.FC = () => {
         token.icon,
         web3.utils.keccak256(token.icon),
         web3.utils.keccak256(token.icon),
-        0,
-        web3.utils.toHex(parseInt(token.totalSupply, 10) * 100 || 0),
+        2,
+        web3.utils.toHex(parseInt(token.totalSupply, 10) || 0),
       ),
     );
     receipt
       .then((res: any) => {
+        setLoader(false);
         history.push('/');
-        dispatch(setModalData('Token Created', 'Transaction Complete', 'permission'));
+        dispatch(
+          setModalData(
+            true,
+            t('new_token.token_created'),
+            t('common.transaction_complete'),
+            'permission',
+          ),
+        );
       })
-      .catch(console.log);
+      .catch((err: any) => {
+        setLoader(false);
+        console.log(err, 'NewToken');
+        dispatch(
+          setModalData(
+            true,
+            t('new_token.token_creation_failed'),
+            err.message.split('\n')[0],
+            'permission',
+          ),
+        );
+      });
   };
 
   return (
@@ -209,6 +280,7 @@ const NewToken: React.FC = () => {
       height="100%"
       style={{ overflow: 'hidden' }}
     >
+      <Loading loader={loader} />
       <Flex
         justifyContent="space-between"
         alignItems="center"
@@ -236,8 +308,8 @@ const NewToken: React.FC = () => {
               type="text"
               value={token.name}
               onChangeValue={(e: any) => handleChangeToken(e, 'name')}
-              label="Name"
-              placeholder="Enter token name"
+              label={t('common.name')}
+              placeholder={t('new_token.name_placeholder')}
               maxLength="20"
               msg=""
               error={error}
@@ -249,10 +321,10 @@ const NewToken: React.FC = () => {
               type="text"
               value={token.symbol}
               onChangeValue={(e: any) => handleChangeToken(e, 'symbol')}
-              label="Symbol"
-              placeholder="Enter token symbol"
+              label={t('common.symbol')}
+              placeholder={t('new_token.symbol_placeholder')}
               maxLength="4"
-              msg="Symbol is a short identifier eg. ETH"
+              msg={t('new_token.symbol_msg')}
               error={error}
               handleKeyChange={_handleKeyDown}
             />
@@ -290,8 +362,8 @@ const NewToken: React.FC = () => {
                   value={token.description}
                   onChangeValue={(e: any) => handleChangeToken(e, 'description')}
                   onFocus={handleFocus}
-                  label="Short description"
-                  placeholder="Enter short description"
+                  label={t('common.short_description')}
+                  placeholder={t('new_token.description_placeholder')}
                   maxLength="500"
                   error={error}
                 />
@@ -320,6 +392,7 @@ const NewToken: React.FC = () => {
                       accept="application/pdf"
                       icon={contractLabel ? 'clouddone' : 'cloud'}
                       onChange={onChangeContract}
+                      uploading={uploading}
                       placeholder={''}
                       padding={6}
                       marginLeft={20}
@@ -350,8 +423,8 @@ const NewToken: React.FC = () => {
               type="number"
               value={token.totalSupply}
               onChangeValue={(e: any) => handleChangeToken(e, 'totalSupply')}
-              label="Total Supply"
-              placeholder="Enter total supply"
+              label={t('new_token.total_supply')}
+              placeholder={t('new_token.total_supply_placeholder')}
               maxLength=""
               msg=""
               error={error}

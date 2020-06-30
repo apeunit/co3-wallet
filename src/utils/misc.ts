@@ -1,7 +1,7 @@
 import { ITokenData } from '../interfaces';
 
 export const filterTokenBySymbol = (tokenList: ITokenData[], symbol: string) => {
-  return tokenList.find((token: any) => token.symbol === symbol);
+  return tokenList.find((token: any) => token.token_symbol === symbol);
 };
 
 export const isAddress = (address: string): boolean => {

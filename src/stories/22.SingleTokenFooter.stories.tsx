@@ -24,6 +24,6 @@ export default {
 
 export const Base = () => (
   <MemoryRouter>
-    <STFooter />
+        <STFooter iconActive="walletIcon" />
   </MemoryRouter>
 );

@@ -2,41 +2,72 @@ import React, { useEffect } from 'react';
 import './App.css';
 import Router from './router/Router';
 import './i18n';
-import { connect } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import Modal from './containers/Modal';
 import FullScreen from 'react-request-fullscreen';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPublicKey } from './api/co3uum';
+import {
+  generateMnemonicPhrase,
+  getMnemonic,
+  initWallet,
+  setPublicKey,
+} from './redux/actions/Wallet';
+import _get from 'lodash/get';
+import { saveAccessToken } from './redux/actions/CO3UUM';
 
-const NodeURL: string =
-  process.env.REACT_APP_NODE || 'wss://co3:Co3Blockchain_2019@co3-pantheon.di.unito.it:8545/ws/';
-const TokenFactoryAddress: string =
-  process.env.REACT_APP_TOKEN_FACTORY || '0x4EE74201998b35CE3f38d7462ee11d7b55A791E2';
-const CrowdsaleFactoryAddress: string =
-  process.env.REACT_APP_CROWDSALE_FACTORY || '0xd21d09AEE6B39D52573154Fe4f3Ac55B384637Fc';
-const DAOFactoryAddress: string =
-  process.env.REACT_APP_DAO_FACTORY || '0x7a871b2B1830aF39f718D3045D89B144734C761d';
-
-const App = (props: any) => {
-  const {
-    modal: { type },
-  } = props;
+const App = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const { accessToken, type, wallet: walletObj } = useSelector(({ modal, co3uum, wallet }: any) => {
+    return {
+      type: modal.type,
+      accessToken: co3uum.accessToken || params.get('access_token'),
+      wallet,
+    };
+  });
 
   useEffect(() => {
-    if (!localStorage.getItem('wsUrl')) {
-      localStorage.setItem('wsUrl', NodeURL);
-    }
+    dispatch(getMnemonic());
     if (!localStorage.getItem('pilot')) {
       localStorage.setItem('pilot', 'turin');
     }
-    if (!localStorage.getItem('tokenFactoryAddress')) {
-      localStorage.setItem('tokenFactoryAddress', TokenFactoryAddress);
+    const _accessToken = params.get('access_token');
+    if (_accessToken) {
+      dispatch(saveAccessToken(_accessToken));
     }
-    if (!localStorage.getItem('crowdsaleFactoryAddress')) {
-      localStorage.setItem('crowdsaleFactoryAddress', CrowdsaleFactoryAddress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
+  const getUserPublicKey = async () => {
+    const _accessToken = accessToken || params.get('access_token');
+    if (_accessToken) {
+      let pbkey = await getPublicKey(_accessToken);
+      if (_get(pbkey, 'result.blockchain_public_key')) {
+        dispatch(setPublicKey(_get(pbkey, 'result.blockchain_public_key')));
+      }
     }
-    if (!localStorage.getItem('DAOFactoryAddress')) {
-      localStorage.setItem('DAOFactoryAddress', DAOFactoryAddress);
+  };
+
+  useEffect(() => {
+    getUserPublicKey();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken]);
+
+  useEffect(() => {
+    // -------------------------------------------------------------------------- */
+    //             Generate memonic phrase and create the user wallet.            */
+    // -------------------------------------------------------------------------- */
+    if (walletObj && !walletObj.mnemonic) {
+      dispatch(generateMnemonicPhrase());
     }
-  }, []);
+    if (walletObj && walletObj.mnemonic && !walletObj.privateKey) {
+      dispatch(initWallet(walletObj.mnemonic));
+    }
+    // TODO: Need to show the error message if the wallet is not generated.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [walletObj]);
 
   return (
     <div className="app-wrapper">
@@ -53,4 +84,4 @@ const App = (props: any) => {
   );
 };
 
-export default connect((state: any) => ({ ...state }), undefined)(App);
+export default App;

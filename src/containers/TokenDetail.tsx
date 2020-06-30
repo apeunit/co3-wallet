@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Flex, Text } from 'rebass';
-import TokenCard from '../components/TokenCard';
+import TokenCard from '../components/Tokens/NewToken/TokenCard';
 import IconButton from '../components/IconButton';
 import { useHistory } from 'react-router-dom';
 import ActionButtonGroup from '../components/ActionButtonGroup';
 import { useSelector } from 'react-redux';
 import { isMintableToken } from '../redux/actions/Chain';
+import { useTranslation } from 'react-i18next';
 
 const TokenDetail: React.FC = () => {
+  const { t } = useTranslation();
   const history = useHistory();
   const [isMintable, setIsMintable] = useState(false);
 
@@ -39,9 +41,9 @@ const TokenDetail: React.FC = () => {
         <TokenCard
           name={token.name}
           amount={token.amount}
-          symbol={token.symbol}
+          symbol={token.token_symbol}
           icon={token.image || token.logoURL}
-          amount_msg="Prepaid Balance"
+          amount_msg={t('token_details.card_msg')}
         />
         <Flex marginBottom="15px">
           <ActionButtonGroup
@@ -51,7 +53,7 @@ const TokenDetail: React.FC = () => {
             buttons={[
               {
                 icon: 'sendIcon',
-                label: 'Send',
+                label: t('token_details.send'),
                 key: 'send',
                 iconBg: 'blue600',
                 iconColor: 'white',
@@ -61,7 +63,7 @@ const TokenDetail: React.FC = () => {
               },
               {
                 icon: 'sellIcon',
-                label: 'Sell',
+                label: t('token_details.sell'),
                 key: 'sell',
                 iconBg: 'blue600',
                 iconColor: 'white',
@@ -71,7 +73,7 @@ const TokenDetail: React.FC = () => {
               },
               {
                 icon: 'mintIcon',
-                label: 'Mint',
+                label: t('token_details.mint'),
                 key: 'mint',
                 show: !(isMintable && ethAddress === token.owner),
                 iconBg: 'white',
@@ -103,7 +105,7 @@ const TokenDetail: React.FC = () => {
         >
           <IconButton marginRight="5px" width="20px" height="10px" icon="fileCopy" />
           <Text marginTop="-3px" color="#404245" fontSize={13}>
-            Terms and conditions
+            {t('token_details.terms_conditions')}
           </Text>
         </Flex>
       </Flex>

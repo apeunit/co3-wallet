@@ -19,8 +19,8 @@ const combinedActions: any = combineActions(
 
 const reducer = handleActions(
   {
-    [combinedActions]: (state: Object, payload: Object): ICO3UUMState => {
-      return { ...(state as ICO3UUMState), ...payload };
+    [combinedActions]: (state: Object, action: any): ICO3UUMState => {
+      return { ...(state as ICO3UUMState), ...action.payload };
     },
   },
   defaultState,

@@ -1,43 +1,40 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Text } from 'rebass';
 import Modal from '../components/Modal';
 import { AnimatePresence } from 'framer-motion';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { toggleModal } from '../redux/actions/Modal';
-class ModalContainer extends Component {
-  public render() {
-    const {
-      modal: { isOpen, title, body },
-      toggleModalVisibility,
-    } = this.props as any;
 
-    return (
-      <AnimatePresence>
-        {isOpen && (
-          <Modal
-            close={() => {
-              toggleModalVisibility();
-            }}
-          >
-            <Text variant="heading" textAlign="center">
-              {title}
-            </Text>
-            <Text variant="base" textAlign="center" marginTop={4}>
-              {body}
-            </Text>
-          </Modal>
-        )}
-      </AnimatePresence>
-    );
-  }
-}
+const ModalContainer = () => {
+  const dispatch = useDispatch();
+  const { isOpen, title, body } = useSelector(({ modal }: any) => {
+    const { isOpen, title, body } = modal;
 
-export default connect(
-  (state: any) => ({ ...state }),
-  (dispatch: any) => ({
-    toggleModalVisibility: () => {
-      dispatch(toggleModal());
-    },
-  }),
-)(withRouter(ModalContainer as any));
+    return {
+      isOpen,
+      title,
+      body,
+    };
+  });
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <Modal
+          close={() => {
+            dispatch(toggleModal());
+          }}
+        >
+          <Text variant="heading" textAlign="center">
+            {title}
+          </Text>
+          <Text variant="base" textAlign="center" marginTop={4}>
+            {body}
+          </Text>
+        </Modal>
+      )}
+    </AnimatePresence>
+  );
+};
+
+export default ModalContainer;

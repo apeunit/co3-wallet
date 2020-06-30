@@ -13,6 +13,12 @@ const InputField = (props: any) => {
     type,
     notification,
     handleKeyChange,
+    handleBlur,
+    autoFocus = true,
+    autoComplete = true,
+    customRef,
+    className,
+    id,
   } = props;
   const [textCount, setTextCount] = useState(0);
   const [err, setErr] = useState(false);
@@ -57,7 +63,7 @@ const InputField = (props: any) => {
         value={value}
         padding={0}
         paddingY={4}
-        ref={divRef}
+        ref={customRef ? customRef : divRef}
         sx={{
           border: 'none',
           borderBottom: '1px solid',
@@ -65,17 +71,20 @@ const InputField = (props: any) => {
           color: err ? 'red' : 'black',
           outline: 'none',
         }}
-        id={label}
+        id={label ? label : id}
         name={label}
         type={type}
+        onBlur={handleBlur}
         disabled={placeholder === 'coupon symbol'}
         placeholder={placeholder}
-        autoFocus={msg === 'focusFalse' ? false : true}
+        autoFocus={autoFocus}
+        className={className}
         onKeyUp={handleKeyChange}
+        autoComplete={autoComplete}
       />
-      <Flex justifyContent="space-between" paddingY={2}>
+      <Flex className="input-msg" justifyContent="space-between" paddingY={2}>
         <Text fontSize={1} color="#ccc">
-          {msg === 'focusFalse' ? '' : msg}
+          {msg}
         </Text>
         {maxLength && (
           <Text fontSize={1} sx={{ color: err ? 'red' : '#ccc' }}>

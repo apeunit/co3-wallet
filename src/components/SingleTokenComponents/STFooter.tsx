@@ -1,9 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Flex, Text } from 'rebass';
 import IconButton from '../IconButton';
-import '../../assets/NewToken.css';
+import '../../assets/styles/NewToken.css';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 
-const STFooter: React.FC = () => {
+interface IProps {
+  iconActive: string;
+}
+
+const STFooter: React.FC<IProps> = ({ iconActive }) => {
+  const history = useHistory();
+  const { t } = useTranslation();
+  const [active, setActive] = useState(iconActive);
+
+  const changeTab = (icon: string, url: string) => {
+    setActive(icon);
+    history.push(url);
+  };
+
+  const icons = [
+    {
+      label: t('multitoken.label'),
+      icon: 'walletIcon',
+      url: '/',
+    },
+    {
+      label: t('settings.label'),
+      icon: 'settings',
+      url: '/settings',
+    },
+  ];
+
   return (
     <Flex
       height="70px"
@@ -13,23 +41,35 @@ const STFooter: React.FC = () => {
       width="100%"
       paddingX={10}
       paddingTop={5}
-      sx={{ borderTopWidth: '1px', borderTopColor: '#E2E8F0' }}
-      style={{ position: 'relative', zIndex: 0 }}
+      style={{ zIndex: 0 }}
+      className="wallet-footer"
     >
-      <IconButton icon="mapIcon" />
-      <IconButton icon="compareIcon" />
-      <Flex
-        className="token-footer-icon"
-        height="40px"
-        width="105px"
-        backgroundColor="blue100"
-        sx={{ borderRadius: 'full' }}
-      >
-        <IconButton paddingBottom="10px" icon="walletIcon" />
-        <Text fontSize={13} marginTop="10px" color="blue600">
-          Wallet
-        </Text>
-      </Flex>
+      {icons.map(({ icon, label, url }: any, index: number) =>
+        active === icon ? (
+          <Flex
+            key={index}
+            className="token-footer-icon"
+            height="40px"
+            width="105px"
+            backgroundColor="blue100"
+            sx={{ borderRadius: 'full' }}
+          >
+            <Flex width="max-content" margin="0px auto">
+              <IconButton className="footer-icon-active" paddingBottom="10px" icon={icon} />
+              <Text fontSize={13} marginTop="10px" color="blue600">
+                {label}
+              </Text>
+            </Flex>
+          </Flex>
+        ) : (
+            <IconButton
+              className="footer-icon"
+              onClick={() => changeTab(icon, url)}
+              key={index}
+              icon={icon}
+            />
+          ),
+      )}
     </Flex>
   );
 };

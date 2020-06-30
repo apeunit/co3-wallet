@@ -3,9 +3,102 @@
   "source": "https://gitlab.di.unito.it/co3/smart-contracts/-/tree/4211ad944297dbd8a92a657f83794bb3495bf3dd",
   "abi": [
     {
+      "inputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_who",
+          "type": "address"
+        }
+      ],
+      "name": "AdminAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "_from",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_timestamp",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "_contractAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "_decimals",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "_purpose",
+          "type": "uint8"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "_logoURL",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "_hardCap",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "mintable",
+          "type": "bool"
+        }
+      ],
+      "name": "TokenAdded",
+      "type": "event"
+    },
+    {
       "constant": false,
       "inputs": [
         {
+          "internalType": "address",
           "name": "_address",
           "type": "address"
         }
@@ -20,6 +113,7 @@
       "constant": true,
       "inputs": [
         {
+          "internalType": "string",
           "name": "_symbol",
           "type": "string"
         }
@@ -27,30 +121,37 @@
       "name": "getToken",
       "outputs": [
         {
+          "internalType": "address",
           "name": "",
           "type": "address"
         },
         {
+          "internalType": "string",
           "name": "",
           "type": "string"
         },
         {
+          "internalType": "string",
           "name": "",
           "type": "string"
         },
         {
+          "internalType": "uint8",
           "name": "",
           "type": "uint8"
         },
         {
+          "internalType": "string",
           "name": "",
           "type": "string"
         },
         {
+          "internalType": "address",
           "name": "",
           "type": "address"
         },
         {
+          "internalType": "bool",
           "name": "",
           "type": "bool"
         }
@@ -63,30 +164,42 @@
       "constant": false,
       "inputs": [
         {
+          "internalType": "string",
           "name": "_name",
           "type": "string"
         },
         {
+          "internalType": "string",
           "name": "_symbol",
           "type": "string"
         },
         {
+          "internalType": "uint8",
           "name": "_decimals",
           "type": "uint8"
         },
         {
+          "internalType": "uint8",
+          "name": "_purpose",
+          "type": "uint8"
+        },
+        {
+          "internalType": "string",
           "name": "_logoURL",
           "type": "string"
         },
         {
+          "internalType": "bytes32",
           "name": "_logoHash",
           "type": "bytes32"
         },
         {
+          "internalType": "uint256",
           "name": "_hardCap",
           "type": "uint256"
         },
         {
+          "internalType": "bytes32",
           "name": "_contractHash",
           "type": "bytes32"
         }
@@ -96,76 +209,6 @@
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
-    },
-    {
-      "inputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "_timestamp",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "name": "_contractAddress",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "_name",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "name": "_symbol",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "name": "_decimals",
-          "type": "uint8"
-        },
-        {
-          "indexed": false,
-          "name": "_logoURL",
-          "type": "string"
-        },
-        {
-          "indexed": false,
-          "name": "_hardCap",
-          "type": "uint256"
-        }
-      ],
-      "name": "TokenAdded",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "_who",
-          "type": "address"
-        }
-      ],
-      "name": "AdminAdded",
-      "type": "event"
     }
   ]
 }

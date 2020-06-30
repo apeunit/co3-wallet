@@ -11,9 +11,10 @@ interface IProps {
   title: string;
   type: string;
   style?: any;
+  iconStyle?: any;
 }
 
-const ErrorMsg: React.FC<IProps> = ({ title, type, style }) => {
+const ErrorMsg: React.FC<IProps> = ({ title, type, style, iconStyle }) => {
   const NofificationColor = type === 'error' ? '#FFF5F7' : 'rgba(253, 247, 187, .5)';
   const NofificationBorder = type === 'error' ? '#FFEBEF' : '#FDF7BB';
   const IconColor = type === 'error' ? '#F00034' : '#FBD117';
@@ -23,6 +24,7 @@ const ErrorMsg: React.FC<IProps> = ({ title, type, style }) => {
       initial="hidden"
       animate="visible"
       exit="hidden"
+      className="error-box"
       style={{
         position: 'fixed',
         top: '70%',
@@ -40,8 +42,8 @@ const ErrorMsg: React.FC<IProps> = ({ title, type, style }) => {
           backgroundColor={NofificationColor}
           sx={{ borderRadius: 'full', borderColor: NofificationBorder, borderWidth: '1px' }}
         >
-          <IconButton color={IconColor} icon="errorIcon" />
-          <Text marginTop="11px" color="#4D0011">
+          <IconButton sx={iconStyle} color={IconColor} icon="errorIcon" />
+          <Text className="error-text" marginTop="11px" color="#4D0011">
             {title}
           </Text>
         </Flex>

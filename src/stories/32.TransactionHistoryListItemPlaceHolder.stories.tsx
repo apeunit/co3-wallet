@@ -1,6 +1,6 @@
 import React from 'react';
 import { addParameters } from '@storybook/react';
-import TransactionHistoryListItemPlaceholder from '../components/TransactionHistoryListItemPlaceholder';
+import TransactionHistoryListItemPlaceholder from '../components/Transactions/TransactionList/TransactionHistoryListItemPlaceholder';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 addParameters({

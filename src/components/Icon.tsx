@@ -36,6 +36,12 @@ import {
   Toll,
   Dialpad,
   Remove,
+  CameraAlt,
+  Settings,
+  ArrowForwardIos,
+  Warning,
+  CheckCircleRounded,
+  ErrorOutline,
 } from '@material-ui/icons';
 import { IIconName } from '../interfaces';
 
@@ -77,6 +83,12 @@ const Icons = {
   arrowDown: KeyboardArrowDown,
   arrowUp: KeyboardArrowUp,
   remove: Remove,
+  cameraAlt: CameraAlt,
+  settings: Settings,
+  arrowForward: ArrowForwardIos,
+  warning: Warning,
+  checkCircleRounded: CheckCircleRounded,
+  errorOutline: ErrorOutline,
 };
 
 const Icon = (props: IIconName) => {

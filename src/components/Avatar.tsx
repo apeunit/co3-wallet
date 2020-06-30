@@ -4,6 +4,7 @@ import { Box, Image } from 'rebass';
 const Avatar = (props: any) => {
   return (
     <Box
+      className="avatar"
       sx={{
         width: '56px',
         height: '56px',

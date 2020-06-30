@@ -72,4 +72,26 @@ const createTokenSteps = [
   },
 ];
 
-export { contractsRadio, tokensRadio, createTokenSteps, couponsRadio };
+const languages = [
+  {
+    title: 'italian',
+    code: 'it',
+  },
+  {
+    title: 'german',
+    code: 'de',
+  },
+  {
+    title: 'english',
+    code: 'en',
+  },
+  {
+    title: 'greece',
+    code: 'el',
+  },
+  {
+    title: 'french',
+    code: 'fr',
+  },
+];
+export { contractsRadio, tokensRadio, createTokenSteps, couponsRadio, languages };

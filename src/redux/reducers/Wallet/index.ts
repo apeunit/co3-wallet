@@ -4,6 +4,9 @@ import {
   CREATE_WALLET,
   GENERATE_MNEMONIC_PHRASE,
   GET_MNEMONIC,
+  SET_NODE_URL,
+  SET_PUBLIC_KEY,
+  SET_TOKEN_FACTORY_ADDRESS,
   SET_TO_ADDRESS,
   SET_TRANSFER_AMOUNT,
   SET_TRANSFER_TOKEN,
@@ -16,9 +19,12 @@ const defaultState: IWalletState = {
   isValid: false,
   saved: false,
   ethAddress: null,
+  nodeUrl: '',
+  tokenFactoryAddress: '',
   transfer: {
     amount: '',
   },
+  publicKey: null,
 };
 
 const combinedActions: any = combineActions(
@@ -26,6 +32,9 @@ const combinedActions: any = combineActions(
   GENERATE_MNEMONIC_PHRASE,
   GET_MNEMONIC,
   VALIDATE_MNEMONIC_DATA,
+  SET_NODE_URL,
+  SET_TOKEN_FACTORY_ADDRESS,
+  SET_PUBLIC_KEY,
 );
 
 const reducer = handleActions(

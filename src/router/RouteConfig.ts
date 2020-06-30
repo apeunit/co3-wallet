@@ -1,6 +1,12 @@
+import DeleteWallet from 'src/containers/DeleteWallet';
+import ImportWallet from 'src/containers/ImportWallet';
+import Language from 'src/containers/Language';
+import NewWallet from 'src/containers/NewWallet';
+import RecoveryPhrase from 'src/containers/RecoveryPhrase';
+import Settings from 'src/containers/Settings';
 import ConfirmPayment from '../components/ConfirmPayment';
 import { SelectToken } from '../components/SelectToken';
-import ImportPrivatekey from '../containers/ImportPrivatekey';
+import AppSettings from '../containers/AppSettings';
 import MainPage from '../containers/MainPage';
 import Minting from '../containers/Minting';
 import NewCoupon from '../containers/NewCoupon';
@@ -19,8 +25,32 @@ export const routes = [
     component: Minting,
   },
   {
-    path: '/import-privatekey',
-    component: ImportPrivatekey,
+    path: '/settings',
+    component: Settings,
+  },
+  {
+    path: '/language',
+    component: Language,
+  },
+  {
+    path: '/app-settings',
+    component: AppSettings,
+  },
+  {
+    path: '/recovery-phrase',
+    component: RecoveryPhrase,
+  },
+  {
+    path: '/new-wallet',
+    component: NewWallet,
+  },
+  {
+    path: '/delete-wallet',
+    component: DeleteWallet,
+  },
+  {
+    path: '/import-wallet',
+    component: ImportWallet,
   },
   {
     path: '/token-detail',

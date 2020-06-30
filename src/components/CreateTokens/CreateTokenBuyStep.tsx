@@ -1,15 +1,17 @@
-import React from 'react';
+ import React from 'react';
 import { Flex, Text } from 'rebass';
-import TokenCard from '../TokenCard';
+import TokenCard from '../Tokens/NewToken/TokenCard';
 import IconButton from '../IconButton';
 import { Divider } from '@material-ui/core';
 import FramerSlide from '../../components/FrameMotion/Slide';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
   data: any;
 }
 
 const CreateTokenBuyStep: React.FC<IProps> = ({ data }) => {
+  const { t } = useTranslation();
   return (
     <FramerSlide>
       <Flex flexDirection="column" width="100%" style={{ transform: 'translateY(-30px)' }}>
@@ -61,7 +63,7 @@ const CreateTokenBuyStep: React.FC<IProps> = ({ data }) => {
             {data.tokenType === 'Mintable Token' || data.couponType === 'Mintable Coupon' ? (
               <Text fontSize={13}>{data.tokenType || data.couponType}</Text>
             ) : (
-              <Text fontSize={13}>Total Supply</Text>
+              <Text fontSize={13}>{t('new_token.total_supply')}</Text>
             )}
           </Flex>
           {(data.tokenType !== 'Mintable Token' || data.couponType !== 'Mintable Coupon') && (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { addParameters } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import TokenCard from '../components/TokenCard';
+import TokenCard from '../components/Tokens/NewToken/TokenCard';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 
 addParameters({

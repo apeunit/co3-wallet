@@ -6,3 +6,10 @@
   src: url("Inter-Regular.woff");
 }
 
+@font-face {
+  font-family: 'Roboto';
+  src: url('./Roboto-Bold.ttf');
+  src: url('./Roboto-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}

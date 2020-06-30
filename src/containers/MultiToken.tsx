@@ -3,19 +3,23 @@ import ToolBar from '../components/ToolBar';
 import IconButton from '../components/IconButton';
 import ToolBarTitle from '../components/ToolBarTitle';
 import ActionButtonGroup from '../components/ActionButtonGroup';
-import TokenList from '../components/TokenList';
-import { Box, Flex, Text } from 'rebass';
+import TokenList from '../components/Tokens/TokensList/TokenList';
+import { Box, Button, Flex, Text } from 'rebass';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTransactionsHistory, loadTokenBalanceByList } from '../redux/actions/Chain';
 import { useHistory } from 'react-router-dom';
-import _merge from 'lodash/merge';
+import _isEqual from 'lodash/isEqual';
 import { motion } from 'framer-motion';
 import STFooter from '../components/SingleTokenComponents/STFooter';
 import { AssetPopup } from '../components/AssetPopup';
 import PendingTokenItem from '../components/SingleTokenComponents/PendingTokenItem';
-import CouponList from '../components/CouponList';
+import CouponList from '../components/Coupons/CouponsList/CouponList';
 import Draggable from 'react-draggable';
 import { getBound, getPos } from '../utils/sliderFtns';
+import { BALANCE_NOTIFY_QUERY } from './query';
+import { useLazyQuery } from '@apollo/react-hooks';
+import { useTranslation } from 'react-i18next';
+import { LISTENER_POLL_INTERVAL, SSO_LOGIN_URL } from 'src/config';
+import { setModalData } from 'src/redux/actions/Modal';
 
 const modal = {
   hidden: { y: 200 },
@@ -27,8 +31,13 @@ const modal = {
  * @returns List of Tokens with balance
  */
 const MultiToken: React.FC = () => {
+  const dispatch = useDispatch();
+  const { t } = useTranslation();
+  const history = useHistory();
   const recentbound = getBound();
   const recentPos = getPos();
+  const [tokenList, setTokenList] = useState([]);
+  const [tokenLoading, setTokenLoading] = useState(true);
   const [createToken, setCreateToken] = useState(false);
   const [transition, setTransition] = useState(false);
   const [disableBtn, setDisableBtn] = useState(false);
@@ -41,18 +50,49 @@ const MultiToken: React.FC = () => {
   //                           Get data from the store                          */
   // -------------------------------------------------------------------------- */
 
-  const { tokenLoading, tokenList, ethAddress, user: userObj } = useSelector(
-    ({ chain, wallet, user }: any) => {
+  const { web3, ethAddress, user: userObj, accessToken } = useSelector(
+    ({ chain, wallet, user, co3uum }: any) => {
       return {
-        tokenList: chain.tokenList,
+        web3: chain.web3,
         ethAddress: wallet.ethAddress,
-        tokenLoading: chain.tokenLoading,
         user,
+        accessToken: co3uum.accessToken,
       };
     },
   );
-  const history = useHistory();
-  const dispatch = useDispatch();
+
+  const [balanceTokenQuery, { called, data }] = useLazyQuery(BALANCE_NOTIFY_QUERY, {
+    fetchPolicy: 'no-cache',
+    variables: {
+      accountPk: ethAddress,
+    },
+  });
+
+  useEffect(() => {
+    if (ethAddress) {
+      balanceTokenQuery();
+      const TokenInterval = setInterval(() => {
+        !called && balanceTokenQuery();
+      }, LISTENER_POLL_INTERVAL);
+
+      return () => {
+        clearInterval(TokenInterval);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [balanceTokenQuery, ethAddress]);
+
+  useEffect(() => {
+    if (data) {
+      if (!_isEqual(tokenList, data.balanceNotificationMany)) {
+        setTokenList(data.balanceNotificationMany);
+        setTokenLoading(false);
+      }
+      if (data.balanceNotificationMany.length === 0 && web3) {
+        setTokenLoading(false);
+      }
+    }
+  }, [data, tokenList, tokenLoading, web3]);
 
   const onControlledDrag = (e: any, pos: any) => {
     if (tokenLoading === false && tokenList.length === 0) {
@@ -93,21 +133,6 @@ const MultiToken: React.FC = () => {
   };
 
   useEffect(() => {
-    if (tokenList.length > 0) {
-      // Load user balance for all the tokens return from TokenFactory.
-      // If the env is development set the owner address to
-      // `devAddress` define in env else provide the memonic address to the  `loadTokenBalanceByList`
-      dispatch(loadTokenBalanceByList(tokenList, ethAddress));
-      dispatch(fetchTransactionsHistory());
-      tokenList.map((token: any) =>
-        _merge(token, {
-          image: token.logoURL,
-        }),
-      );
-    }
-  }, [tokenList, ethAddress, dispatch]);
-
-  useEffect(() => {
     let _coupons;
     let _tokens;
 
@@ -142,6 +167,69 @@ const MultiToken: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenLoading, tokenList.length, tokenList]);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!web3) {
+        dispatch(
+          setModalData(
+            true,
+            t('common.no_connectivity'),
+            <Button
+              height="30px"
+              margin="20px auto 0px"
+              width="130px"
+              style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
+              onClick={() => window.location.reload()}
+            >
+              {t('common.reload')}
+            </Button>,
+            'permission',
+          ),
+        );
+      }
+    }, 3000);
+
+    return () => {
+      clearTimeout(timer);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [web3]);
+
+  const errorModalMsg = (title: string) => (
+    <Flex width="max-content" margin="auto" className="error-modal">
+      <IconButton height="26px" width="26px" icon="errorOutline" />
+      <Text className="error-message">{t(title)}</Text>
+    </Flex>
+  );
+
+  const errorModalBody = (title: string) => (
+    <Flex flexDirection="column" width="max-content" margin="auto">
+      <Text margin="10px 0px" width="275px">
+        {t(title)}
+      </Text>
+      <Button
+        height="30px"
+        margin="20px auto 0px"
+        width="130px"
+        style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
+        onClick={() => window.location.assign(SSO_LOGIN_URL)}
+      >
+        {t('multitoken.login')}
+      </Button>
+    </Flex>
+  );
+
+  const displayLoginPopup = () => {
+    dispatch(
+      setModalData(
+        true,
+        errorModalMsg('multitoken.error_login'),
+        errorModalBody('multitoken.error_login_msg'),
+        'permission',
+      ),
+    );
+  };
+
   const { state } = history.location as any;
 
   return (
@@ -152,22 +240,28 @@ const MultiToken: React.FC = () => {
       backgroundColor="white"
     >
       <ToolBar color="background">
-        <IconButton onClick={() => history.push('/import-privatekey')} icon="menu" color="dark" />
-        <ToolBarTitle fontSize="18px" color="dark">
-          Wallet
+        {/* <IconButton onClick={() => history.push('/app-settings')} icon="menu" color="dark" /> */}
+        <ToolBarTitle marginLeft="10px" fontSize="18px" color="dark">
+          {t('multitoken.label')}
         </ToolBarTitle>
-        <IconButton icon="ranking" color="dark" />
-        <IconButton icon="notifications" dot={true} color="dark" />
       </ToolBar>
+      {/* <img src={image}/> */}
 
-      {userObj &&
-        userObj.features.indexOf('createToken') > -1 &&
-        state &&
-        state.pendingToken &&
-        state.pendingToken.length > 0 &&
-        state.pendingToken.map((token: any, index: number) => (
-          <PendingTokenItem key={index} token={token} subtitle="Creating Tokens..." />
-        ))}
+      <Flex className="pending-token">
+        {userObj &&
+          userObj.features.indexOf('createToken') > -1 &&
+          state &&
+          state.pendingToken &&
+          state.pendingToken.length > 0 &&
+          state.pendingToken.map((token: any, index: number) => (
+            <PendingTokenItem
+              key={index}
+              token={token}
+              subtitle={t('multitoken.creating_tokens')}
+            />
+          ))}
+      </Flex>
+
       <Flex
         flexDirection="column"
         style={{ overflow: 'hidden' }}
@@ -196,7 +290,7 @@ const MultiToken: React.FC = () => {
                   icon: 'pay',
                   iconColor: 'white',
                   iconBg: 'primary',
-                  label: 'Pay',
+                  label: t('multitoken.pay'),
                   labelColor: 'primary',
                   color: 'primary',
                   onClick: () => {
@@ -205,7 +299,7 @@ const MultiToken: React.FC = () => {
                 },
                 {
                   icon: 'receive',
-                  label: 'Receive',
+                  label: t('multitoken.receive'),
                   iconColor: 'white',
                   iconBg: 'primary',
                   labelColor: 'primary',
@@ -216,7 +310,7 @@ const MultiToken: React.FC = () => {
                 },
                 {
                   icon: 'history',
-                  label: 'History',
+                  label: t('multitoken.history'),
                   iconBorderColor: 'primary',
                   iconBg: 'white',
                   labelColor: 'primary',
@@ -271,23 +365,25 @@ const MultiToken: React.FC = () => {
                       />
                     </Box>
                     <Flex justifyContent="flex-end" paddingX={6} height="35px">
-                      {userObj && userObj.features.indexOf('createToken') > -1 && (
+                      {!tokenLoading && userObj && userObj.features.indexOf('createToken') > -1 && (
                         <IconButton
                           marginY={2}
                           size="s8"
                           backgroundColor={'black'}
                           color={'white'}
                           icon={'add'}
-                          onClick={() => setCreateToken(!createToken)}
+                          onClick={() =>
+                            accessToken ? setCreateToken(!createToken) : displayLoginPopup()
+                          }
                         />
                       )}
                     </Flex>
                     <Flex alignItems="flex-start" paddingX={7} paddingBottom="14px">
                       <Text fontFamily="sans" fontSize="18px" color={'lightGray'} textAlign="left">
-                        {`Tokens & Discounts`}
+                        {t('multitoken.tokens_discounts')}
                       </Text>
                     </Flex>
-                    <TokenList tokens={tokenList} />
+                    <TokenList tokens={tokenList} tokenLoading={tokenLoading} />
                     <Box style={{ borderTop: '1px solid #f0f0f0', margin: '20px 20px' }}>
                       <Flex justifyContent="center" alignItems="center">
                         <div role="button" onClick={MoveUp}>
@@ -309,9 +405,9 @@ const MultiToken: React.FC = () => {
                         color={'lightGray'}
                         textAlign="left"
                       >
-                        {`Coupons & Passes`}
+                        {t('multitoken.coupons_passes')}
                       </Text>
-                      <CouponList tokens={tokenList} />
+                      <CouponList tokens={tokenList} tokenLoading={tokenLoading} />
                     </Box>
                   </Box>
                 </motion.div>
@@ -320,7 +416,8 @@ const MultiToken: React.FC = () => {
           </Flex>
         </Draggable>
       </Flex>
-      <STFooter />
+      <STFooter iconActive="walletIcon" />
+
       {createToken && <AssetPopup setCreateToken={setCreateToken} />}
     </Flex>
   );

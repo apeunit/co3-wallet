@@ -1,18 +1,22 @@
 import { generateMnemonic, mnemonicToSeed, validateMnemonic } from 'bip39';
 import { publicToAddress } from 'ethereumjs-util';
 import { createActions } from 'redux-actions';
+import { MNEMONIC_PHRASE } from 'src/config';
 import { ITokenData } from '../../../interfaces';
 import { initialSetup, tokenLoading } from '../Chain';
 import {
   CREATE_WALLET,
   GENERATE_MNEMONIC_PHRASE,
   GET_MNEMONIC,
+  SET_MNEMONIC,
+  SET_NODE_URL,
+  SET_PUBLIC_KEY,
+  SET_TOKEN_FACTORY_ADDRESS,
   SET_TO_ADDRESS,
   SET_TRANSFER_AMOUNT,
   SET_TRANSFER_TOKEN,
   VALIDATE_MNEMONIC_DATA,
 } from './ActionTypes';
-const privateKeyToAddress = require('ethereum-private-key-to-address');
 
 const hdkey = require('ethereumjs-wallet/hdkey');
 
@@ -24,9 +28,13 @@ const {
   setToAddress,
   setTransferToken,
   setTransferAmount,
+  setNodeUrl,
+  setTokenFactoryAddress,
+  setPublicKey,
+  setMnemonic,
 } = createActions({
   [GENERATE_MNEMONIC_PHRASE]: (): object => {
-    const mnemonic = generateMnemonic(),
+    const mnemonic = MNEMONIC_PHRASE ? MNEMONIC_PHRASE : generateMnemonic(),
       saved = true;
     localStorage.setItem('co3-app-mnemonic', mnemonic);
 
@@ -40,10 +48,14 @@ const {
     mnemonic: localStorage.getItem('co3-app-mnemonic'),
     saved: true,
   }),
+  [SET_MNEMONIC]: (mnemonic: string) => ({ mnemonic }),
   [CREATE_WALLET]: (payload: object) => ({ ...payload }),
   [SET_TO_ADDRESS]: (address: string) => ({ address }),
   [SET_TRANSFER_TOKEN]: (token: ITokenData) => ({ token }),
   [SET_TRANSFER_AMOUNT]: (amount: string) => ({ amount }),
+  [SET_NODE_URL]: (nodeUrl: string) => ({ nodeUrl }),
+  [SET_TOKEN_FACTORY_ADDRESS]: (tokenFactoryAddress: string) => ({ tokenFactoryAddress }),
+  [SET_PUBLIC_KEY]: (publicKey: string) => ({ publicKey }),
 });
 
 const initWallet = (mnemonic: string): any => {
@@ -63,27 +75,8 @@ const initWallet = (mnemonic: string): any => {
       /**
        * TODO: Find a better place to init web3 esp. that is disconnected from the wallet
        */
-      localStorage.setItem('privateKey', wallet.getPrivateKeyString() as string);
       dispatch(initialSetup(wallet.getPrivateKeyString()));
     });
-  };
-};
-
-const initWalletLocal = (): any => {
-  return async (dispatch: any) => {
-    const privateKey = `${localStorage.getItem('privateKey')}` || '';
-
-    dispatch(tokenLoading(true));
-    dispatch(
-      createWallet({
-        privateKey,
-        ethAddress: privateKeyToAddress(privateKey),
-      }),
-    );
-    /**
-     * TODO: Find a better place to init web3 esp. that is disconnected from the wallet
-     */
-    dispatch(initialSetup(privateKey));
   };
 };
 
@@ -99,11 +92,14 @@ export {
   generateMnemonicPhrase,
   validateMnemonicData,
   initWallet,
-  initWalletLocal,
   createWallet,
   getMnemonic,
   setToAddress,
   setTransferAmount,
   setTransferToken,
   resetTransferData,
+  setNodeUrl,
+  setTokenFactoryAddress,
+  setPublicKey,
+  setMnemonic,
 };

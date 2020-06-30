@@ -1,0 +1,334 @@
+:root {
+  --blue: #3752F5;
+  --red: #DD303D;
+}
+
+.wallet-footer {
+  max-width: 768px; /*same as app-wrapper*/
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0px 0px 16px rgba(0, 0, 0, 0.1);
+  padding-bottom: 12px;
+  position: fixed;
+  bottom: 0;
+}
+
+button, button:focus, button:hover, button:active {
+  outline: none;
+  padding: 0;
+}
+
+.token-footer-icon .footer-icon-active {
+  width: 16px;
+  height: 16px;
+  padding: 18px 25px 0px 0px;
+}
+
+.footer-icon {
+  margin: -6px!important;
+}
+
+.footer-icon svg{
+  width: 20px;
+  height: 20px;
+}
+
+.identity {
+  background: #FFFFFF;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.identity-section .label {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 16px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.identity-section input {
+  width: 0px;
+}
+
+.identity-section .description {
+  width: 278px;
+  height: 63px;
+  font-size: 14px;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0.15px;
+  margin: 20px auto 12px;
+}
+
+.identity-section .link_btn {
+  width: 138px;
+  height: 31px;
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.25px;
+  color: #FFFFFF;
+  background: var(--blue);
+  border-radius: 200px;
+  margin: 10px auto;
+  padding: 0;
+}
+
+.identity-section .empty_btn {
+  width: 207px;
+  height: 20px;
+  background: #E0E0E0;
+  border-radius: 129px;
+  font-size: 13px;
+  letter-spacing: 0.25px;
+  padding: 0;
+  color: #000000;
+}
+
+.identity-section .default_btn {
+  background: var(--blue);
+  color: #FFFFFF;
+}
+
+.identity-section .image-section {
+  height: 125px!important;
+  margin: 0px auto 12px;
+}
+
+.identity-section .image-section img {
+  height: 125px!important;
+  width: 125px!important;
+}
+
+.identity-section .image-section svg {
+  width: 15px;
+  margin: 4px 0px 0px 5px;
+  height: 15px;
+}
+
+.identity-section .avatar {
+  width: 125px;
+  height: 124px;
+}
+
+.identity-section .option {
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.15px;
+}
+
+.identity-section .disable {
+  color: #c5c5c5;
+}
+
+.identity-section .disable svg {
+  color: #c5c5c5!important;
+}
+
+.identity-section .option-icon,
+.identity-section .backup-green,
+.identity-section .backup-red  {
+  margin-top: -13px;
+}
+
+.identity-section .option-icon svg {
+  color: #757575;
+  height: 18px;
+}
+
+.identity-section .backup-green svg {
+  color: #439675;
+  height: 24px;
+  width: 24px;
+}
+
+.identity-section .backup-red svg {
+  color: var(--red);
+  height: 19px;
+  width: 22px;
+}
+
+.language-blue-icon{
+  color: #3752F5;
+  height: 24px !important;
+  width: 24px !important;
+}
+
+.co3-link {
+  color: var(--blue);
+}
+
+.txt-blue span{
+  color: var(--blue);
+}
+
+.error-txt{
+  color: var(--red);
+}
+
+.recovery-phrase .welcome-text {
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0.15px;
+}
+
+.recovery-phrase .new-wallet-btn {
+  width: 227px;
+  height: 41px;
+  background: var(--blue);
+  border-radius: 265px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 17px;
+  text-align: center;
+  letter-spacing: 0.330645px;
+  margin: 20px auto 10px;
+  color: #FFFFFF;
+  padding: 0;
+}
+
+.recovery-phrase .import-btn {
+  width: 95px;
+  height: 28px;
+  border: 0.710145px solid var(--blue);
+  box-sizing: border-box;
+  border-radius: 142.029px;
+  font-weight: 500;
+  font-size: 11px;
+  line-height: 9px;
+  color: var(--blue);
+  margin: 0px auto;
+  background: #ffffff;
+  padding: 0;
+}
+
+.recovery-phrase .placeholder-text {
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 24px;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: 0.15px;
+  width: 220px;
+  height: 71px;
+  margin: auto;
+  line-height: 40px;
+}
+
+.recovery-phrase .crypto-text {
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0.15px;
+  color: #000000;
+  width: 320px;
+  margin: 10px auto 30px;
+}
+
+.recovery-phrase .margin-text {
+  margin: 10px auto;
+}
+
+.recovery-phrase .phrase-box{
+  padding: 10px 15px;
+  height: 40px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 20px;
+  margin: auto;
+}
+
+.recovery-phrase .default-bg{
+  background: #E0E0E0;
+}
+
+.recovery-phrase .primary-bg{
+  cursor: pointer;
+  background: var(--blue);
+  color: #FFFFFF;
+  margin: 0px 10px;
+}
+
+.recovery-phrase .error-bg{
+  background: var(--red);
+  color: #FFFFFF;
+}
+
+.recovery-phrase .phrase-box-empty{
+  width: 96px;
+  height: 40px;
+  border: 1.90281px dashed var(--blue);
+  border-radius: 19.0281px;
+  margin: auto;
+}
+
+.recovery-phrase .handle-error .error-text {
+  width: 220px;
+  margin-top: 0px;
+  padding: 10px 0px
+}
+
+.recovery-phrase .error-box {
+  top: 80%!important;
+}
+
+.recovery-phrase .input-bg input {
+  border-radius: 20px;
+  width: 100px;
+  height: 40px;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 20px;
+  align-items: center;
+  letter-spacing: 0.25px;
+  text-align: center;
+}
+
+.modal {
+  width: 90%;
+  margin: auto;
+}
+
+.recovery-phrase .input-bg .input-msg {
+  padding: 0px!important;
+}
+
+.recovery-phrase .input-bg .focus-true {
+  border: 1.90281px dashed #3752F5;
+}
+
+.recovery-phrase .input-bg .focus-false {
+  border: 1.90281px dashed #00000029;
+}
+
+.delete-wallet .delete_txt{
+  width: 285px;
+  height: 110px;
+  align-self: center;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  letter-spacing: -0.015em;
+
+}
+.delete-wallet .warning-btn svg{
+  height: 140px;
+  width: 162px;
+  margin: auto;
+  color: #DD303D;
+}
+
+.error-modal svg{
+  margin-left: -10px;
+  color: var(--red);
+}
+
+.error-message {
+  color: var(--red)
+}

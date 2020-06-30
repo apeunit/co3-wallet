@@ -4,7 +4,7 @@ import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import configureStore from '../redux/configureStore';
-import CouponImageCard from '../components/NewCoupon/CouponImageCard';
+import CouponImageCard from '../components/Coupons/CreateCoupon/CouponImageCard';
 
 addParameters({
   viewport: {

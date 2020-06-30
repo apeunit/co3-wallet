@@ -5,7 +5,7 @@ import ToolBar from '../components/ToolBar';
 import IconButton from '../components/IconButton';
 import ToolBarTitle from '../components/ToolBarTitle';
 import ActionButtonGroup from '../components/ActionButtonGroup';
-import TokenList from '../components/TokenList';
+import TokenList from '../components/Tokens/TokensList/TokenList';
 import { Box, Flex } from 'rebass';
 import { MemoryRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -68,18 +68,18 @@ export const Base = () => {
           <TokenList
             tokens={[
               {
-                image:
+                logoURL:
                   'https://assets-global.website-files.com/5cb0ac9c57054973ac1bf1e4/5cd0585352e8411915dc1772_1759.png',
                 name: 'Status',
-                symbol: 'SNT',
+                token_symbol: 'SNT',
                 decimals: 2,
                 amount: 2.75,
               },
               {
-                image:
+                logoURL:
                   'https://assets-global.website-files.com/5cb0ac9c57054973ac1bf1e4/5cd0584a27d198a45f91afc2_3408.png',
                 name: 'USD Coin',
-                symbol: 'USDC',
+                token_symbol: 'USDC',
                 decimals: 2,
                 amount: 12.5,
               },
