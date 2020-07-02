@@ -1,6 +1,9 @@
 {
-  "short_name": "CO3 Wallet",
+  "manifest_version": 2,
   "name": "CO3 Tokens Wallet",
+  "short_name": "CO3 Wallet",
+  "version": "1.1.1",
+  "default_locale": "en",
   "icons": [
     {
       "src": "favicon.ico",

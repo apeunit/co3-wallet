@@ -78,7 +78,7 @@ const Minting = () => {
           type="number"
           label={t('common.supply')}
           placeholder={t('minting.supply_placeholder')}
-          value={supply || undefined}
+          value={supply || ''}
           onChangeValue={setSupply}
         />
       </Flex>

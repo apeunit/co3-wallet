@@ -1,5 +1,5 @@
 import { generateMnemonic, mnemonicToSeed, validateMnemonic } from 'bip39';
-import { publicToAddress } from 'ethereumjs-util';
+import { publicToAddress, toChecksumAddress } from 'ethereumjs-util';
 import { createActions } from 'redux-actions';
 import { MNEMONIC_PHRASE } from 'src/config';
 import { ITokenData } from '../../../interfaces';
@@ -65,11 +65,14 @@ const initWallet = (mnemonic: string): any => {
       const node = hdkeyInstance.derivePath("m/44'/60'/0'/0'/0");
       const child = node.deriveChild(0);
       const wallet = child.getWallet();
+      const ethAddress = toChecksumAddress(
+        publicToAddress(wallet.getPublicKeyString()).toString('hex'),
+      );
       dispatch(tokenLoading(true));
       dispatch(
         createWallet({
           privateKey: wallet.getPrivateKeyString(),
-          ethAddress: `0x${publicToAddress(wallet.getPublicKeyString()).toString('hex')}`,
+          ethAddress: ethAddress,
         }),
       );
       /**

@@ -2,6 +2,20 @@
 ## [Unreleased]
 
 
+<a name="1.1.1"></a>
+## [1.1.1] - 2020-07-02
+### Fix
+- set the pilot only once MainApp
+- save "toChecksumAddress" public key
+- use checksummed eth address to query the middleware
+- set location at build time (override with url params)
+- getting the same private key on all instances
+- versioning in package.json and manifest
+
+### Refactor
+- rename USER_LOCATION to PILOT
+
+
 <a name="1.1.0"></a>
 ## [1.1.0] - 2020-06-30
 ### Build
@@ -44,5 +58,6 @@
 <a name="1.0.0"></a>
 ## 1.0.0 - 2020-06-30
 
-[Unreleased]: https://gitlab.com/u2467/co3-wallet/compare/1.1.0...HEAD
-[1.1.0]: https://gitlab.com/u2467/co3-wallet/compare/1.0.0...1.1.0
+[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.1.1...HEAD
+[1.1.1]: https://github.com/apeunit/co3-wallet/compare/1.1.0...1.1.1
+[1.1.0]: https://github.com/apeunit/co3-wallet/compare/1.0.0...1.1.0

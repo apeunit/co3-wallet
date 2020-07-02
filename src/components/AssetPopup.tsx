@@ -44,7 +44,11 @@ export const AssetPopup = ({ setCreateToken }: any) => {
               left: 0,
             }}
           >
-            <motion.div className="modal" variants={modal} style={{ width: '100%' }}>
+            <motion.div
+              className="modal"
+              variants={modal}
+              style={{ width: '100%', position: 'absolute' }}
+            >
               <Flex
                 flexDirection="column"
                 backgroundColor="white"
@@ -56,7 +60,9 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                   boxShadow: 'base',
                 }}
               >
-                <Text paddingLeft={4} paddingY={9}>{t('asset_popup.create_asset')}</Text>
+                <Text paddingLeft={4} paddingY={9}>
+                  {t('asset_popup.create_asset')}
+                </Text>
                 <ActionButtonGroup
                   paddingBottom={10}
                   marginBottom="auto"

@@ -15,7 +15,7 @@ const InputField = (props: any) => {
     handleKeyChange,
     handleBlur,
     autoFocus = true,
-    autoComplete = true,
+    autoComplete = "true",
     customRef,
     className,
     id,

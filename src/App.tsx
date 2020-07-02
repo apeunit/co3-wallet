@@ -30,9 +30,7 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getMnemonic());
-    if (!localStorage.getItem('pilot')) {
-      localStorage.setItem('pilot', 'turin');
-    }
+
     const _accessToken = params.get('access_token');
     if (_accessToken) {
       dispatch(saveAccessToken(_accessToken));
@@ -66,7 +64,7 @@ const App = () => {
       dispatch(initWallet(walletObj.mnemonic));
     }
     // TODO: Need to show the error message if the wallet is not generated.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletObj]);
 
   return (

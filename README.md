@@ -13,7 +13,7 @@ Please add the below environment variables directly to the build/dev shell or us
 - `REACT_APP_NODE`: URL to the JSON-RPC interface of the blockchain node
 - `REACT_APP_TOKEN_FACTORY`: Ethereum address of the token factory contract
 - `REACT_APP_CROWDSALE_FACTORY`: Ethereum address of the crowdsale factory contract
-- `REACT_APP_USER_LOCATION`: Location of the user. Currently supported value is `athens`. This variable will be removed in future.
+- `REACT_APP_PILOT`: Location of the user. Currently supported value is `athens`. This variable will be removed in future.
 
 ## How to run
 

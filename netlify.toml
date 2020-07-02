@@ -1,6 +1,6 @@
 [build.environment]
   # default location
-  REACT_APP_USER_LOCATION           = "turin"
+  REACT_APP_PILOT                   = "turin"
   REACT_APP_CO3UUM_URL              = "https://co3.liquidfeedback.com/"
   # Middleware
   REACT_APP_LISTENER_URL            = "https://co3-pantheon.di.unito.it:4040/graphql"

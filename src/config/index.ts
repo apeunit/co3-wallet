@@ -1,6 +1,9 @@
 const ENV = process.env.NODE_ENV;
 const DEV_ADDRESS = process.env.REACT_APP_DEV_ADDRESS;
 
+// pilot name 
+const PILOT = process.env.REACT_APP_PILOT || "turin";
+
 const LISTENER_URL =
   process.env.REACT_APP_LISTENER_URL || 'https://co3-pantheon.di.unito.it:4040/graphql';
 
@@ -20,9 +23,7 @@ const API_URL = process.env.REACT_APP_CO3UUM_URL || 'https://co3.liquidfeedback.
 const API_FIRSTLIFE_URL =
   process.env.REACT_APP_FIRSTLIFE_STORAGE_URL || 'https://storage.firstlife.org';
 const API_SERVER = process.env.REACT_APP_FIRSTLIFE_SERVER_ID || 'CO3UUM_DEV';
-const MNEMONIC_PHRASE =
-  localStorage.getItem('co3-app-mnemonic') ||
-  'old awkward item entry eyebrow educate decline goat fabric ten position loyal';
+const MNEMONIC_PHRASE = localStorage.getItem('co3-app-mnemonic');
 
 // redirect URL for SSO login
 const SSO_LOGIN_URL =
@@ -36,6 +37,7 @@ const BACKUP_WALLET = localStorage.getItem('co3-app-backup');
 export {
   ENV,
   DEV_ADDRESS,
+  PILOT,
   LISTENER_URL,
   NODE_URL,
   TOKEN_FACTORY_ADDRESS,

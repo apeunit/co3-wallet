@@ -2,7 +2,7 @@ style: github
 template: CHANGELOG.tpl.md
 info:
   title: CHANGELOG
-  repository_url: https://gitlab.com/u2467/co3-wallet
+  repository_url: https://github.com/apeunit/co3-wallet
 options:
   commits:
     # filters:

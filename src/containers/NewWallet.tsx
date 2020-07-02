@@ -13,8 +13,8 @@ import ErrorMsg from 'src/components/ErrorMsg';
 import { useDispatch, useSelector } from 'react-redux';
 import { savePublicKeyAPI } from 'src/api/co3uum';
 import { mnemonicToSeed } from 'bip39';
-import { initWallet, setPublicKey, setMnemonic } from 'src/redux/actions/Wallet';
-import { publicToAddress } from 'ethereumjs-util';
+import { initWallet, setPublicKey, setMnemonic, generateMnemonicPhrase } from 'src/redux/actions/Wallet';
+import { publicToAddress, toChecksumAddress } from 'ethereumjs-util';
 import { setModalData } from '../redux/actions/Modal';
 import Loading from '../components/Loading';
 import { MNEMONIC_PHRASE } from 'src/config';
@@ -42,7 +42,7 @@ const NewWallet = () => {
   const history = useHistory();
   const classes = useStyles();
   const dispatch = useDispatch();
-  const mnemonicPhrase = MNEMONIC_PHRASE;
+  const mnemonicPhrase: any = MNEMONIC_PHRASE;
 
   const [loader, setLoader] = useState(false);
   const [progress, setProgress] = useState(10);
@@ -57,6 +57,13 @@ const NewWallet = () => {
       accessToken: co3uum.accessToken,
     };
   });
+
+  useEffect(() => {
+    if (!mnemonicPhrase) {
+      dispatch(generateMnemonicPhrase());
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const errorModalMsg = (title: string) => (
     <Flex width="max-content" margin="auto" className="error-modal">
@@ -76,7 +83,9 @@ const NewWallet = () => {
       const node = hdkeyInstance.derivePath("m/44'/60'/0'/0'/0");
       const child = node.deriveChild(0);
       const wallet = child.getWallet();
-      const publicKey = `0x${publicToAddress(wallet.getPublicKeyString()).toString('hex')}`;
+      const publicKey = toChecksumAddress(
+        publicToAddress(wallet.getPublicKeyString()).toString('hex'),
+      );
       dispatch(setPublicKey(publicKey));
       try {
         if (accessToken) {

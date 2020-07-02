@@ -107,8 +107,8 @@ const ImportWallet = () => {
     boxSteps.find((e) => e === step)
       ? setBoxHeight('')
       : step === 4
-        ? setBoxHeight('35vh')
-        : setBoxHeight('48vh');
+      ? setBoxHeight('35vh')
+      : setBoxHeight('48vh');
   }, [step]);
 
   const handleClick = (e: any, index: number) => {
@@ -132,8 +132,8 @@ const ImportWallet = () => {
           handleKeyChange={(e: any) => handleKeyChange(e, index)}
           customRef={(el: any) => (customRef.current[index] = el)}
           className={focusId === index ? 'focus-true' : 'focus-false'}
-          autoComplete={"off"}
-          type='input'
+          autoComplete={'off'}
+          type="input"
         />
       ));
   };
@@ -188,32 +188,32 @@ const ImportWallet = () => {
             </Flex>
           </Flex>
         ) : (
-            <Flex
-              marginTop={error ? '110px' : 'auto'}
-              flexDirection="column"
-              justifyContent="space-between"
-            >
-              <Flex marginLeft="25px" justifyContent="start">
-                {step === 2 && (
-                  <Flex width="160px" flexDirection="column" margin="auto">
-                    {_renderPhrase(0, 6)}
-                  </Flex>
-                )}
-                {step === 3 && (
-                  <Flex width="160px" flexDirection="column" margin="auto">
-                    {_renderPhrase(6, 12)}
-                  </Flex>
-                )}
-              </Flex>
-              {!error && (
-                <Flex marginTop="115px" fontSize="13px">
-                  <Text className={error ? 'error-txt' : 'co3-link'} width="100%" textAlign="center">
-                    {t(`recovery_phrase.import_wallet_s${step}`)}
-                  </Text>
+          <Flex
+            marginTop={error ? '110px' : 'auto'}
+            flexDirection="column"
+            justifyContent="space-between"
+          >
+            <Flex marginLeft="25px" justifyContent="start">
+              {step === 2 && (
+                <Flex width="160px" flexDirection="column" margin="auto">
+                  {_renderPhrase(0, 6)}
+                </Flex>
+              )}
+              {step === 3 && (
+                <Flex width="160px" flexDirection="column" margin="auto">
+                  {_renderPhrase(6, 12)}
                 </Flex>
               )}
             </Flex>
-          )}
+            {!error && (
+              <Flex marginTop="115px" fontSize="13px">
+                <Text className={error ? 'error-txt' : 'co3-link'} width="100%" textAlign="center">
+                  {t(`recovery_phrase.import_wallet_s${step}`)}
+                </Text>
+              </Flex>
+            )}
+          </Flex>
+        )}
         {error && (
           <Flex className="handle-error">
             <ErrorMsg iconStyle={{ margin: 'auto' }} title={error} type="error" />

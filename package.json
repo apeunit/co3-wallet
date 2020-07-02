@@ -1,7 +1,7 @@
 {
   "name": "co3-wallet-react",
-  "version": "0.0.1",
-  "author": "shekhar-shubhendu <connect@shubhendu.de>",
+  "version": "1.1.1",
+  "author": "Ape Unit GmbH <u2467@apeunit.com>",
   "private": true,
   "dependencies": {
     "@apollo/react-hooks": "^3.1.5",

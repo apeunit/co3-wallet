@@ -139,20 +139,15 @@ const MultiToken: React.FC = () => {
     setBound(recentbound);
     setControlledPosition(recentPos);
 
-    if (tokenLoading === false) {
-      _coupons =
-        tokenList &&
-        tokenList.find(
-          (tkn: any) =>
-            ((tkn.amount && tkn.amount > 0) || tkn.owner === ethAddress) &&
-            parseInt(tkn.decimals.toString(), 10) === 0,
-        );
+    const TCList =
+      tokenList &&
+      tokenList.map(
+        (tkn: any) => ((tkn.amount && tkn.amount > 0) || tkn.owner === ethAddress) && tkn,
+      );
 
-      _tokens =
-        tokenList &&
-        (tokenList.find((tkn: any) => tkn.owner === ethAddress) ||
-          tokenList.find((tkn: any) => tkn.amount && tkn.amount > 0)) &&
-        tokenList.find((tkn: any) => tkn.decimals > 0);
+    if (tokenLoading === false) {
+      _coupons = TCList.length > 0 && TCList.find((tkn: any) => tkn.decimals === 0);
+      _tokens = TCList.length > 0 && TCList.find((tkn: any) => tkn.decimals > 0);
 
       if (_tokens && _coupons) {
         BoundToTop(false);
