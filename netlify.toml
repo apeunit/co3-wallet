@@ -1,7 +1,8 @@
 [build.environment]
   # default location
   REACT_APP_PILOT                   = "turin"
-  REACT_APP_CO3UUM_URL              = "https://co3.liquidfeedback.com/"
+  REACT_APP_CO3UUM_URL              = "https://co3-pt.liquidfeedback.com/"
+  REACT_APP_SSO_LOGIN_URL           = "https://auth.stage.co3.apeunit.com/wallet/login"
   # Middleware
   REACT_APP_LISTENER_URL            = "https://co3-pantheon.di.unito.it:4040/graphql"
   REACT_APP_LISTENER_POLL_INTERVAL  = "2000"

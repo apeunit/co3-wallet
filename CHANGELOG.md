@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 
+<a name="1.1.2"></a>
+## [1.1.2] - 2020-07-20
+### Fix
+- url for SSO/Identity service
+
+
 <a name="1.1.1"></a>
 ## [1.1.1] - 2020-07-02
 ### Fix
@@ -58,6 +64,7 @@
 <a name="1.0.0"></a>
 ## 1.0.0 - 2020-06-30
 
-[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.1.1...HEAD
+[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.1.2...HEAD
+[1.1.2]: https://github.com/apeunit/co3-wallet/compare/1.1.1...1.1.2
 [1.1.1]: https://github.com/apeunit/co3-wallet/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/apeunit/co3-wallet/compare/1.0.0...1.1.0
