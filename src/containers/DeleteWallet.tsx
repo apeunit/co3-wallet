@@ -62,7 +62,7 @@ const DeleteWallet: React.FC = () => {
         <Flex marginRight="10px" marginBottom="30px" justifyContent="center">
           <Slider
             dragEnd={handleDeleteWallet}
-            onClick={() => console.log("Delete wallet")}
+            onClick={handleDeleteWallet}
             title="Slide to Delete"
             bgColor="#F9DCE3"
             btnColor="#DD303D"

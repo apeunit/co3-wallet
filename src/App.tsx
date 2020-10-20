@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Router from './router/Router';
 import './i18n';
 import { useLocation } from 'react-router-dom';
 import Modal from './containers/Modal';
 import FullScreen from 'react-request-fullscreen';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { getPublicKey } from './api/co3uum';
 import {
   generateMnemonicPhrase,
@@ -14,34 +14,79 @@ import {
   setPublicKey,
 } from './redux/actions/Wallet';
 import _get from 'lodash/get';
-import { saveAccessToken } from './redux/actions/CO3UUM';
+import { saveAccessToken, saveAid } from './redux/actions/CO3UUM';
+import { useLazyQuery } from '@apollo/react-hooks';
+import { BALANCE_NOTIFY_QUERY } from './containers/query';
+import { LISTENER_POLL_INTERVAL } from './config';
+import { getAllToken } from './redux/actions/Chain';
+import _isEqual from 'lodash/isEqual';
 
 const App = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
-  const { accessToken, type, wallet: walletObj } = useSelector(({ modal, co3uum, wallet }: any) => {
-    return {
-      type: modal.type,
-      accessToken: co3uum.accessToken || params.get('access_token'),
-      wallet,
-    };
+  const [tokenList, setTokenList] = useState([]);
+  const { accessToken, type, ethAddress, privateKey, mnemonic } = useSelector(
+    ({ modal, co3uum, wallet }: any) => {
+      return {
+        type: modal.type,
+        accessToken: co3uum.accessToken || params.get('access_token'),
+        mnemonic: wallet.mnemonic,
+        privateKey: wallet.privateKey,
+        ethAddress: wallet.ethAddress,
+      };
+    },
+    shallowEqual,
+  );
+
+  const [balanceTokenQuery, { called, data }] = useLazyQuery(BALANCE_NOTIFY_QUERY, {
+    fetchPolicy: 'no-cache',
+    variables: {
+      accountPk: ethAddress,
+    },
   });
 
   useEffect(() => {
-    dispatch(getMnemonic());
+    if (ethAddress) {
+      balanceTokenQuery();
+      const TokenInterval = setInterval(() => {
+        !called && balanceTokenQuery();
+      }, LISTENER_POLL_INTERVAL);
 
+      return () => {
+        clearInterval(TokenInterval);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [balanceTokenQuery, ethAddress]);
+
+  useEffect(() => {
+    if (data) {
+      if (!_isEqual(tokenList, data.balanceNotificationMany)) {
+        setTokenList(data.balanceNotificationMany);
+        dispatch(getAllToken(data.balanceNotificationMany));
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, tokenList]);
+
+  useEffect(() => {
+    dispatch(getMnemonic());
     const _accessToken = params.get('access_token');
+    const aid = params.get('aid');
     if (_accessToken) {
       dispatch(saveAccessToken(_accessToken));
     }
+    if (aid) {
+      dispatch(saveAid(aid));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+  }, []);
 
   const getUserPublicKey = async () => {
     const _accessToken = accessToken || params.get('access_token');
     if (_accessToken) {
-      let pbkey = await getPublicKey(_accessToken);
+      const pbkey = await getPublicKey(_accessToken);
       if (_get(pbkey, 'result.blockchain_public_key')) {
         dispatch(setPublicKey(_get(pbkey, 'result.blockchain_public_key')));
       }
@@ -57,15 +102,15 @@ const App = () => {
     // -------------------------------------------------------------------------- */
     //             Generate memonic phrase and create the user wallet.            */
     // -------------------------------------------------------------------------- */
-    if (walletObj && !walletObj.mnemonic) {
+    if (!mnemonic) {
       dispatch(generateMnemonicPhrase());
     }
-    if (walletObj && walletObj.mnemonic && !walletObj.privateKey) {
-      dispatch(initWallet(walletObj.mnemonic));
+    if (mnemonic && !privateKey) {
+      dispatch(initWallet(mnemonic));
     }
     // TODO: Need to show the error message if the wallet is not generated.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletObj]);
+  }, [mnemonic, privateKey]);
 
   return (
     <div className="app-wrapper">

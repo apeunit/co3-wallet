@@ -5,26 +5,44 @@ import Keyboard from '../components/Keyboard';
 import { Flex, Text } from 'rebass';
 import { useDispatch, useSelector } from 'react-redux';
 import { SearchHeader } from '../components/SearchHeader';
-import { useHistory } from 'react-router-dom';
-import { setTransferAmount } from '../redux/actions/Wallet';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { setToAddress, setTransferAmount, setTransferToken } from 'src/redux/actions/Wallet';
+import _replace from 'lodash/replace';
 
 const amountRegex = new RegExp('^[0-9]+(.[0-9]{1,2})?$');
 
 const Payment: React.FC = () => {
+  const location = useLocation();
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch();
   const [error, setError] = useState('');
   const [keyDisable, setKeyDisable] = useState(false);
 
-  const { to, amount, token } = useSelector(({ wallet }: { wallet: any }) => {
+  const { to, amount, token, tokenList } = useSelector(({ wallet, chain }: any) => {
     return {
       to: wallet.transfer.to,
       amount: wallet.transfer.amount,
       token: wallet.transfer.token,
+      tokenList: chain.tokenList,
     };
   });
+
+  useEffect(() => {
+    if (location.search) {
+      const params = new URLSearchParams(location.search);
+      const toParam = params.get('to');
+      const tokenParam = params.get('token');
+      toParam && dispatch(setToAddress(_replace(toParam, /['"]+/g, '')));
+      if (tokenParam && tokenList.length > 0) {
+        const tokenNew = tokenList.find(
+          (tkn: any) => tkn.token_symbol === _replace(tokenParam, /['"]+/g, ''),
+        );
+        dispatch(setTransferToken(tokenNew));
+      }
+    }
+  }, [dispatch, location.search, tokenList]);
 
   const handleTap = (tap: string) => {
     const amountString: string = `${amount}${tap}`;
@@ -57,7 +75,21 @@ const Payment: React.FC = () => {
 
   const handleConfirm = () => {
     if (parseInt(amount, 10) <= parseInt(token.amount, 10)) {
-      history.push('/confirmpayment');
+      if (location.search) {
+        const params = new URLSearchParams(location.search);
+        const toParam = params.get('to');
+        const tokenParam = params.get('token');
+        const callbackParam = params.get('callback');
+        history.push({
+          pathname: `/confirmpayment`,
+          search: `?to=${toParam}&&token=${tokenParam}${
+            callbackParam ? `&&callback=${callbackParam}` : ''
+          }`,
+          state: { token },
+        });
+      } else {
+        history.push({ pathname: '/confirmpayment', state: { token } });
+      }
       setError('');
     } else {
       setError(t('payment.amount_error'));
@@ -81,7 +113,7 @@ const Payment: React.FC = () => {
       <SearchHeader back={'/scan'} to={to} />
       <InfoBar style={{ width: '100vw' }}>
         <Text variant="base">{t('common.from')}</Text>
-        <AvatarBadge image={token.logoURL} label={token.name} />
+        <AvatarBadge image={token && token.logoURL} label={token && token.name} />
       </InfoBar>
 
       <Text

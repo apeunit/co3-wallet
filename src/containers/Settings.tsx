@@ -11,10 +11,11 @@ import { getPublicKey, getUserIDName, savePublicKeyAPI } from 'src/api/co3uum';
 import _get from 'lodash/get';
 import { setPublicKey } from 'src/redux/actions/Wallet';
 import { useHistory } from 'react-router-dom';
-import { languages } from './TokenRadioText';
+import { languages } from './commonData';
 import { BACKUP_WALLET, MNEMONIC_PHRASE } from 'src/config';
 import { mnemonicToSeed } from 'bip39';
 import { publicToAddress, toChecksumAddress } from 'ethereumjs-util';
+import packageJson from '../../package.json';
 
 const hdkey = require('ethereumjs-wallet/hdkey');
 
@@ -59,12 +60,12 @@ const Settings: React.FC = () => {
   const savePublicKey = async () => {
     await mnemonicToSeed(mnemonicPhrase).then(async (seed: any) => {
       const hdkeyInstance = hdkey.fromMasterSeed(seed);
-      const node = hdkeyInstance.derivePath("m/44'/60'/0'/0'/0");
+      const node = hdkeyInstance.derivePath('m/44\'/60\'/0\'/0\'/0');
       const child = node.deriveChild(0);
       const wallet = child.getWallet();
       const publicKey = toChecksumAddress(
         publicToAddress(wallet.getPublicKeyString()).toString('hex'),
-      );;
+      );
       dispatch(setPublicKey(publicKey));
       if (accessToken) {
         await savePublicKeyAPI(accessToken, publicKey);
@@ -100,6 +101,7 @@ const Settings: React.FC = () => {
           <Flex flexDirection="column" margin="30px auto" width="42vh" className="identity-section">
             <Text className="label">{t('settings.wallet_security')}</Text>
             <Flex
+              className="new-wallet"
               onClick={() => history.push('/new-wallet')}
               justifyContent="space-between"
               height="24px"
@@ -108,7 +110,7 @@ const Settings: React.FC = () => {
               <Text className="option">{t('settings.backup_wallet')}</Text>
               <Flex>
                 {backupWallet !== 'true' && (
-                  <Text color="#ED6881" fontSize="12px" marginTop="5px">
+                  <Text width="16vh" color="#ED6881" fontSize="12px" marginTop="5px">
                     {t('settings.backup_wallet_error')}
                   </Text>
                 )}
@@ -121,6 +123,7 @@ const Settings: React.FC = () => {
             </Flex>
             <Divider />
             <Flex
+              className="import-wallet"
               onClick={() => history.push('/import-wallet')}
               justifyContent="space-between"
               height="24px"
@@ -135,6 +138,7 @@ const Settings: React.FC = () => {
               justifyContent="space-between"
               height="24px"
               margin="10px 0px"
+              className="delete-wallet"
             >
               <Text className="option">{t('settings.delete_wallet')}</Text>
               <IconButton
@@ -179,6 +183,13 @@ const Settings: React.FC = () => {
             <Flex justifyContent="space-between" height="24px" margin="10px 0px">
               <Text className="option disable">{t('settings.user_agreement')}</Text>
               <IconButton className="option-icon disable" icon="arrowForward" />
+            </Flex>
+            <Divider />
+            <Flex justifyContent="space-between" height="24px" margin="10px 0px">
+              <Text className="option disable">{t('settings.version')}</Text>
+              <Text marginRight="20px" className="option disable">
+                v{packageJson.version}
+              </Text>
             </Flex>
             <Divider />
           </Flex>

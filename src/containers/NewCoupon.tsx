@@ -5,11 +5,11 @@ import RadioButtonGroup from '../components/RadioButtonGroup';
 import AddImage from '../components/AddImage';
 import { useHistory } from 'react-router-dom';
 import TextArea from '../components/TextArea';
-import CreateTokenBuyStep from '../components/CreateTokens/CreateTokenBuyStep';
-import CreateTokenFooter from '../components/CreateTokens/CreateTokenFooter';
-import CreateTokenInput from '../components/CreateTokens/CreateTokenInput';
-import CreateTokenDetail from '../components/CreateTokens/CreateTokenDetail';
-import { contractsRadio, couponsRadio, createTokenSteps } from './TokenRadioText';
+import CreateBuyStep from '../components/StepsComponents/CreateBuyStep';
+import CreateFooterStep from '../components/StepsComponents/CreateFooterStep';
+import CreateInputStep from '../components/StepsComponents/CreateInputStep';
+import CreateDetailStep from '../components/StepsComponents/CreateDetailStep';
+import { contractsRadio, couponsRadio, createCouponSteps } from './commonData';
 import ErrorMsg from '../components/ErrorMsg';
 import _get from 'lodash/get';
 import { motion } from 'framer-motion';
@@ -54,7 +54,7 @@ const NewCoupon: React.FC = () => {
   const { web3, tokenFactory, accessToken } = useSelector(({ chain, co3uum }: any) => {
     return {
       web3: chain.web3,
-      tokenFactory: chain.contracts.tokenFactory,
+      tokenFactory: chain.contracts && chain.contracts.tokenFactory,
       accessToken: co3uum.accessToken,
     };
   });
@@ -91,11 +91,11 @@ const NewCoupon: React.FC = () => {
       ) {
         return;
       }
-      step <= 8 && title.indexOf(t('common.edit')) > -1
-        ? setStep(9)
-        : step === 7 && coupon.couponType === 'Mintable Coupon'
-        ? setStep(step + 2)
-        : setStep(step + 1);
+      step === 7 && coupon.couponType === 'Mintable Coupon' ? setStep(step + 2) : setStep(step + 1);
+      if (step <= 8 && title.indexOf(t('common.edit')) > -1) {
+        step === 7 && coupon.couponType !== 'Mintable Coupon' ? setStep(step + 1) : setStep(9);
+        setTitle(t('new_coupon.label'));
+      }
     }
   };
 
@@ -133,7 +133,7 @@ const NewCoupon: React.FC = () => {
         })
         .catch((err: any) => {
           setUploading(false);
-          setError('Invalid Token');
+          setError(t('common.invalid_token'));
         });
     } else {
       setUploading(false);
@@ -175,15 +175,18 @@ const NewCoupon: React.FC = () => {
           link ? onchangeCoupon({ ...coupon, contract: link }) : console.log(data);
         })
         .catch((err: any) => {
+          console.log(err, "err")
           setUploading(false);
-          setError('Invalid Token');
+          setError(t('common.invalid_token'));
         });
+    } else {
+      setUploading(false);
     }
   };
 
   const handleEdit = (stepName: string) => {
     setTitle(`${t('common.edit')} ${stepName}`);
-    const stepData = createTokenSteps.find((_step: any) => stepName === _step.title);
+    const stepData = createCouponSteps.find((_step: any) => stepName === t(`${_step.title}`));
     if (stepData) {
       setStep(stepData.stepId);
     }
@@ -273,7 +276,7 @@ const NewCoupon: React.FC = () => {
           }}
         >
           {step === 1 && (
-            <CreateTokenInput
+            <CreateInputStep
               type="text"
               value={coupon.name}
               onChangeValue={(e: any) => handleChangeToken(e, 'name')}
@@ -281,12 +284,13 @@ const NewCoupon: React.FC = () => {
               placeholder={t('new_coupon.name_placeholder')}
               maxLength="30"
               msg=""
+              className="coupon-name-input"
               error={error}
               handleKeyChange={_handleKeyDown}
             />
           )}
           {step === 2 && (
-            <CreateTokenInput
+            <CreateInputStep
               type="text"
               value={coupon.headline}
               onChangeValue={(e: any) => handleChangeToken(e, 'headline')}
@@ -294,12 +298,13 @@ const NewCoupon: React.FC = () => {
               placeholder={t('new_coupon.headline_placeholder')}
               maxLength="35"
               msg=""
+              className="coupon-headline-input"
               error={error}
               handleKeyChange={_handleKeyDown}
             />
           )}
           {step === 3 && (
-            <CreateTokenInput
+            <CreateInputStep
               type="text"
               value={coupon.symbol}
               onChangeValue={(e: any) => handleChangeToken(e, 'symbol')}
@@ -316,6 +321,7 @@ const NewCoupon: React.FC = () => {
               <Flex flexDirection="column" width="100%" style={{ transform: 'translateY(-20px)' }}>
                 <TextArea
                   value={coupon.description}
+                  className="coupon-description-input"
                   onChangeValue={(e: any) => handleChangeToken(e, 'description')}
                   label={t('common.short_description')}
                   placeholder={t('new_coupon.description_placeholder')}
@@ -344,7 +350,7 @@ const NewCoupon: React.FC = () => {
                 {coupon.contractType === 'Custom Contract' && (
                   <Flex flexDirection="column" height="100%" justifyContent="space-between">
                     <AddImage
-                      label={contractLabel ? contractLabel : 'Upload contract'}
+                      label={contractLabel ? contractLabel : t('common.upload_contract')}
                       accept="application/pdf"
                       icon={contractLabel ? 'clouddone' : 'cloud'}
                       onChange={onChangeContract}
@@ -373,8 +379,9 @@ const NewCoupon: React.FC = () => {
             </FramerSlide>
           )}
           {step === 8 && (
-            <CreateTokenInput
+            <CreateInputStep
               type="number"
+              className="coupon-supply-input"
               value={coupon.totalCoupon}
               onChangeValue={(e: any) => handleChangeToken(e, 'totalCoupon')}
               label={t('new_coupon.total_coupon')}
@@ -385,10 +392,10 @@ const NewCoupon: React.FC = () => {
               handleKeyChange={_handleKeyDown}
             />
           )}
-          {step === 9 && <CreateTokenBuyStep data={coupon} />}
-          {step === 10 && <CreateTokenDetail handleEdit={handleEdit} data={coupon} />}
+          {step === 9 && <CreateBuyStep data={coupon} />}
+          {step === 10 && <CreateDetailStep handleEdit={handleEdit} data={coupon} />}
           {!uploading && error === '' && step !== 10 && (
-            <CreateTokenFooter
+            <CreateFooterStep
               lastStep={step === 9}
               handleSteps={handleSteps}
               onbtnDrag={handleCreateCoupon}

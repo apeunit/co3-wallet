@@ -11,7 +11,6 @@ const NodeErrorModal: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-
   const { wallet: walletObj, modal: modalObj } = useSelector(({ wallet, modal }: any) => {
     return {
       wallet,
@@ -20,6 +19,7 @@ const NodeErrorModal: React.FC = () => {
   });
 
   const handleRetry = () => {
+    dispatch(toggleModal());
     dispatch(initialSetup(walletObj && walletObj.privateKey));
   };
 
@@ -28,8 +28,7 @@ const NodeErrorModal: React.FC = () => {
       <AnimatePresence>
         {modalObj && modalObj.isOpen && (
           <Modal close={() => dispatch(toggleModal())}>
-            <Flex justifyContent="center">
-            </Flex>
+            <Flex justifyContent="center" />
             <Text variant="heading" textAlign="center">
               {t('node_error.failure')}
             </Text>
@@ -37,7 +36,9 @@ const NodeErrorModal: React.FC = () => {
               {t('node_error.failure_connect')}
             </Text>
             <Button
-              paddingY={4}
+              height="45px"
+              marginTop="10px"
+              padding="0"
               sx={{
                 borderRadius: '10px',
               }}

@@ -1,9 +1,24 @@
 import { createActions } from 'redux-actions';
 import { getUserProfile, saveUserPublicKey } from '../../../api/co3uum';
-import { GET_USER_PROFILE_DATA, SAVE_ACCESS_TOKEN, UPDATE_USER_PUBKEY } from './ActionTypes';
+import {
+  GET_USER_PROFILE_DATA,
+  SAVE_ACCESS_TOKEN,
+  SAVE_AID,
+  UPDATE_USER_PUBKEY,
+} from './ActionTypes';
 
-const { saveAccessToken, getUserProfileData, updateUserPubkey, getLocation } = createActions({
-  GET_LOCATION: () => {},
+const {
+  saveAccessToken,
+  getUserProfileData,
+  updateUserPubkey,
+  getLocation,
+  saveAid,
+} = createActions({
+  [SAVE_AID]: (activityID: string) => {
+    return {
+      activityID: activityID,
+    };
+  },
   [SAVE_ACCESS_TOKEN]: (accessToken: string) => {
     return {
       accessToken: accessToken,
@@ -30,6 +45,7 @@ const { saveAccessToken, getUserProfileData, updateUserPubkey, getLocation } = c
       };
     }
   },
+  GET_LOCATION: () => {},
 });
 
-export { saveAccessToken, getUserProfileData, updateUserPubkey, getLocation };
+export { saveAccessToken, getUserProfileData, updateUserPubkey, getLocation, saveAid };

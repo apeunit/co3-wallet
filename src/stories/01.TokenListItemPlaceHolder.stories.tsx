@@ -1,6 +1,5 @@
 import React from 'react';
 import { addParameters } from '@storybook/react';
-import { action } from '@storybook/addon-actions';
 import TokenListItemPlaceHolder from '../components/Tokens/TokensList/TokenListItemPlaceholder';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 

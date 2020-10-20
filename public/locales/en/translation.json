@@ -35,7 +35,8 @@
     "total_coupon": "Total Coupon",
     "total_coupon_placeholder": "Enter total coupon",
     "coupon_created": "Coupon Created",
-    "coupon_creation_failed": "Coupon Creation Failed"
+    "coupon_creation_failed": "Coupon Creation Failed",
+    "coupon_type": "Coupon Type"
   },
   "common": {
     "name": "Name",
@@ -57,7 +58,45 @@
     "access_token": "Access Token",
     "access_token_error": "Access Token is required",
     "no_connectivity": "The service is not available at the moment, please try again later",
-    "reload": "Reload"
+    "reload": "Reload",
+    "slide_to_create": "Slide to create",
+    "invalid_token": "Invalid Token",
+    "upload_contract": "Upload contract"
+  },
+  "new_crowdsale" : {
+    "label": "New Crowdsale",
+    "campaign_date": "Campaign Date",
+    "start_date": "Start Date",
+    "end_date": "End Date",
+    "location": "Location",
+    "item_to_sell": "Item to sell",
+    "item_sold": "Item being sold",
+    "item_sell_msg": "Which Coupon do you want to sell?",
+    "max_supply": "Max Supply",
+    "name_placeholder":"Enter name",
+    "campaign_msg":"The name of your Campaign",
+    "campaign_duration":"Campagne Duration",
+    "campaign_image":"Upload an image representative of your campaign",
+    "campaign_location":"Does Your Campaign have a Location?",
+    "campaign_start":"Campaign Start",
+    "campaign_end":"Campaign End",
+    "description":"Description",
+    "description_msg":"A short description of what you will be offering",
+    "location_msg":"Does your campaign have a location",
+    "sell_msg":"How much will you, at least, need to sell",
+    "sell_question":"what's the most you can sell?",
+    "give_ratio":"Price",
+    "give_ratio_msg":"How much Token you want to give",
+    "payment_token":"Payment Token",
+    "instance_cost":"How much will one instance cost?",
+    "token_choice":"Which Token should be used for your campaign?",
+    "one_instance":"Prize of one Instance",
+    "loading":"Loading...",
+    "starting_date":"Starting Date of your Crowdsale-Campagne",
+    "ending_date":"End Date of your Crowdsale-Campagne",
+    "crowdsale_created": "Crowdsale Created",
+    "crowdsale_creation_failed":"Crowdsale Creation Failed",
+    "marketplace":"Marketplace"
   },
   "new_token": {
     "label": "New Token",
@@ -84,7 +123,9 @@
     "amount_error": "Amount is not sufficient",
     "payment_info": "Payment info",
     "payment_failed": "Token Payment Failed",
-    "slide_to_send": "Slide to Send"
+    "slide_to_send": "Slide to Send",
+    "token_error": "Token non trovato",
+    "to_error": "To Address non trovato"
   },
   "receive": {
     "ask_sender": "Ask Sender",
@@ -118,7 +159,8 @@
     "token": "Token",
     "coupon": "Coupon",
     "task": "Task",
-    "history": "History"
+    "history": "History",
+    "crowdsale": "Crowdsale"
   },
   "settings": {
     "label": "Settings",
@@ -143,7 +185,8 @@
     "subtitle": "Subtitle 1",
     "help": "Help",
     "about": "About",
-    "user_agreement": "User Agreement"
+    "user_agreement": "User Agreement",
+    "version": "Version"
   },
   "recovery_phrase": {
     "label": "Recovery Phrase",

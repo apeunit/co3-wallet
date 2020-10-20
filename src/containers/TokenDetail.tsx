@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Flex, Text } from 'rebass';
-import TokenCard from '../components/Tokens/NewToken/TokenCard';
+import TokenCard from '../components/Tokens/CreateTokens/TokenCard';
 import IconButton from '../components/IconButton';
 import { useHistory } from 'react-router-dom';
 import ActionButtonGroup from '../components/ActionButtonGroup';
@@ -75,6 +75,7 @@ const TokenDetail: React.FC = () => {
                 icon: 'mintIcon',
                 label: t('token_details.mint'),
                 key: 'mint',
+                className: 'token-mint-btn',
                 show: !(isMintable && ethAddress === token.owner),
                 iconBg: 'white',
                 iconColor: '#00E0A8',

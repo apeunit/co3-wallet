@@ -55,6 +55,7 @@ const Modal = (props: any) => {
                 right: '5px',
                 borderRadius: 'full',
               }}
+              className="modal-close-btn"
               onClick={close}
               marginY={2}
               cursor={'pointer'}

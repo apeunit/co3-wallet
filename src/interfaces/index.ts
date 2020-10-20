@@ -55,11 +55,28 @@ export interface IWalletState {
 export interface ICO3UUMState {
   profile: object | null;
   accessToken: string | null;
+  activityID: string | null;
 }
 
 export interface IQRCode {
   onError(data: string | null): void;
   onScan(data: string | null): void;
+}
+
+export interface ICrowdsaleData {
+  name: string;
+  icon: string;
+  startDate?: string;
+  endDate?: string;
+  description?: string;
+  crowdsaleId: string;
+  maxSupply?: string;
+  itemToSell: string;
+  giveRatio?: number;
+  acceptRatio?: number;
+  token: string;
+  contractAddress: string;
+  entity_type?: string;
 }
 
 export interface IChainState {
@@ -74,6 +91,8 @@ export interface IChainState {
   errorWeb3: object | null;
   tokenLoading: boolean | false;
   txnLoading: boolean | true;
+  crowdsaleList: ICrowdsaleData[];
+  crowdsaleData: any;
 }
 
 export enum ITokenAction {
@@ -108,10 +127,6 @@ export interface IModalState {
   type: string;
 }
 
-export interface IUserState {
-  location: string;
-  features: string[];
-  country: string;
-  username: string;
-  ip: string;
+export interface IPilotState {
+  features: [];
 }

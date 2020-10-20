@@ -1,7 +1,7 @@
 import React from 'react';
 import { addParameters } from '@storybook/react';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
-import TokenDetailItems from '../components/CreateTokens/TokenDetailItems';
+import TokenDetailItems from '../components/StepsComponents/DetailItems';
 import { Flex, Text } from 'rebass';
 import Avatar from '../components/Avatar';
 

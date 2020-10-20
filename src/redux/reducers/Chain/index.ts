@@ -3,7 +3,9 @@ import { IChainState, ITokenData } from '../../../interfaces';
 import {
   CREATE_TOKEN,
   ERROR_WEB3,
+  GET_ALL_CROWDSALE,
   GET_ALL_TOKEN,
+  GET_CROWDSALE_DATA,
   GET_TOKEN_BALANCE,
   GET_TOKEN_DETAIL,
   GET_TRANSACTION_HISTORY,
@@ -26,6 +28,8 @@ const defaultState: IChainState = {
   errorWeb3: null,
   tokenLoading: false,
   txnLoading: true,
+  crowdsaleList: [],
+  crowdsaleData: null,
 };
 
 const combinedActions: any = combineActions(
@@ -37,6 +41,8 @@ const combinedActions: any = combineActions(
   TRANSFER_TOKEN,
   TOKEN_LOADING,
   TXN_LOADING,
+  GET_ALL_CROWDSALE,
+  GET_CROWDSALE_DATA,
 );
 
 const reducer = handleActions(

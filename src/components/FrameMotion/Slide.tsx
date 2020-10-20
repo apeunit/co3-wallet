@@ -14,12 +14,17 @@ const Inputstyle = {
 
 interface IProps {
   children: any;
+  customStyle?: any;
 }
 
-const FramerSlide: React.FC<IProps> = ({ children }) => {
+const FramerSlide: React.FC<IProps> = ({ children, customStyle }) => {
   return (
     <>
-      <motion.div variants={Slide} transition={{ duration: 0.2 }} style={Inputstyle} >
+      <motion.div
+        variants={Slide}
+        transition={{ duration: 0.2 }}
+        style={{ ...Inputstyle, ...customStyle }}
+      >
         {children}
       </motion.div>
     </>

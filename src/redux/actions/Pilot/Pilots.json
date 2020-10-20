@@ -1,0 +1,18 @@
+{
+  "turin": {
+    "features": [
+      "multiToken",
+      "createToken"
+    ]
+  },
+  "athens": {
+    "features": [
+      "singleToken"
+    ]
+  },
+  "paris": {
+    "features": [
+      "singleToken"
+    ]
+  }
+}

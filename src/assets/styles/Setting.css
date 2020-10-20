@@ -54,7 +54,7 @@ button, button:focus, button:hover, button:active {
 }
 
 .identity-section .description {
-  width: 278px;
+  width: auto;
   height: 63px;
   font-size: 14px;
   line-height: 24px;
@@ -133,6 +133,8 @@ button, button:focus, button:hover, button:active {
 .identity-section .backup-green,
 .identity-section .backup-red  {
   margin-top: -13px;
+  width: 21px;
+  margin-right: 12px;
 }
 
 .identity-section .option-icon svg {

@@ -76,6 +76,7 @@ const Minting = () => {
       <Flex padding={7}>
         <InputField
           type="number"
+          className="token-mint-input"
           label={t('common.supply')}
           placeholder={t('minting.supply_placeholder')}
           value={supply || ''}
@@ -85,6 +86,7 @@ const Minting = () => {
       <Flex justifyContent="center" marginBottom={4}>
         <IconButton
           icon="next"
+          className="token-mint-next-btn"
           marginBottom={5}
           size="s14"
           backgroundColor="blue600"

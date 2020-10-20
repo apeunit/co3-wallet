@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { API_URL } from 'src/config';
 import qs from 'qs';
+import { API_URL } from 'src/config';
 
 export const getUserIDName = async (accessToken: string): Promise<Object> => {
   return (await axios.get(`${API_URL}/api/1/info?access_token=${accessToken}&include_member=1`))
@@ -12,7 +12,7 @@ export const getPublicKey = async (accessToken: string): Promise<Object> => {
 };
 
 export const savePublicKeyAPI = async (accessToken: string, publicKey: string): Promise<Object> => {
-  const publicKeyData = qs.stringify({ 'update': `{ "blockchain_public_key" : "${publicKey}" }` });
+  const publicKeyData = qs.stringify({ update: `{ "blockchain_public_key" : "${publicKey}" }` });
 
   return (
     await axios.post(`${API_URL}/api/1/profile?access_token=${accessToken}`, publicKeyData, {
@@ -45,4 +45,38 @@ export const getProfileImageUrl = (userData: any): string => {
   const memberId = userData.id || userData;
 
   return `${API_URL}/member_image/show/${memberId}.html?image_type=avatar`;
+};
+
+export const getRandomId = () => {
+  return `_${Math.random()
+    .toString(36)
+    .substr(2, 9)}`;
+};
+
+export const getRandomCustomNumber = (count: number) => {
+  let randomNo = '';
+  for (let i = 0; i < count; i = i + 1) {
+    randomNo = `${Math.floor(Math.random() * 9)}${randomNo}`;
+  }
+  return randomNo;
+};
+
+export const getTokenName = (tokenList: any, address: string) => {
+  const token = tokenList.find((tkn: any) => tkn.contractAddress === address);
+
+  return token && token.name;
+};
+
+export const getTokenSymbol = (tokenList: any, address: string) => {
+  const token = tokenList.find((tkn: any) => tkn.contractAddress === address);
+
+  return token && (token.token_symbol || token.symbol);
+};
+
+export const saveCallbackAPI = async (callbackurl: string, data: any): Promise<Object> => {
+  return (
+    await axios.post(callbackurl, data, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    })
+  ).data;
 };

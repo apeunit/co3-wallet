@@ -22,6 +22,7 @@
     "history": "Cronologia",
     "tokens_discounts": "Valute e sconti",
     "coupons_passes": "Coupon e pass",
+    "login": "Accesso",
     "error_login": "Autenticazione obbligatoria",
     "error_login_msg": "Questa operazione richiede il login, vuoi procedere?"
   },
@@ -34,7 +35,8 @@
     "total_coupon": "Disponibilità complessiva",
     "total_coupon_placeholder": "Inserisci la disponibilità complessiva",
     "coupon_created": "Coupon creato",
-    "coupon_creation_failed": "Creazione del coupon non riuscita"
+    "coupon_creation_failed": "Creazione del coupon non riuscita",
+    "coupon_type": "Tipo di coupon"
   },
   "common": {
     "name": "Nome",
@@ -56,7 +58,45 @@
     "access_token": "Codice di accesso",
     "access_token_error": "È richiesto il codice di accesso",
     "no_connectivity": "Il servizio non è al momento disponibile, si prega di riprovare più tardi",
-    "reload": "Riprova"
+    "reload": "Riprova",
+    "slide_to_create": "Scorri per creare",
+    "invalid_token": "Gettone non valido",
+    "upload_contract": "Carica contratto"
+  },
+  "new_crowdsale" : {
+    "label": "Nuovo crowdsale",
+    "campaign_date": "Data della campagna",
+    "start_date": "Data d'inizio",
+    "end_date": "Data di fine",
+    "location": "Posizione",
+    "item_to_sell": "Articolo da vendere",
+    "item_sold": "Articolo in vendita",
+    "item_sell_msg": "Quale coupon vuoi vendere?",
+    "max_supply": "Fornitura maxima",
+    "name_placeholder": "Inserisci il nome",
+    "campaign_msg": "Il nome della tua campagna",
+    "campaign_duration":"Durata Campagne",
+    "campaign_image":"Carica un'immagine rappresentativa della tua campagna",
+    "campaign_location":"La tua campagna ha una posizione?",
+    "campaign_start":"Inizio della campagna",
+    "campaign_end":"Fine campagna",
+    "description": "Descrizione",
+    "description_msg": "Una breve descrizione di ciò che offrirai",
+    "location_msg":"La tua campagna ha una posizione?",
+    "sell_msg":"Quanto dovrai almeno vendere",
+    "sell_question":"qual è il massimo che puoi vendere?",
+    "give_ratio":"Price",
+    "give_ratio_msg":"Quanto gettone vuoi dare",
+    "payment_token":"Token di pagamento",
+    "instance_cost":"Quanto costerà un'istanza?",
+    "token_choice":"Quale token dovrebbe essere utilizzato per la tua campagna?",
+    "one_instance":"Premio di un'istanza",
+    "loading":"Caricamento in corso...",
+    "starting_date":"Data di inizio del tuo Crowdsale-Campagne",
+    "ending_date":"Data di fine del tuo Crowdsale-Campagne",
+    "crowdsale_created": "Creazione di Crowdsale",
+    "crowdsale_creation_failed":"Creazione di crowdsale non riuscita",
+    "marketplace":"Mercata"
   },
   "new_token": {
     "label": "Nuova valuta",
@@ -83,7 +123,9 @@
     "amount_error": "Importo insufficiente",
     "payment_info": "Informazioni sul transferimento",
     "payment_failed": "Trasferimento non riuscito",
-    "slide_to_send": "Trascina per inviare"
+    "slide_to_send": "Trascina per inviare",
+    "token_error": "Token not found",
+    "to_error": "To Adress not found"
   },
   "receive": {
     "ask_sender": "Chiedi al mittente",
@@ -117,7 +159,8 @@
     "token": "Valuta",
     "coupon": "Buono",
     "task": "Attività",
-    "history": "Cronologia"
+    "history": "Cronologia",
+    "crowdsale": "Crowdsale"
   },
   "settings": {
     "label": "impostazioni",
@@ -142,7 +185,8 @@
     "subtitle": "Sottotitolo 1",
     "help": "Aiuto",
     "about": "Informazioni",
-    "user_agreement": "Termini e condizioni"
+    "user_agreement": "Termini e condizioni",
+    "version": "Versione"
   },
   "recovery_phrase": {
     "label": "Copia di sicurezza",
@@ -151,6 +195,8 @@
     "co3_wallet": "Portafoglio CO3",
     "welcome_msg": "Its Ultrices neque consequat dolor diam. Mattis vestibulum dictum in ullamcorper vel venenatis vitae auctor suscipit.",
     "new_wallet": "Crea portafoglio",
+    "new_wallet_success": "Operazione completata con successo",
+    "new_wallet_error": "Impossibile aggiornare l'indirizzo del portafoglio del profilo!",
     "import_wallet": "Importa portafoglio",
     "new_wallet_s1": "I cryptowallet non sono come la tua solita app. Sono decentralizzati, il che significa che solo tu puoi controllare il tuo account!",
     "new_wallet_s2": "Poiché solo tu controlli il tuo account, gli sviluppatori di questa app non possono aiutarti a recuperare il tuo portafoglio se perdi o rompi il telefono. <br /><br /> ma c'è una soluzione!",

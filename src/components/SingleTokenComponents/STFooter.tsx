@@ -21,6 +21,11 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
 
   const icons = [
     {
+      label: t('new_crowdsale.marketplace'),
+      icon: 'sellIcon',
+      url: '/marketplace',
+    },
+    {
       label: t('multitoken.label'),
       icon: 'walletIcon',
       url: '/',
@@ -39,7 +44,7 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
       flexDirection="row"
       justifyContent="space-between"
       width="100%"
-      paddingX={10}
+      paddingX={7}
       paddingTop={5}
       style={{ zIndex: 0 }}
       className="wallet-footer"
@@ -50,7 +55,7 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
             key={index}
             className="token-footer-icon"
             height="40px"
-            width="105px"
+            width={icon === 'sellIcon' ? '130px': '105px'}
             backgroundColor="blue100"
             sx={{ borderRadius: 'full' }}
           >
@@ -62,13 +67,13 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
             </Flex>
           </Flex>
         ) : (
-            <IconButton
-              className="footer-icon"
-              onClick={() => changeTab(icon, url)}
-              key={index}
-              icon={icon}
-            />
-          ),
+          <IconButton
+            className={`footer-icon ${icon}`}
+            onClick={() => changeTab(icon, url)}
+            key={index}
+            icon={icon}
+          />
+        ),
       )}
     </Flex>
   );

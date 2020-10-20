@@ -5,7 +5,7 @@ import '../assets/styles/Setting.css';
 import IconButton from 'src/components/IconButton';
 import { Divider } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import { languages } from './TokenRadioText';
+import { languages } from './commonData';
 
 const Language: React.FC = () => {
   const history = useHistory();

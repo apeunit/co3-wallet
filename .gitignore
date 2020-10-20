@@ -114,3 +114,6 @@ dist
 
 #storybook build files
 storybook-static
+
+# OS Specific files
+**/.DS_Store

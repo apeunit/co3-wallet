@@ -73,6 +73,7 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                       key: 'token',
                       iconColor: 'white',
                       iconBg: 'blue600',
+                      className: 'add-token-btn',
                       onClick: () => {
                         history.replace('/new-token');
                       },
@@ -82,6 +83,7 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                       label: t('asset_popup.coupon'),
                       key: 'coupon',
                       iconColor: 'white',
+                      className: 'add-coupon-btn',
                       iconBg: 'blue600',
                       onClick: () => {
                         history.replace('/new-coupon');
@@ -89,12 +91,13 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                     },
                     {
                       icon: 'tag',
-                      label: t('asset_popup.task'),
+                      label: t('asset_popup.crowdsale'),
                       key: 'tag',
                       iconColor: 'white',
+                      className: 'add-crowdsale-btn',
                       iconBg: 'blue600',
                       onClick: () => {
-                        history.replace('/tagPage');
+                        history.replace('/new-crowdsale');
                       },
                     },
                     {

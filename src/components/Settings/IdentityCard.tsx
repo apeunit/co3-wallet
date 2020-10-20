@@ -29,7 +29,7 @@ const IdentityCard = (props: any) => {
             label={''}
             uploading={false}
             uploadIcon="hide"
-            image={userData.id ? getProfileImageUrl(userData) : avatarImg}
+            image={userData && userData.id ? getProfileImageUrl(userData) : avatarImg}
             placeholder={avatarImg}
             padding={0}
           />
@@ -38,8 +38,8 @@ const IdentityCard = (props: any) => {
               {userData.name}
             </Text>
           ) : (
-              <Button margin="0px 0px 15px" className="empty_btn" />
-            )}
+            <Button margin="0px 0px 15px" className="empty_btn" />
+          )}
         </Flex>
         {!loader && !_get(userData, 'id') && <Divider />}
         {!loader && !_get(userData, 'id') && (

@@ -1,8 +1,8 @@
 const ENV = process.env.NODE_ENV;
 const DEV_ADDRESS = process.env.REACT_APP_DEV_ADDRESS;
 
-// pilot name 
-const PILOT = process.env.REACT_APP_PILOT || "turin";
+// pilot name
+const PILOT = process.env.REACT_APP_PILOT || 'turin';
 
 const LISTENER_URL =
   process.env.REACT_APP_LISTENER_URL || 'https://co3-pantheon.di.unito.it:4040/graphql';
@@ -16,14 +16,18 @@ const CROWDSALE_FACTORY_ADDRESS =
 const DAO_FACTORY_ADDRESS =
   process.env.REACT_APP_DAO_FACTORY || '0xf59F92549eBD86eF1a6937f339bc2e77798D2d65';
 
-const LISTENER_POLL_INTERVAL = process.env.REACT_APP_LISTENER_POLL_INTERVAL || 2000;
+const LISTENER_POLL_INTERVAL = process.env.REACT_APP_LISTENER_POLL_INTERVAL || 10000;
 
 const API_URL = process.env.REACT_APP_CO3UUM_URL || 'https://co3.liquidfeedback.com';
 
-const API_FIRSTLIFE_URL =
+const API_FIRSTLIFE_URL_STORAGE =
   process.env.REACT_APP_FIRSTLIFE_STORAGE_URL || 'https://storage.firstlife.org';
+
+const API_FIRSTLIFE_URL = process.env.REACT_APP_FIRSTLIFE_URL || 'https://api.co3-pt.firstlife.org';
+
 const API_SERVER = process.env.REACT_APP_FIRSTLIFE_SERVER_ID || 'CO3UUM_DEV';
 const MNEMONIC_PHRASE = localStorage.getItem('co3-app-mnemonic');
+const THING_ID = '5f4cc6b20eca08088d47bfed';
 
 // redirect URL for SSO login
 const SSO_LOGIN_URL =
@@ -45,10 +49,12 @@ export {
   DAO_FACTORY_ADDRESS,
   API_URL,
   LISTENER_POLL_INTERVAL,
-  API_FIRSTLIFE_URL,
   API_SERVER,
   MNEMONIC_PHRASE,
   SSO_LOGIN_URL,
   SENTRY_DSN,
   BACKUP_WALLET,
+  THING_ID,
+  API_FIRSTLIFE_URL_STORAGE,
+  API_FIRSTLIFE_URL,
 };

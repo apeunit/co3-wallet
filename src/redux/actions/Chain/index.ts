@@ -1,14 +1,20 @@
 // tslint:disable
+import _get from 'lodash/get';
 import { createActions } from 'redux-actions';
-import { CROWDSALE_FACTORY_ADDRESS, NODE_URL, TOKEN_FACTORY_ADDRESS } from 'src/config';
+import { getRandomId } from 'src/api/co3uum';
+import { getCrowdsaleList, saveCrowdsaleData } from 'src/api/firstlife';
+import { CROWDSALE_FACTORY_ADDRESS, NODE_URL, THING_ID, TOKEN_FACTORY_ADDRESS } from 'src/config';
 import Web3 from 'web3';
 import CrowdsaleFactoryJSON from '../../../contracts/CrowdsaleFactory.json';
 import TokenFactoryJSON from '../../../contracts/TokenFactory.json';
 import TokenTemplateJSON from '../../../contracts/TokenTemplate.json';
-import { IToken, ITokenAction, ITokenData } from '../../../interfaces';
+import { ICrowdsaleData, IToken, ITokenAction, ITokenData } from '../../../interfaces';
 import {
   CREATE_TOKEN,
   ERROR_WEB3,
+  GET_ALL_CROWDSALE,
+  GET_ALL_TOKEN,
+  GET_CROWDSALE_DATA,
   GET_TOKEN_BALANCE,
   GET_TOKEN_DETAIL,
   GET_TRANSACTION_HISTORY,
@@ -50,24 +56,29 @@ const {
   errorWeb3,
   tokenLoading,
   txnLoading,
+  getAllToken,
   getTransactionHistory,
   createToken,
   mintToken,
   transferToken,
   getTokenBalance,
   getTokenDetail,
+  getAllCrowdsale,
+  getCrowdsaleData,
 } = createActions({
   [INIT_WEB3]: (data: object): object => ({ ...data }),
   [ERROR_WEB3]: (data: object): object => ({ ...data }),
   [TOKEN_LOADING]: (tokenLoading: object): object => ({ tokenLoading }),
   [TXN_LOADING]: (txnLoading: object): object => ({ txnLoading }),
-  // [GET_ALL_TOKEN]: (tokenList: []): object => ({ tokenList }),
+  [GET_ALL_TOKEN]: (tokenList: []): object => ({ tokenList }),
+  [GET_ALL_CROWDSALE]: (crowdsaleList: []): object => ({ crowdsaleList }),
   [GET_TRANSACTION_HISTORY]: (transactionHistory: []): object => ({ transactionHistory }),
   [CREATE_TOKEN]: (tokenCreated: object) => ({ tokenCreated }),
   [MINT_TOKEN]: (tokenMinted: object) => ({ tokenMinted }),
   [TRANSFER_TOKEN]: (tokenTransferred: object) => ({ tokenTransferred }),
   [GET_TOKEN_BALANCE]: (balance: object) => ({ balance }),
   [GET_TOKEN_DETAIL]: (tokenInfo: ITokenData) => ({ tokenInfo }),
+  [GET_CROWDSALE_DATA]: (crowdsaleData: ICrowdsaleData) => ({ crowdsaleData }),
 });
 
 const fetchAllTokens = () => {
@@ -191,6 +202,57 @@ const fetchTransactionsHistory = () => {
   };
 };
 
+const fetchCrowdsaleList = (accessToken: any, activityID: any) => {
+  return async (dispatch: any, state: any) => {
+    try {
+      console.log('fetchCrowdsaleList');
+      const contract = new web3.eth.Contract(
+        CrowdsaleFactoryJSON.abi,
+        CROWDSALE_FACTORY_ADDRESS,
+        opts,
+      );
+      let crowdsaleList: any = [];
+      const contractEvent = await contract.getPastEvents('CrowdsaleAdded', {
+        fromBlock: 0,
+        toBlock: 'latest',
+      });
+      const crowdsaleData = await getCrowdsaleList(accessToken, activityID);
+      const crowdsaleListData = _get(crowdsaleData, 'data.properties.crowdsaleList', []);
+
+      contractEvent.length > 0 &&
+        contractEvent.map(async (event: any) => {
+          const crowdData = crowdsaleListData.find(
+            (crowdsale: ICrowdsaleData) =>
+              event.returnValues._contractAddress === crowdsale.contractAddress,
+          );
+          if (event.returnValues._from === state().wallet.ethAddress) {
+            crowdsaleList.push({
+              ...crowdData,
+              from: event.returnValues._from,
+              timestamp: event.returnValues._timestamp,
+              contractAddress: event.returnValues._contractAddress,
+              end: event.returnValues._end,
+              acceptRatio: event.returnValues._acceptRatio,
+              giveRatio: event.returnValues._giveRatio,
+              id: event.returnValues._id,
+              maxCap: event.returnValues._maxCap,
+              start: event.returnValues._start,
+              transactionHash: event.transactionHash,
+              blockHash: event.blockHash,
+              blockNumber: event.blockNumber,
+              address: event.address,
+              raw: event.raw,
+            });
+          }
+        });
+      dispatch(getAllCrowdsale(crowdsaleList));
+    } catch (error) {
+      dispatch(txnLoading(false));
+      console.error(error.message);
+    }
+  };
+};
+
 const createNewToken = (
   tokenFactory: any,
   name: string,
@@ -223,6 +285,64 @@ const createNewToken = (
   };
 };
 
+const createNewCrowdsale = (accessToken: string, crowdsale: any) => {
+  return async (dispatch: any, state: any) => {
+    const crowdsaleData = await getCrowdsaleList(
+      accessToken,
+      state().co3uum.activityID || THING_ID,
+    );
+    const crowdsaleList = _get(crowdsaleData, 'data.properties.crowdsaleList', []);
+    const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
+
+    const gasPrice = await web3.eth.getGasPrice();
+    const { itemToSell, token, startDate, endDate, giveRatio, maxSupply } = crowdsale;
+    const crowdsaleId = getRandomId();
+    return crowdsaleFactory.methods
+      .createCrowdsale(
+        crowdsaleId,
+        itemToSell,
+        token,
+        Math.floor(new Date(startDate).getTime() / 1000),
+        Math.floor(new Date(endDate).getTime() / 1000),
+        1,
+        parseInt(giveRatio, 10),
+        parseInt(maxSupply, 10),
+      )
+      .send({
+        from: state().wallet.ethAddress,
+        gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
+        nonce: web3.utils.toHex(parseInt(nonce, 10)),
+        gas: 94000000,
+      })
+      .then((data: any) => {
+        const cddata = {
+          type: 'Feature',
+          properties: {
+            crowdsaleList: [
+              ...crowdsaleList,
+              {
+                name: crowdsale.name,
+                icon: crowdsale.icon,
+                itemToSell: crowdsale.itemToSell,
+                token: crowdsale.token,
+                contractAddress: _get(
+                  data,
+                  'events.CrowdsaleAdded.returnValues._contractAddress',
+                  '',
+                ),
+                entity_type: 'CO3_ACTIVITY',
+                crowdsaleId,
+              },
+            ],
+          },
+        };
+        saveCrowdsaleData(accessToken, cddata, state().co3uum.activityID || THING_ID);
+        dispatch(createToken(data.events.CrowdsaleAdded));
+        return data;
+      });
+  };
+};
+
 const transferTokens = (
   token: ITokenData,
   to: string,
@@ -242,6 +362,7 @@ const transferTokens = (
       })
       .then((data: any) => {
         console.log(data);
+        return data;
       });
   };
 };
@@ -275,19 +396,26 @@ const isMintableToken = (token: ITokenData) => {
 
 const connectWeb3 = () => {
   return (dispatch: any, state: any) => {
-    const Node_URL = state().wallet.nodeUrl ? state().wallet.nodeUrl : NODE_URL;
+    // const Node_URL = state().wallet.nodeUrl ? state().wallet.nodeUrl : NODE_URL;
+    const Node_URL = NODE_URL;
     dispatch(errorWeb3({ connected: true }));
-    if (Node_URL.includes('http')) {
-      web3 = new Web3(new Web3HttpProvider(Node_URL.trim(), options));
-    } else {
-      web3 = new Web3(new Web3WsProvider(Node_URL.trim(), options));
+    try {
+      if (Node_URL.includes('http')) {
+        web3 = new Web3(new Web3HttpProvider(Node_URL.trim(), options));
+      } else {
+        web3 = new Web3(new Web3WsProvider(Node_URL.trim(), options));
+      }
+    } catch (err) {
+      console.log(err);
     }
+
     web3.eth.net
       .isListening()
       .then(() => {
         dispatch(errorWeb3({ connected: true }));
       })
       .catch((error: any) => {
+        console.log(error);
         dispatch(errorWeb3({ connected: false }));
       });
   };
@@ -342,6 +470,7 @@ export {
   connectWeb3,
   tokenLoading,
   txnLoading,
+  getAllToken,
   initialSetup,
   fetchAllTokens,
   createToken,
@@ -355,4 +484,8 @@ export {
   getTokenDetail,
   fetchTokenByTicker,
   fetchTransactionsHistory,
+  createNewCrowdsale,
+  fetchCrowdsaleList,
+  getAllCrowdsale,
+  getCrowdsaleData,
 };

@@ -3,7 +3,17 @@ import { Flex, Text } from 'rebass';
 import { Label, Textarea } from '@rebass/forms';
 
 const TextArea = (props: any) => {
-  const { value, onChangeValue, onFocus, label, placeholder, maxLength, msg } = props;
+  const {
+    value,
+    onChangeValue,
+    onFocus,
+    label,
+    placeholder,
+    maxLength,
+    msg,
+    className,
+    defaultRows = 0,
+  } = props;
   const [textCount, setTextCount] = useState(0);
   const [err, setErr] = useState(false);
 
@@ -38,6 +48,7 @@ const TextArea = (props: any) => {
         onFocus={onFocus}
         value={value}
         padding={0}
+        rows={defaultRows}
         sx={{
           border: 'none',
           borderBottom: '1px solid',
@@ -49,12 +60,13 @@ const TextArea = (props: any) => {
         name={label}
         placeholder={placeholder}
         autoFocus={true}
+        className={className}
       />
       <Flex justifyContent="space-between" paddingY={2}>
-        <Text fontSize={1} color="#ccc">
+        <Text fontSize={1} color="#a2a2a2">
           {msg}
         </Text>
-        <Text fontSize={1} sx={{ color: err ? 'red' : '#ccc' }}>
+        <Text fontSize={1} sx={{ color: err ? 'red' : '#a2a2a2' }}>
           {`${textCount}/${maxLength}`}
         </Text>
       </Flex>

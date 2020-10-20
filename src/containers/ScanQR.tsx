@@ -14,9 +14,9 @@ const ScanQR = () => {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { features } = useSelector(({ user }: any) => {
+  const { features } = useSelector(({ pilot }: any) => {
     return {
-      features: user.features,
+      features: pilot.features,
     };
   });
 

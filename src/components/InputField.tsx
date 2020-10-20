@@ -83,11 +83,11 @@ const InputField = (props: any) => {
         autoComplete={autoComplete}
       />
       <Flex className="input-msg" justifyContent="space-between" paddingY={2}>
-        <Text fontSize={1} color="#ccc">
+        <Text fontSize={1} color="#a2a2a2">
           {msg}
         </Text>
         {maxLength && (
-          <Text fontSize={1} sx={{ color: err ? 'red' : '#ccc' }}>
+          <Text fontSize={1} sx={{ color: err ? 'red' : '#a2a2a2' }}>
             {`${textCount}/${maxLength}`}
           </Text>
         )}

@@ -5,7 +5,7 @@ import ToolBarTitle from '../components/ToolBarTitle';
 import ActionButtonGroup from '../components/ActionButtonGroup';
 import TokenList from '../components/Tokens/TokensList/TokenList';
 import { Box, Button, Flex, Text } from 'rebass';
-import { useDispatch, useSelector } from 'react-redux';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import _isEqual from 'lodash/isEqual';
 import { motion } from 'framer-motion';
@@ -20,8 +20,9 @@ import { useLazyQuery } from '@apollo/react-hooks';
 import { useTranslation } from 'react-i18next';
 import { LISTENER_POLL_INTERVAL, SSO_LOGIN_URL } from 'src/config';
 import { setModalData } from 'src/redux/actions/Modal';
+import { getApolloConnected } from 'src';
 
-const modal = {
+const modalOptions = {
   hidden: { y: 200 },
   visible: { y: 0, transition: { delay: 0.6, ease: 'easeOut', duration: 0.23 } },
 };
@@ -50,15 +51,17 @@ const MultiToken: React.FC = () => {
   //                           Get data from the store                          */
   // -------------------------------------------------------------------------- */
 
-  const { web3, ethAddress, user: userObj, accessToken } = useSelector(
-    ({ chain, wallet, user, co3uum }: any) => {
+  const { errorWeb3, ethAddress, features, accessToken, modalOpen } = useSelector(
+    ({ chain, wallet, pilot, co3uum, modal }: any) => {
       return {
-        web3: chain.web3,
+        errorWeb3: chain.errorWeb3,
         ethAddress: wallet.ethAddress,
-        user,
+        features: pilot.features,
         accessToken: co3uum.accessToken,
+        modalOpen: modal.isOpen,
       };
     },
+    shallowEqual,
   );
 
   const [balanceTokenQuery, { called, data }] = useLazyQuery(BALANCE_NOTIFY_QUERY, {
@@ -71,13 +74,15 @@ const MultiToken: React.FC = () => {
   useEffect(() => {
     if (ethAddress) {
       balanceTokenQuery();
-      const TokenInterval = setInterval(() => {
-        !called && balanceTokenQuery();
-      }, LISTENER_POLL_INTERVAL);
+      if (data) {
+        const TokenInterval = setInterval(() => {
+          !called && balanceTokenQuery();
+        }, LISTENER_POLL_INTERVAL);
 
-      return () => {
-        clearInterval(TokenInterval);
-      };
+        return () => {
+          clearInterval(TokenInterval);
+        };
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [balanceTokenQuery, ethAddress]);
@@ -88,11 +93,11 @@ const MultiToken: React.FC = () => {
         setTokenList(data.balanceNotificationMany);
         setTokenLoading(false);
       }
-      if (data.balanceNotificationMany.length === 0 && web3) {
+      if (data.balanceNotificationMany.length === 0 && errorWeb3) {
         setTokenLoading(false);
       }
     }
-  }, [data, tokenList, tokenLoading, web3]);
+  }, [data, tokenList, tokenLoading, errorWeb3]);
 
   const onControlledDrag = (e: any, pos: any) => {
     if (tokenLoading === false && tokenList.length === 0) {
@@ -122,7 +127,7 @@ const MultiToken: React.FC = () => {
   const BoundToTop = (val: any) => {
     if (val) {
       setBound({ left: 0, top: 0, right: 0, bottom: 0 });
-      setControlledPosition({ x: 0, y: 0 });
+      setControlledPosition({ x: 0, y: tokenList.length === 0 ? 250 : 0 });
     } else {
       setBound(recentbound);
       setControlledPosition(recentPos);
@@ -163,32 +168,26 @@ const MultiToken: React.FC = () => {
   }, [tokenLoading, tokenList.length, tokenList]);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!web3) {
-        dispatch(
-          setModalData(
-            true,
-            t('common.no_connectivity'),
-            <Button
-              height="30px"
-              margin="20px auto 0px"
-              width="130px"
-              style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
-              onClick={() => window.location.reload()}
-            >
-              {t('common.reload')}
-            </Button>,
-            'permission',
-          ),
-        );
-      }
-    }, 3000);
-
-    return () => {
-      clearTimeout(timer);
-    };
+    if (!getApolloConnected() && !modalOpen) {
+      dispatch(
+        setModalData(
+          true,
+          t('common.no_connectivity'),
+          <Button
+            height="30px"
+            margin="20px auto 0px"
+            width="130px"
+            style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
+            onClick={() => window.location.reload()}
+          >
+            {t('common.reload')}
+          </Button>,
+          'permission',
+        ),
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [web3]);
+  }, [getApolloConnected(), modalOpen]);
 
   const errorModalMsg = (title: string) => (
     <Flex width="max-content" margin="auto" className="error-modal">
@@ -203,6 +202,7 @@ const MultiToken: React.FC = () => {
         {t(title)}
       </Text>
       <Button
+        className="modal-login-btn"
         height="30px"
         margin="20px auto 0px"
         width="130px"
@@ -215,14 +215,18 @@ const MultiToken: React.FC = () => {
   );
 
   const displayLoginPopup = () => {
-    dispatch(
-      setModalData(
-        true,
-        errorModalMsg('multitoken.error_login'),
-        errorModalBody('multitoken.error_login_msg'),
-        'permission',
-      ),
-    );
+    try {
+      dispatch(
+        setModalData(
+          true,
+          errorModalMsg('multitoken.error_login'),
+          errorModalBody('multitoken.error_login_msg'),
+          'permission',
+        ),
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const { state } = history.location as any;
@@ -236,15 +240,14 @@ const MultiToken: React.FC = () => {
     >
       <ToolBar color="background">
         {/* <IconButton onClick={() => history.push('/app-settings')} icon="menu" color="dark" /> */}
-        <ToolBarTitle marginLeft="10px" fontSize="18px" color="dark">
+        <ToolBarTitle marginLeft="10px" fontSize="20px" color="dark">
           {t('multitoken.label')}
         </ToolBarTitle>
       </ToolBar>
       {/* <img src={image}/> */}
 
       <Flex className="pending-token">
-        {userObj &&
-          userObj.features.indexOf('createToken') > -1 &&
+        {features.indexOf('createToken') > -1 &&
           state &&
           state.pendingToken &&
           state.pendingToken.length > 0 &&
@@ -288,6 +291,7 @@ const MultiToken: React.FC = () => {
                   label: t('multitoken.pay'),
                   labelColor: 'primary',
                   color: 'primary',
+                  className: 'pay-btn',
                   onClick: () => {
                     history.replace('/scan');
                   },
@@ -299,6 +303,7 @@ const MultiToken: React.FC = () => {
                   iconBg: 'primary',
                   labelColor: 'primary',
                   color: 'primary',
+                  className: 'recieve-btn',
                   onClick: () => {
                     history.replace('/receive');
                   },
@@ -310,6 +315,7 @@ const MultiToken: React.FC = () => {
                   iconBg: 'white',
                   labelColor: 'primary',
                   color: 'primary',
+                  className: 'txnhistory-btn',
                   onClick: () => {
                     history.replace('/transaction-history');
                   },
@@ -326,7 +332,7 @@ const MultiToken: React.FC = () => {
               }}
             >
               <motion.div initial="hidden" animate="visible" exit="hidden">
-                <motion.div variants={modal}>
+                <motion.div variants={modalOptions}>
                   <Box
                     backgroundColor="background"
                     paddingTop={3}
@@ -360,8 +366,9 @@ const MultiToken: React.FC = () => {
                       />
                     </Box>
                     <Flex justifyContent="flex-end" paddingX={6} height="35px">
-                      {!tokenLoading && userObj && userObj.features.indexOf('createToken') > -1 && (
+                      {!tokenLoading && features.indexOf('createToken') > -1 && (
                         <IconButton
+                          className="add-round-btn"
                           marginY={2}
                           size="s8"
                           backgroundColor={'black'}
@@ -412,7 +419,6 @@ const MultiToken: React.FC = () => {
         </Draggable>
       </Flex>
       <STFooter iconActive="walletIcon" />
-
       {createToken && <AssetPopup setCreateToken={setCreateToken} />}
     </Flex>
   );

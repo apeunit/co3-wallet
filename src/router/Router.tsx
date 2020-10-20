@@ -17,6 +17,7 @@ const AppRouter = () => {
 function RouteWithSubRoutes(route: any) {
   return (
     <Route
+      exact={route.exact}
       path={route.path}
       render={(props: any) => <route.component {...props} routes={route.routes} />}
     />

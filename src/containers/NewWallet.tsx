@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Flex, Text, Image } from 'rebass';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Flex, Image, Text } from 'rebass';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import '../assets/styles/Setting.css';
@@ -13,7 +13,7 @@ import ErrorMsg from 'src/components/ErrorMsg';
 import { useDispatch, useSelector } from 'react-redux';
 import { savePublicKeyAPI } from 'src/api/co3uum';
 import { mnemonicToSeed } from 'bip39';
-import { initWallet, setPublicKey, setMnemonic, generateMnemonicPhrase } from 'src/redux/actions/Wallet';
+import { generateMnemonicPhrase, initWallet, setMnemonic, setPublicKey } from 'src/redux/actions/Wallet';
 import { publicToAddress, toChecksumAddress } from 'ethereumjs-util';
 import { setModalData } from '../redux/actions/Modal';
 import Loading from '../components/Loading';
@@ -68,7 +68,7 @@ const NewWallet = () => {
   const errorModalMsg = (title: string) => (
     <Flex width="max-content" margin="auto" className="error-modal">
       <IconButton height="26px" width="26px" icon="errorOutline" />
-      <Text className="error-message">{title}</Text>
+      <Text width="250px" className="error-message">{title}</Text>
     </Flex>
   );
 
@@ -138,6 +138,27 @@ const NewWallet = () => {
     }
   };
 
+  const handleKey = useCallback(
+    (event) => {
+      if (event.key === 'Enter') {
+        if (step === 8 || step === 9) {
+          return;
+        }
+        handleSteps();
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [step],
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKey, false);
+
+    return () => {
+      document.removeEventListener('keydown', handleKey, false);
+    };
+  }, [handleKey]);
+
   const getRandomPhrase = () => {
     const arr = [
       ..._sampleSize(mnemonicPhrase.split(' ').slice(0, 6), 2),
@@ -162,8 +183,8 @@ const NewWallet = () => {
     boxSteps.find((e) => e === step)
       ? setBoxHeight('')
       : step === 4
-        ? setBoxHeight('35vh')
-        : setBoxHeight('48vh');
+      ? setBoxHeight('35vh')
+      : setBoxHeight('48vh');
   }, [step]);
 
   useEffect(() => {
@@ -221,7 +242,7 @@ const NewWallet = () => {
         </Text>
         <div />
       </Flex>
-      <Flex flexDirection="column" height="91vh" paddingX={6} >
+      <Flex flexDirection="column" height="91vh" paddingX={6}>
         <div className={classes.root}>
           <LinearProgress
             classes={{
@@ -235,21 +256,13 @@ const NewWallet = () => {
         </div>
         {boxHeight ? (
           <Flex height="85%" flexDirection="column">
-            <Flex
-              margin="15px auto 30px"
-              width="332px"
-              height={boxHeight}
-            >
-              {backupImages[step] && (
-                <Image
-                  src={backupImages[step]}
-                  width="100%"
-                />
-              )}
+            <Flex margin="15px auto 30px" width="332px" height={boxHeight}>
+              {backupImages[step] && <Image src={backupImages[step]} width="100%" />}
             </Flex>
             <Flex marginTop="auto">
               <Text width="100%" textAlign="center">
-                <div dangerouslySetInnerHTML={{ __html: t(`recovery_phrase.new_wallet_s${step}`) }}
+                <div
+                  dangerouslySetInnerHTML={{ __html: t(`recovery_phrase.new_wallet_s${step}`) }}
                 />
               </Text>
             </Flex>
@@ -334,6 +347,7 @@ const NewWallet = () => {
               icon="next"
               size="s14"
               color="white"
+              className="next-step-btn"
               onClick={handleSteps}
               marginBottom="-20px"
             />

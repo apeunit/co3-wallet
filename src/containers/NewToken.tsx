@@ -4,13 +4,13 @@ import { Flex, Text } from 'rebass';
 import RadioButtonGroup from '../components/RadioButtonGroup';
 import AddImage from '../components/AddImage';
 import { useHistory } from 'react-router-dom';
-import TokenCard from '../components/Tokens/NewToken/TokenCard';
+import TokenCard from '../components/Tokens/CreateTokens/TokenCard';
 import TextArea from '../components/TextArea';
-import CreateTokenBuyStep from '../components/CreateTokens/CreateTokenBuyStep';
-import CreateTokenFooter from '../components/CreateTokens/CreateTokenFooter';
-import CreateTokenInput from '../components/CreateTokens/CreateTokenInput';
-import CreateTokenDetail from '../components/CreateTokens/CreateTokenDetail';
-import { contractsRadio, createTokenSteps, tokensRadio } from './TokenRadioText';
+import CreateBuyStep from '../components/StepsComponents/CreateBuyStep';
+import CreateFooterStep from '../components/StepsComponents/CreateFooterStep';
+import CreateInputStep from '../components/StepsComponents/CreateInputStep';
+import CreateDetailStep from '../components/StepsComponents/CreateDetailStep';
+import { contractsRadio, createTokenSteps, tokensRadio } from './commonData';
 import ErrorMsg from '../components/ErrorMsg';
 import _get from 'lodash/get';
 import { motion } from 'framer-motion';
@@ -52,7 +52,7 @@ const NewToken: React.FC = () => {
     ({ chain, wallet, co3uum }: any) => {
       return {
         web3: chain.web3,
-        tokenFactory: chain.contracts.tokenFactory,
+        tokenFactory: chain.contracts && chain.contracts.tokenFactory,
         ethAddress: wallet.ethAddress,
         accessToken: co3uum.accessToken,
       };
@@ -161,14 +161,13 @@ const NewToken: React.FC = () => {
       const res = saveResource(accessToken, e.target.files[0]);
       res
         .then(({ data }: any) => {
-          console.log(data, 'data')
           setUploading(false);
           const link = getPermalink(data);
           link ? onchangeToken({ ...token, icon: link }) : console.log(data);
         })
         .catch((err: any) => {
           setUploading(false);
-          setError('Invalid Token');
+          setError(t('common.invalid_token'));
         });
     } else {
       setUploading(false);
@@ -210,15 +209,18 @@ const NewToken: React.FC = () => {
           link ? onchangeToken({ ...token, contract: link }) : console.log(data);
         })
         .catch((err: any) => {
+          console.log(err, "err")
           setUploading(false);
-          setError('Invalid Token');
+          setError(t('common.invalid_token'));
         });
+    } else {
+      setUploading(false);
     }
   };
 
   const handleEdit = (stepName: string) => {
     setTitle(`${t('common.edit')} ${stepName}`);
-    const stepData = createTokenSteps.find((_step: any) => stepName === _step.title);
+    const stepData = createTokenSteps.find((_step: any) => stepName === t(`${_step.title}`));
     if (stepData) {
       setStep(stepData.stepId);
     }
@@ -260,7 +262,7 @@ const NewToken: React.FC = () => {
       })
       .catch((err: any) => {
         setLoader(false);
-        console.log(err, 'NewToken');
+        console.log(err, 'NewToken', loader);
         dispatch(
           setModalData(
             true,
@@ -304,7 +306,7 @@ const NewToken: React.FC = () => {
           style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
         >
           {step === 1 && (
-            <CreateTokenInput
+            <CreateInputStep
               type="text"
               value={token.name}
               onChangeValue={(e: any) => handleChangeToken(e, 'name')}
@@ -312,12 +314,13 @@ const NewToken: React.FC = () => {
               placeholder={t('new_token.name_placeholder')}
               maxLength="20"
               msg=""
+              className="token-name-input"
               error={error}
               handleKeyChange={_handleKeyDown}
             />
           )}
           {step === 2 && (
-            <CreateTokenInput
+            <CreateInputStep
               type="text"
               value={token.symbol}
               onChangeValue={(e: any) => handleChangeToken(e, 'symbol')}
@@ -325,6 +328,7 @@ const NewToken: React.FC = () => {
               placeholder={t('new_token.symbol_placeholder')}
               maxLength="4"
               msg={t('new_token.symbol_msg')}
+              className="token-symbol-input"
               error={error}
               handleKeyChange={_handleKeyDown}
             />
@@ -362,6 +366,7 @@ const NewToken: React.FC = () => {
                   value={token.description}
                   onChangeValue={(e: any) => handleChangeToken(e, 'description')}
                   onFocus={handleFocus}
+                  className="token-description-input"
                   label={t('common.short_description')}
                   placeholder={t('new_token.description_placeholder')}
                   maxLength="500"
@@ -388,7 +393,7 @@ const NewToken: React.FC = () => {
                 {token.contractType === 'Custom Contract' && (
                   <Flex flexDirection="column" height="100%" justifyContent="space-between">
                     <AddImage
-                      label={contractLabel ? contractLabel : 'Upload contract'}
+                      label={contractLabel ? contractLabel : t('common.upload_contract')}
                       accept="application/pdf"
                       icon={contractLabel ? 'clouddone' : 'cloud'}
                       onChange={onChangeContract}
@@ -419,7 +424,7 @@ const NewToken: React.FC = () => {
             </FramerSlide>
           )}
           {step === 7 && (
-            <CreateTokenInput
+            <CreateInputStep
               type="number"
               value={token.totalSupply}
               onChangeValue={(e: any) => handleChangeToken(e, 'totalSupply')}
@@ -427,14 +432,15 @@ const NewToken: React.FC = () => {
               placeholder={t('new_token.total_supply_placeholder')}
               maxLength=""
               msg=""
+              className="token-totalsupply-input"
               error={error}
               handleKeyChange={_handleKeyDown}
             />
           )}
-          {step === 8 && <CreateTokenBuyStep data={token} />}
-          {step === 9 && <CreateTokenDetail handleEdit={handleEdit} data={token} />}
+          {step === 8 && <CreateBuyStep data={token} />}
+          {step === 9 && <CreateDetailStep handleEdit={handleEdit} data={token} />}
           {!uploading && error === '' && step !== 9 && (
-            <CreateTokenFooter
+            <CreateFooterStep
               lastStep={step === 8}
               handleSteps={handleSteps}
               onbtnDrag={handleCreateToken}

@@ -29,13 +29,13 @@ export const SelectToken: React.FC = (props: any) => {
   }, [balanceTokenQuery, ethAddress]);
 
   useEffect(() => {
-    if (data) {
+    if (data && data.balanceNotificationMany) {
       const list = data.balanceNotificationMany.filter(
         (_token: IToken) => _token.amount && _token.amount > 0,
       );
       setTokenList(list);
     }
-  }, [data, tokenList]);
+  }, [data]);
 
   return (
     <Flex flexDirection="column" backgroundColor="#eff3ff" height="100vh">

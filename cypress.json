@@ -1,0 +1,16 @@
+{
+  "projectId": "qprirn",
+  "chromeWebSecurity": false,
+  "viewportWidth": 379,
+  "viewportHeight": 825,
+  "env": {
+    "CLIENT_SERVER": "https://develop--co3-development.netlify.app",
+    "ACCESS_TOKEN": "6QO17UKQfL517hNC",
+    "API_FIRSTLIFE_URL_STORAGE": "https://storage.firstlife.org",
+    "API_SERVER":  "CO3UUM_DEV",
+    "MNEMONIC_PHRASE": "vague vanish unique bar blade already logic egg worth crawl together measure",
+    "TO_ADDRESS": "0x52e6A51052a2D77fff37951056EbFeE79782C7Fb",
+    "ACTIVITY_ID": "5f4cc6b20eca08088d47bfed",
+    "CALLBACK_URL": ""
+  }
+}

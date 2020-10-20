@@ -5,7 +5,7 @@ import ToolBar from '../components/ToolBar';
 import IconButton from '../components/IconButton';
 import ToolBarTitle from '../components/ToolBarTitle';
 import ActionButtonGroup from '../components/ActionButtonGroup';
-import TokenCard from '../components/Tokens/NewToken/TokenCard';
+import TokenCard from '../components/Tokens/CreateTokens/TokenCard';
 import { Flex } from 'rebass';
 import STFooter from '../components/SingleTokenComponents/STFooter';
 import { setTransferToken } from '../redux/actions/Wallet';
@@ -44,7 +44,8 @@ const SingleToken: React.FC = () => {
     if (ethAddress) {
       balanceTokenQuery();
     }
-  }, [balanceTokenQuery, ethAddress]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ethAddress]);
 
   useEffect(() => {
     if (data) {

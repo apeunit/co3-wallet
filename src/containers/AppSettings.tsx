@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import IconButton from '../components/IconButton';
 import { Box, Flex, Text } from 'rebass';
 import { useHistory } from 'react-router-dom';
-import CreateTokenInput from '../components/CreateTokens/CreateTokenInput';
+import CreateInputStep from '../components/StepsComponents/CreateInputStep';
 import { motion } from 'framer-motion';
 import { useDispatch, useSelector } from 'react-redux';
 import { setNodeUrl, setTokenFactoryAddress } from '../redux/actions/Wallet';
@@ -104,7 +104,7 @@ const AppSettings: React.FC = () => {
           }}
         >
           <Flex justifyContent="center" flexDirection="column" paddingTop="33px">
-            <CreateTokenInput
+            <CreateInputStep
               type="text"
               value={tokenAddress}
               onChangeValue={handleTokenAdd}
@@ -114,7 +114,7 @@ const AppSettings: React.FC = () => {
               msg=""
               error={error}
             />
-            <CreateTokenInput
+            <CreateInputStep
               type="text"
               value={wsUrl}
               onChangeValue={handleWsUrl}

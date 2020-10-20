@@ -14,25 +14,38 @@ import ApolloClient from 'apollo-boost';
 import './i18n';
 import Loading from './components/Loading';
 import { LISTENER_URL, SENTRY_DSN } from './config';
-import { isIOS, osName, osVersion } from "react-device-detect";
+import { isIOS, osName, osVersion } from 'react-device-detect';
 
-// initialize sentry (only if SENTRY_DSN is defined) 
+// initialize sentry (only if SENTRY_DSN is defined)
 Sentry.init({ dsn: SENTRY_DSN });
 
 // remove manifest.json on iOS
 if (isIOS) {
   const element = document.getElementById('manifest-link');
   console.log(`OS ${osName} ${osVersion}, remove manifest: should suppress PWA installation`);
-  if (element) { element.remove(); }
+  if (element) {
+    element.remove();
+  }
 } else {
-  console.log(`OS ${osName} ${osVersion}, PWA installation available`)
+  console.log(`OS ${osName} ${osVersion}, PWA installation available`);
 }
 
 const store = configureStore({});
 
+let apolloConnected = true;
+
 const client = new ApolloClient({
   uri: LISTENER_URL,
+  onError: ({ networkError }) => {
+    if (networkError) {
+      apolloConnected = false;
+    }
+  },
 });
+
+export const getApolloConnected = () => {
+  return apolloConnected;
+};
 
 ReactDOM.render(
   <ThemeProvider theme={theme}>

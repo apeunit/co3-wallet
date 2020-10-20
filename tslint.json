@@ -54,7 +54,8 @@
     "prefer-array-literal": false,
     "no-redundant-jsdoc": false,
     "array-type": false,
-    "match-default-export-name": false
+    "match-default-export-name": false,
+    "cyclomatic-complexity": false
   },
   "linterOptions": {
     "exclude": ["node_modules", "server.js"]

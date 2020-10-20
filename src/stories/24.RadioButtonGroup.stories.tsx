@@ -2,7 +2,7 @@ import React from 'react';
 import { addParameters } from '@storybook/react';
 import { INITIAL_VIEWPORTS } from '@storybook/addon-viewport';
 import RadioButtonGroup from '../components/RadioButtonGroup';
-import { contractsRadio } from '../containers/TokenRadioText';
+import { contractsRadio } from '../containers/commonData';
 
 addParameters({
   viewport: {

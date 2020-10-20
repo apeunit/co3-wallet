@@ -11,7 +11,7 @@ const RecoveryPhrase = () => {
 
   const handlebackStep = () => {
     history.push('/settings');
-  }
+  };
 
   return (
     <Flex

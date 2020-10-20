@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import IconButton from '../components/IconButton';
 import QRCodeCanvas from 'qrcode.react';
 import { Box, Flex, Text } from 'rebass';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 const Receive = () => {
   const { t } = useTranslation();
   const history = useHistory();
+  const [copied, setCopied] = useState(false);
   const { ethAddress } = useSelector(({ wallet }: any) => {
     return {
       ethAddress: wallet.ethAddress,
@@ -18,6 +20,8 @@ const Receive = () => {
   if (!ethAddress) {
     history.replace('/');
   }
+
+  console.log(copied, "copied");
 
   return (
     <Flex
@@ -54,14 +58,19 @@ const Receive = () => {
             position: 'absolute',
           }}
         >
-          {ethAddress && (
-            <QRCodeCanvas
-              value={ethAddress}
-              bgColor="#ffffff"
-              fgColor="#3948FF"
-              style={{ maxWidth: '295px', maxHeight: '295px', height: '100%', width: '100%' }}
-            />
-          )}
+          <CopyToClipboard
+            text={`${window.location.href.split('receive')[0]}tx?to=${ethAddress}`}
+            onCopy={() => setCopied(true)}
+          >
+            {ethAddress && (
+              <QRCodeCanvas
+                value={ethAddress}
+                bgColor="#ffffff"
+                fgColor="#3948FF"
+                style={{ maxWidth: '295px', maxHeight: '295px', height: '100%', width: '100%' }}
+              />
+            )}
+          </CopyToClipboard>
         </Flex>
       </Box>
       <Flex justifyContent="center" marginY={9}>

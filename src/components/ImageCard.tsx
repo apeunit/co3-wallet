@@ -5,14 +5,14 @@ import avatarImg from '../images/placeholder-img.png';
 import Avatar from './Avatar';
 
 const ImageCard = (props: any) => {
-  const { name, symbol, amount, loading, style, getImg, type, ...rest } = props;
+  const { name, symbol, amount, loading, style, getImg, type, uploadIcon, ...rest } = props;
 
   return (
     <Flex
       color="#303030"
       alignItems="center"
       padding={6}
-      height="55vw"
+      height={uploadIcon === 'crowdsale' ? '240px' : '55vw'}
       flexDirection="column"
       justifyContent="space-between"
       backgroundColor="#F8F9FA"
@@ -23,7 +23,7 @@ const ImageCard = (props: any) => {
         backgroundSize: 'contain',
       }}
       sx={{
-        borderRadius: '10px',
+        borderRadius: uploadIcon === 'crowdsale' ? '8px' : '10px',
         ...style,
       }}
       {...rest}
@@ -41,17 +41,20 @@ const ImageCard = (props: any) => {
               placeholder={avatarImg}
               padding={0}
               uploaded={props.icon}
+              uploadIcon={props.uploadIcon}
             />
           </Flex>
         ) : (
-          <Avatar
-            marginRight="10px"
-            loading={!props.icon}
-            image={props.icon}
-            borderRadius="50px"
-            size="56px"
-            justifyContent="flex-end"
-          />
+          uploadIcon !== 'crowdsale' && (
+            <Avatar
+              marginRight="10px"
+              loading={!props.icon}
+              image={props.icon}
+              borderRadius="50px"
+              size="56px"
+              justifyContent="flex-end"
+            />
+          )
         )}
       </Flex>
     </Flex>

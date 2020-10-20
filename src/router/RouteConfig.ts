@@ -1,15 +1,22 @@
+import NotFound404 from 'src/containers/404NotFound';
+import CrowdsaleCS from 'src/containers/Crowdsale';
 import DeleteWallet from 'src/containers/DeleteWallet';
 import ImportWallet from 'src/containers/ImportWallet';
 import Language from 'src/containers/Language';
+import NewPayment from 'src/containers/NewPayment';
 import NewWallet from 'src/containers/NewWallet';
 import RecoveryPhrase from 'src/containers/RecoveryPhrase';
 import Settings from 'src/containers/Settings';
+import VendingMachine from 'src/containers/VendingMachine';
 import ConfirmPayment from '../components/ConfirmPayment';
 import { SelectToken } from '../components/SelectToken';
 import AppSettings from '../containers/AppSettings';
+import CrowdsaleDetail from '../containers/CrowdsaleDetail';
 import MainPage from '../containers/MainPage';
+import MarketPlace from '../containers/MarketPlace';
 import Minting from '../containers/Minting';
 import NewCoupon from '../containers/NewCoupon';
+import NewCrowdsale from '../containers/NewCrowdsale';
 import NewToken from '../containers/NewToken';
 import Pay from '../containers/Pay';
 import Payment from '../containers/payment';
@@ -20,6 +27,18 @@ import TransactionDetails from '../containers/TransactionDetails';
 import TransactionsHistory from '../containers/TransactionsHistory';
 
 export const routes = [
+  {
+    path: '/tx',
+    component: NewPayment,
+  },
+  {
+    path: '/attach-sm',
+    component: CrowdsaleCS,
+  },
+  {
+    path: '/vm',
+    component: VendingMachine,
+  },
   {
     path: '/token-mint',
     component: Minting,
@@ -97,7 +116,25 @@ export const routes = [
     component: TransactionDetails,
   },
   {
+    path: '/crowdsale-detail',
+    component: CrowdsaleDetail,
+  },
+  {
+    path: '/marketplace',
+    component: MarketPlace,
+  },
+  {
+    path: '/new-crowdsale',
+    component: NewCrowdsale,
+  },
+  {
     path: '/',
+    exact: true,
     component: MainPage,
+  },
+  {
+    path: '/*',
+    exact: false,
+    component: NotFound404,
   },
 ];

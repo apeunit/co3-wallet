@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import chain from './Chain';
 import co3uum from './CO3UUM';
 import modal from './Modal';
-import user from './User';
+import pilot from './Pilot';
 import wallet from './Wallet';
 export default (history: any) =>
   combineReducers({
@@ -12,5 +12,5 @@ export default (history: any) =>
     wallet,
     chain,
     modal,
-    user,
+    pilot,
   });

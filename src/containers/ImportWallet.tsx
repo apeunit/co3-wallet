@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Flex, Image, Text } from 'rebass';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -58,15 +58,20 @@ const ImportWallet = () => {
     displayModal(t('recovery_phrase.new_wallet_success'));
   };
 
-  const handleSteps = () => {
-    if (step === 3) {
-      if (phrases.find((e) => !e || e === '') === '') {
-        setError(t('recovery_phrase.import_wallet_error'));
+  const checkPhrase = (firstKey: number, lastKey: number) => {
+    if (phrases.slice(firstKey, lastKey).find((e) => !e || e === '') === '') {
+      setError(t('recovery_phrase.import_wallet_error'));
 
-        return;
-      } else {
-        setStep(step + 1);
-      }
+      return;
+    } else {
+      setStep(step + 1);
+      setFocusId(0);
+    }
+  };
+
+  const handleSteps = () => {
+    if (step === 2 || step === 3) {
+      step === 2 ? checkPhrase(0, 5) : checkPhrase(6, 11);
     } else if (step <= 4) {
       setStep(step + 1);
       setFocusId(0);
@@ -93,6 +98,24 @@ const ImportWallet = () => {
       customRef.current[focusId].focus();
     }
   }, [focusId]);
+
+  const handleKey = useCallback(
+    (event) => {
+      if (event.key === 'Enter' && step !== 2 && step !== 3) {
+        handleSteps();
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [step],
+  );
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleKey, false);
+
+    return () => {
+      document.removeEventListener('keydown', handleKey, false);
+    };
+  }, [handleKey]);
 
   const handlebackStep = () => {
     if (error) {
@@ -131,7 +154,9 @@ const ImportWallet = () => {
           autoFocus={focusId === index}
           handleKeyChange={(e: any) => handleKeyChange(e, index)}
           customRef={(el: any) => (customRef.current[index] = el)}
-          className={focusId === index ? 'focus-true' : 'focus-false'}
+          className={
+            focusId === index ? `focus-true phrase-${index}` : `focus-false phrase-${index}`
+          }
           autoComplete={'off'}
           type="input"
         />
@@ -182,7 +207,9 @@ const ImportWallet = () => {
             <Flex marginTop="auto">
               <Text width="100%" textAlign="center">
                 <div
-                  dangerouslySetInnerHTML={{ __html: t(`recovery_phrase.import_wallet_s${step}`) }}
+                  dangerouslySetInnerHTML={{
+                    __html: t(`recovery_phrase.import_wallet_s${step}`),
+                  }}
                 />
               </Text>
             </Flex>
@@ -235,6 +262,7 @@ const ImportWallet = () => {
               icon="next"
               size="s14"
               color="white"
+              className="next-step-btn"
               onClick={handleSteps}
               marginBottom="-20px"
             />

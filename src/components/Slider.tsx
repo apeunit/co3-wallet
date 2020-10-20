@@ -11,6 +11,7 @@ interface IProps {
   onClick: any;
   dragEnd: any;
 }
+const isDev = process.env.NODE_ENV === 'development';
 
 export const Slider: React.FC<IProps> = ({
   title,
@@ -22,7 +23,8 @@ export const Slider: React.FC<IProps> = ({
 }) => {
   // tslint:disable-next-line: no-null-keyword
   const constraintsRef = useRef(null);
-  const x = useMotionValue(-167);
+  const slideX = process.env.NODE_ENV === 'development' ? 120 : -118;
+  const x = useMotionValue(slideX);
   const rotateY = useTransform(x, [0, 0, 0], [0, 0, 0], {
     clamp: false,
   });
@@ -60,11 +62,12 @@ export const Slider: React.FC<IProps> = ({
           }}
         >
           <IconButton
-            onClick={onClick}
+            onClick={isDev ? onClick : () => console.log("Creating")}
             size="s14"
             icon="next"
             width="56px"
             height="56px"
+            className="next-step-btn"
             color={bgColor}
             backgroundColor={btnColor}
           />
