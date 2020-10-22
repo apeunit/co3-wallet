@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 
+<a name="1.2.2"></a>
+## [1.2.2] - 2020-10-22
+### Fix
+- **regression:** unable to send tokens
+
+
 <a name="1.2.1"></a>
 ## [1.2.1] - 2020-10-20
 ### Fix
@@ -108,7 +114,8 @@
 <a name="1.0.0"></a>
 ## 1.0.0 - 2020-06-30
 
-[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.2.1...HEAD
+[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.2.2...HEAD
+[1.2.2]: https://github.com/apeunit/co3-wallet/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/apeunit/co3-wallet/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/apeunit/co3-wallet/compare/1.1.2...1.2.0
 [1.1.2]: https://github.com/apeunit/co3-wallet/compare/1.1.1...1.1.2

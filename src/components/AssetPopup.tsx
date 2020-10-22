@@ -100,16 +100,17 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                         history.replace('/new-crowdsale');
                       },
                     },
-                    {
-                      icon: 'history',
-                      label: t('asset_popup.history'),
-                      key: 'history',
-                      iconColor: 'white',
-                      iconBg: 'blue600',
-                      onClick: () => {
-                        history.replace('/historyPage');
-                      },
-                    },
+                    // TODO: this should not be necessary
+                    // {
+                    //   icon: 'history',
+                    //   label: t('asset_popup.history'),
+                    //   key: 'history',
+                    //   iconColor: 'white',
+                    //   iconBg: 'blue600',
+                    //   onClick: () => {
+                    //     history.replace('/historyPage');
+                    //   },
+                    // },
                   ]}
                 />
               </Flex>

@@ -73,13 +73,17 @@ const ConfirmPayment = () => {
   }, [location.search, token, tokenList]);
 
   useEffect(() => {
-    const amount = data?.balanceNotificationMany[0]?.amount;
-    dispatch(
-      setTransferToken({
-        ...tokenData,
-        amount,
-      }),
-    );
+    const params = new URLSearchParams(location.search);
+    const tokenParam = params.get('token');
+    if (tokenParam) {
+      const amount = data?.balanceNotificationMany[0]?.amount;
+      dispatch(
+        setTransferToken({
+          ...tokenData,
+          amount,
+        }),
+      );
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, tokenData]);
 

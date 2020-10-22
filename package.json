@@ -1,6 +1,6 @@
 {
   "name": "co3-wallet-react",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "author": "Ape Unit GmbH <u2467@apeunit.com>",
   "private": true,
   "dependencies": {
