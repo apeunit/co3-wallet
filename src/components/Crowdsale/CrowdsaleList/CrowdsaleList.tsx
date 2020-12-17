@@ -23,17 +23,13 @@ const CrowdsaleList: React.FC<IProps> = ({ crowdsaleList, tokenList }) => {
       style={{ overflow: 'hidden' }}
     >
       <Text fontSize={3} paddingX={7} paddingTop={5} paddingBottom={4}>
-        {t('new_crowdsale.marketplace')}
+        {t('marketplace.label')}
       </Text>
       <div style={{ overflow: 'scroll', height: '85vh' }}>
         <Flex flexDirection="column">
           {crowdsaleList && crowdsaleList.length > 0 ? (
-            crowdsaleList.map((crowdsale: ICrowdsaleData) => (
-              <CrowdsaleListItem
-                key={crowdsale.crowdsaleId}
-                crowdsale={crowdsale}
-                tokenList={tokenList}
-              />
+            crowdsaleList.map((crowdsale: ICrowdsaleData, index: number) => (
+              <CrowdsaleListItem key={index} crowdsale={crowdsale} tokenList={tokenList} />
             ))
           ) : (
             <CrowdsaleListPlaceholder counter={2} />

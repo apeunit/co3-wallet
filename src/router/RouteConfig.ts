@@ -7,6 +7,7 @@ import NewPayment from 'src/containers/NewPayment';
 import NewWallet from 'src/containers/NewWallet';
 import RecoveryPhrase from 'src/containers/RecoveryPhrase';
 import Settings from 'src/containers/Settings';
+import SingleTokenTxnHistory from 'src/containers/SingleTokenTxnHistory';
 import VendingMachine from 'src/containers/VendingMachine';
 import ConfirmPayment from '../components/ConfirmPayment';
 import { SelectToken } from '../components/SelectToken';
@@ -30,6 +31,10 @@ export const routes = [
   {
     path: '/tx',
     component: NewPayment,
+  },
+  {
+    path: '/singletxnhistory',
+    component: SingleTokenTxnHistory,
   },
   {
     path: '/attach-sm',

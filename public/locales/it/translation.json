@@ -12,7 +12,8 @@
     "label": "Conio",
     "supply_placeholder": "Inserisci la riserva della valuta",
     "token_mint_info": "Informazioni sulla coniazione",
-    "token_mint_failed": "Coniazione non riuscita"
+    "token_mint_failed": "Coniazione non riuscita",
+    "coupon_mint_decimal_error": "Decimali non consentiti nel conio di coupon"
   },
   "multitoken": {
     "label": "Portafoglio",
@@ -36,7 +37,8 @@
     "total_coupon_placeholder": "Inserisci la disponibilità complessiva",
     "coupon_created": "Coupon creato",
     "coupon_creation_failed": "Creazione del coupon non riuscita",
-    "coupon_type": "Tipo di coupon"
+    "coupon_type": "Tipo di coupon",
+    "mintable_coupon" : "Coupon Mintable"
   },
   "common": {
     "name": "Nome",
@@ -61,7 +63,9 @@
     "reload": "Riprova",
     "slide_to_create": "Scorri per creare",
     "invalid_token": "Gettone non valido",
-    "upload_contract": "Carica contratto"
+    "upload_contract": "Carica contratto",
+    "mintable_token" : "Token Mintable",
+    "dummy_text": "lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum"
   },
   "new_crowdsale" : {
     "label": "Nuovo crowdsale",
@@ -95,8 +99,19 @@
     "starting_date":"Data di inizio del tuo Crowdsale-Campagne",
     "ending_date":"Data di fine del tuo Crowdsale-Campagne",
     "crowdsale_created": "Creazione di Crowdsale",
-    "crowdsale_creation_failed":"Creazione di crowdsale non riuscita",
-    "marketplace":"Mercata"
+    "crowdsale_creation_failed":"Creazione di crowdsale non riuscita"
+  },
+  "marketplace": {
+    "label":"Mercata",
+    "goal":"Obbiettivo",
+    "closes":"Chiude",
+    "days":"giorni",
+    "hours":"ore",
+    "minutes":"minuti",
+    "seconds":"secondi",
+    "no_details":"Dettagli su crowdsale non disponibili.",
+    "started_on":"Iniziato il",
+    "buy_now": "ACQUISTA ORA"
   },
   "new_token": {
     "label": "Nuova valuta",
@@ -104,13 +119,16 @@
     "symbol_placeholder": "Inserisci il simbolo",
     "symbol_msg": "Il simbolo è un breve identificativo, ad es. ETH",
     "symbol_already": "Questo simbolo è già utilizzato, scegline un altro",
-    "description_placeholder": "Inserisci una breve descrizione",
+    "description_placeholder": "Descrivi come utilizzare questo token e dove e come ottenerlo",
     "total_supply": "Riserva complessiva",
     "total_supply_placeholder": "Inserisci la riserva complessiva",
     "token_created": "Valuta creata",
     "token_creation_failed": "Creazione valuta non riuscita",
     "type": "Tipologia",
-    "token_type": "Tipologia di valuta"
+    "token_type": "Tipologia di valuta",
+    "custom_contract": "Contrarre",
+    "custom_contract_msg": "Per continuare, carica il contratto legale per questo token. Se non ne hai uno puoi scaricare il modello standard da",
+    "here": "qui"
   },
   "node_error": {
     "failure": "Errore",
@@ -124,8 +142,10 @@
     "payment_info": "Informazioni sul transferimento",
     "payment_failed": "Trasferimento non riuscito",
     "slide_to_send": "Trascina per inviare",
-    "token_error": "Token not found",
-    "to_error": "To Adress not found"
+    "token_error": "Token non trovato",
+    "to_error": "To Address non trovato",
+    "empty_wallet": "Il tuo portafoglio è vuoto",
+    "redirecting": "...Reindirizzamento"
   },
   "receive": {
     "ask_sender": "Chiedi al mittente",
@@ -146,6 +166,7 @@
     "transaction_details": "Dettagli sulle transazioni",
     "transaction_history": "Cronologia delle transazioni",
     "no_transaction": "Nessuna transazione trovata",
+    "no_token": "Non ci sono gettoni nel tuo portafoglio",
     "event_name": "Nome dell'evento",
     "token_mint": "Conia valuta",
     "transfer_token": "Valuta di trasferimento",

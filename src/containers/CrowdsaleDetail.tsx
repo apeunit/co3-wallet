@@ -9,6 +9,8 @@ import '../assets/styles/NewToken.css';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Moment from 'react-moment';
+import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 const useStyles = makeStyles({
   root: {
@@ -17,19 +19,22 @@ const useStyles = makeStyles({
 });
 
 const CrowdsaleDetail: React.FC = () => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const history = useHistory();
   const [progress, setProgress] = useState(0);
-
+  const [countdown, setCountdown] = useState<any>('');
   const { crowdsaleData } = useSelector(({ chain }: any) => {
     return {
       crowdsaleData: chain.crowdsaleData,
     };
   });
 
+  const then: any = moment(crowdsaleData?.end);
+  const now: any = moment();
   useEffect(() => {
     setProgress(0);
-    console.log(crowdsaleData, 'crowdsaleData');
+    setCountdown(moment(then - now));
     if (!crowdsaleData || crowdsaleData === null) {
       history.push('/marketplace');
     }
@@ -41,6 +46,15 @@ const CrowdsaleDetail: React.FC = () => {
       `/tx?to=${crowdsaleData?.contractAddress}&&token=${crowdsaleData?.crowdSymbol}&&amount=${crowdsaleData?.giveRatio}`,
     );
   };
+
+  useEffect(() => {
+    let interval: any = null;
+    interval = setInterval(() => {
+      setCountdown(moment(then - now));
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [crowdsaleData, countdown, then, now]);
 
   return (
     <Flex
@@ -61,7 +75,7 @@ const CrowdsaleDetail: React.FC = () => {
           sx={{ cursor: 'pointer' }}
           icon="back"
         />
-        <Text>Marketplace</Text>
+        <Text>{t('marketplace.label')}</Text>
         <IconButton onClick={() => history.push('/')} sx={{ cursor: 'pointer' }} icon="close" />
       </Flex>
       <FramerSlide
@@ -108,7 +122,7 @@ const CrowdsaleDetail: React.FC = () => {
               </div>
               <Text marginTop="5px" fontSize="14px" color="#757575">
                 {/* <span className="token-goal-font">10</span> of  */}
-                Goal: {crowdsaleData?.maxCap}
+                {t('marketplace.goal')}: {crowdsaleData?.maxCap}
               </Text>
             </Flex>
             <Flex marginTop="15px" flexDirection="row" fontSize="14px" color="#949494">
@@ -121,17 +135,25 @@ const CrowdsaleDetail: React.FC = () => {
                   marginRight="12px"
                 />
                 <Text>
-                  Closes <Moment fromNow={true}>{crowdsaleData?.end}</Moment>
+                  {t('marketplace.closes')} <Moment fromNow={true}>{crowdsaleData?.end}</Moment>{' '}
+                  {moment().isBefore(crowdsaleData?.end) && countdown && (
+                    <>
+                      {countdown.format('D')} {t('marketplace.days')} {countdown.format('HH')}{' '}
+                      {t('marketplace.hours')} {countdown.format('mm')} {t('marketplace.minutes')}{' '}
+                      {countdown.format('ss')} {t('marketplace.seconds')}
+                    </>
+                  )}
                 </Text>
               </Flex>
             </Flex>
             <Flex color="#757575" padding="25px 0px 30px">
               {/* TODO: get description from First Life */}
-              Crowdsale details not available.
+              {t('marketplace.no_details')}
             </Flex>
             <Flex>
               <Text fontSize="12px" color="#757575">
-                Started on <Moment format="dddd Do MMM YYYY">{crowdsaleData?.start}</Moment>
+                {t('marketplace.started_on')}{' '}
+                <Moment format="dddd Do MMM YYYY">{crowdsaleData?.start}</Moment>
               </Text>
             </Flex>
             <Button
@@ -150,7 +172,7 @@ const CrowdsaleDetail: React.FC = () => {
                   height="13px"
                 />
                 <Text fontSize="14px" lineHeight="14px">
-                  BUY NOW
+                  {t('marketplace.buy_now')}
                 </Text>
               </Flex>
             </Button>

@@ -118,6 +118,7 @@ export interface ITokenData {
   logoURL: string;
   owner: string;
   mintable: boolean;
+  purpose?: number;
 }
 
 export interface IModalState {

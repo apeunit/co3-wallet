@@ -6,6 +6,7 @@ import { getUserProfileData, saveAid } from 'src/redux/actions/CO3UUM';
 import _get from 'lodash/get';
 import { setPublicKey } from 'src/redux/actions/Wallet';
 import { getPublicKey } from 'src/api/co3uum';
+import { CROWDSALE_TYPE_DP, VENDING_TYPE_DP } from 'src/config';
 
 const CrowdsaleCS = () => {
   const location = useLocation();
@@ -28,14 +29,26 @@ const CrowdsaleCS = () => {
       const params = new URLSearchParams(location.search);
       const eidParam = params.get('eid');
       const accessTokenParam = params.get('access_token');
-      const callbackParam = params.get('callback');
+      const typeParam = params.get('type');
       if (eidParam && accessTokenParam) {
         dispatch(saveAid(eidParam));
-        history.push(
-          `/new-crowdsale?eid=${eidParam}&&access_token=${accessTokenParam}${
-            callbackParam ? `&&callback=${callbackParam}` : ''
-          }`,
-        );
+        if (typeParam) {
+          history.push({
+            pathname: `${
+              parseInt(typeParam, 10) === CROWDSALE_TYPE_DP
+                ? '/new-crowdsale'
+                : parseInt(typeParam, 10) === VENDING_TYPE_DP
+                ? '/vm'
+                : ''
+            }`,
+            search: location.search,
+          });
+        } else {
+          history.push({
+            pathname: `/`,
+            search: location.search,
+          });
+        }
         accessTokenCalls(params);
       } else {
         history.push('/404');

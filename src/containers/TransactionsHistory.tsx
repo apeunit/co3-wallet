@@ -2,27 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Flex, Text } from 'rebass';
 import TransactionHistoryList from '../components/Transactions/TransactionList/TransactionHistoryList';
 import TransactionHistoryListPlaceholder from '../components/Transactions/TransactionList/TransactionHistoryListPlaceholder';
-import { fetchTransactionsHistory } from '../redux/actions/Chain';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import IconButton from '../components/IconButton';
 import { useHistory } from 'react-router-dom';
 import { useLazyQuery } from '@apollo/react-hooks';
-import { BALANCE_NOTIFY_QUERY, TRANSFER_NOTIFY_QUERY } from './query';
+import { BALANCE_NOTIFY_QUERY, CrowdsaleSortEnum, TRANSFER_NOTIFY_QUERY } from '../api/middleware';
 import _merge from 'lodash/merge';
 import { useTranslation } from 'react-i18next';
 
 const TransactionsHistory: React.FC = () => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
   const history = useHistory();
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [txnsLoading, setTxnsLoading] = useState(true);
 
-  useEffect(() => {
-    dispatch(fetchTransactionsHistory());
-  }, [dispatch]);
-
-  const { ethAddress } = useSelector(({ chain, wallet }: any) => {
+  const { ethAddress } = useSelector(({ wallet }: any) => {
     return {
       ethAddress: wallet.ethAddress,
     };
@@ -32,6 +26,7 @@ const TransactionsHistory: React.FC = () => {
     fetchPolicy: 'no-cache',
     variables: {
       senderPk: ethAddress,
+      sort: CrowdsaleSortEnum.DESC,
     },
   });
 
@@ -50,7 +45,7 @@ const TransactionsHistory: React.FC = () => {
   }, [balanceTokenQuery, ethAddress, historyTokenQuery]);
 
   useEffect(() => {
-    if (data && data.transferNotificationMany) {
+    if (data && data.transferNotificationMany.length > 0) {
       if (balanceData && balanceData.data && balanceData.data.balanceNotificationMany.length > 0) {
         data.transferNotificationMany.map((trns: any) => {
           const token = balanceData.data.balanceNotificationMany.filter(
@@ -64,6 +59,8 @@ const TransactionsHistory: React.FC = () => {
         setTransactionHistory(data.transferNotificationMany);
         setTxnsLoading(false);
       }
+    } else if (data?.transferNotificationMany) {
+      setTxnsLoading(false);
     }
   }, [data, balanceData]);
 
@@ -75,7 +72,11 @@ const TransactionsHistory: React.FC = () => {
       {txnsLoading && transactionHistory.length === 0 ? (
         <TransactionHistoryListPlaceholder />
       ) : !txnsLoading && transactionHistory.length === 0 ? (
-        <Text paddingX={7}>{t('transaction.no_transaction')}</Text>
+        <Text marginX="auto" marginY={50}>
+          {balanceData.data.balanceNotificationMany.length === 0
+            ? t('transaction.no_token')
+            : t('transaction.no_transaction')}
+        </Text>
       ) : (
         <TransactionHistoryList transactions={transactionHistory} />
       )}

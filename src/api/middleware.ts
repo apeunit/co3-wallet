@@ -1,9 +1,13 @@
 import gql from 'graphql-tag';
 
+/*
+  Get Transaction History List
+*/
 const TRANSFER_NOTIFY_QUERY: any = gql`
-  query transferQuery($senderPk: String!) {
+  query transferQuery($senderPk: String!, $sort: SortFindManyTransferNotificationInput) {
     transferNotificationMany(
       filter: { OR: [{ receiver_pk: $senderPk }, { sender_pk: $senderPk }] }
+      sort: $sort
     ) {
       _id
       receiver_pk
@@ -19,6 +23,9 @@ const TRANSFER_NOTIFY_QUERY: any = gql`
   }
 `;
 
+/*
+  Get Tokens List of specific ethAddress (wallet owner)
+*/
 const BALANCE_NOTIFY_QUERY: any = gql`
   query balanceNotifyQuery($accountPk: String!) {
     balanceNotificationMany(filter: { account_pk: $accountPk }) {
@@ -28,6 +35,7 @@ const BALANCE_NOTIFY_QUERY: any = gql`
       computed_at
       amount
       logoURL
+      purpose
       decimals
       contractAddress
       owner
@@ -35,6 +43,9 @@ const BALANCE_NOTIFY_QUERY: any = gql`
   }
 `;
 
+/*
+  Get Token of specific ethAddress (wallet owner) and Token with their contract Address
+*/
 const BALANCE_NOTIFY_QUERY_TOKEN: any = gql`
   query balanceNotificationMany($accountPk: String, $contractAddress: String) {
     balanceNotificationMany(filter: { account_pk: $accountPk, contractAddress: $contractAddress }) {
@@ -43,6 +54,7 @@ const BALANCE_NOTIFY_QUERY_TOKEN: any = gql`
       token_symbol
       computed_at
       amount
+      purpose
       logoURL
       decimals
       contractAddress
@@ -51,6 +63,9 @@ const BALANCE_NOTIFY_QUERY_TOKEN: any = gql`
   }
 `;
 
+/*
+  Get All Tokens in middleware
+*/
 const GET_ALL_TOKENS: any = gql`
   query tokenAddedMany {
     tokenAddedMany(filter: {}) {
@@ -60,6 +75,7 @@ const GET_ALL_TOKENS: any = gql`
       symbol
       decimals
       logoURL
+      purpose
       owner
       hardCap
       timestamp
@@ -68,6 +84,9 @@ const GET_ALL_TOKENS: any = gql`
   }
 `;
 
+/*
+  Add Crowdsale record in middleware
+*/
 const CROWDSALE_ADDED: any = gql`
   mutation crowdsaleAddedNotificationCreateOne($record: CreateOneCrowdsaleAddedInput!) {
     crowdsaleAddedNotificationCreateOne(record: $record) {
@@ -87,6 +106,9 @@ const CROWDSALE_ADDED: any = gql`
   }
 `;
 
+/*
+  Get Crowdsale List from middleware
+*/
 const GET_CROWDSALE_ADDED: any = gql`
   query crowdsaleAddedNotificationMany(
     $filter: FilterFindManyCrowdsaleAddedInput
@@ -110,6 +132,9 @@ const GET_CROWDSALE_ADDED: any = gql`
   }
 `;
 
+/*
+  Crowdsale List Sort ENUM
+*/
 enum CrowdsaleSortEnum {
   'ASC' = '_ID_ASC',
   'DESC' = '_ID_DESC',

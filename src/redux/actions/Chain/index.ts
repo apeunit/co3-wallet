@@ -1,14 +1,17 @@
 // tslint:disable
 import _get from 'lodash/get';
+import moment from 'moment';
 import { createActions } from 'redux-actions';
-import { getRandomId } from 'src/api/co3uum';
 import { getCrowdsaleList, saveCrowdsaleData } from 'src/api/firstlife';
 import { CROWDSALE_FACTORY_ADDRESS, NODE_URL, THING_ID, TOKEN_FACTORY_ADDRESS } from 'src/config';
+import { getRandomId } from 'src/utils/helper';
+import { formatAmount } from 'src/utils/misc';
 import Web3 from 'web3';
 import CrowdsaleFactoryJSON from '../../../contracts/CrowdsaleFactory.json';
 import TokenFactoryJSON from '../../../contracts/TokenFactory.json';
 import TokenTemplateJSON from '../../../contracts/TokenTemplate.json';
-import { ICrowdsaleData, IToken, ITokenAction, ITokenData } from '../../../interfaces';
+import { ICrowdsaleData, ITokenAction, ITokenData } from '../../../interfaces';
+import { setTransferToken } from '../Wallet';
 import {
   CREATE_TOKEN,
   ERROR_WEB3,
@@ -19,7 +22,6 @@ import {
   GET_TOKEN_DETAIL,
   GET_TRANSACTION_HISTORY,
   INIT_WEB3,
-  MINT_TOKEN,
   TOKEN_LOADING,
   TRANSFER_TOKEN,
   TXN_LOADING,
@@ -59,7 +61,6 @@ const {
   getAllToken,
   getTransactionHistory,
   createToken,
-  mintToken,
   transferToken,
   getTokenBalance,
   getTokenDetail,
@@ -74,38 +75,27 @@ const {
   [GET_ALL_CROWDSALE]: (crowdsaleList: []): object => ({ crowdsaleList }),
   [GET_TRANSACTION_HISTORY]: (transactionHistory: []): object => ({ transactionHistory }),
   [CREATE_TOKEN]: (tokenCreated: object) => ({ tokenCreated }),
-  [MINT_TOKEN]: (tokenMinted: object) => ({ tokenMinted }),
   [TRANSFER_TOKEN]: (tokenTransferred: object) => ({ tokenTransferred }),
   [GET_TOKEN_BALANCE]: (balance: object) => ({ balance }),
   [GET_TOKEN_DETAIL]: (tokenInfo: ITokenData) => ({ tokenInfo }),
   [GET_CROWDSALE_DATA]: (crowdsaleData: ICrowdsaleData) => ({ crowdsaleData }),
 });
 
-const fetchAllTokens = () => {
-  return async (dispatch: any, state: any) => {
-    try {
-      const tokensList = await tokenFactory.methods
-        .getTokenList()
-        .call()
-        .then((data: any) => data);
-      if (state().chain.tokenList.length !== tokensList.length) {
-        // return dispatch(getAllToken(tokensList));
-      }
-    } catch (error) {
-      dispatch(tokenLoading(false));
-      console.error(error.message);
-    }
-  };
-};
-
 const fetchTokenByTicker = (ticker: string) => {
-  return (dispatch: any) => {
+  return (dispatch: any, state: any) => {
     return tokenFactory.methods
       .getToken(ticker)
       .call()
       .then((data: any) => {
         if (data[2] === ticker) {
-          dispatch(getTokenDetail(formatTokenData(data)));
+          const tokenContract = new web3.eth.Contract(TokenTemplateJSON.abi, data[0], opts);
+          tokenContract.methods
+            .balanceOf(state().wallet.ethAddress)
+            .call()
+            .then((amount: any) => {
+              const token = formatTokenData(data);
+              dispatch(setTransferToken({ ...token, amount }));
+            });
         } else {
           console.log('Not found');
           /**
@@ -116,83 +106,41 @@ const fetchTokenByTicker = (ticker: string) => {
   };
 };
 
-const fetchTransactionsHistory = () => {
+const fetchTransactionsHistory = (token: ITokenData) => {
   return async (dispatch: any, state: any) => {
+    dispatch(txnLoading(true));
     try {
-      const contract = new web3.eth.Contract(TokenFactoryJSON.abi, TOKEN_FACTORY_ADDRESS, opts);
       let filteredTxnsHistory: any = [];
-      const contractEvent = await contract.getPastEvents('TokenAdded', {
+      const tokenContract = new web3.eth.Contract(
+        TokenTemplateJSON.abi,
+        token.contractAddress,
+        opts,
+      );
+      const events = await tokenContract.getPastEvents('Transfer', {
         fromBlock: 0,
         toBlock: 'latest',
       });
-      contractEvent.length > 0 &&
-        contractEvent.map(async (event: any) => {
-          if (event.returnValues._from === state().wallet.ethAddress) {
-            filteredTxnsHistory.push({
-              event: event.event,
-              from: event.returnValues._from,
-              timestamp: event.returnValues._timestamp,
-              name: event.returnValues._name,
-              symbol: event.returnValues._symbol,
-              decimals: event.returnValues._decimals,
-              value: event.returnValues._hardCap,
-              contractAddress: event.returnValues._contractAddress,
-              logoURL: event.returnValues._logoURL,
-              transactionHash: event.transactionHash,
-              blockHash: event.blockHash,
-              blockNumber: event.blockNumber,
-              address: event.address,
-              raw: event.raw,
-            });
-          }
-        });
-      if (state().chain.tokenList.length === 0) {
-        dispatch(txnLoading(false));
-      }
-      state().chain.tokenList.length > 0 &&
-        state().chain.tokenList.map(async (token: IToken, index: number) => {
-          if (token.owner === state().wallet.ethAddress || (token.amount && token.amount > 0)) {
-            const tokenContract = new web3.eth.Contract(
-              TokenTemplateJSON.abi,
-              token.contractAddress,
-              opts,
-            );
-            const events = await tokenContract.getPastEvents('Transfer', {
-              fromBlock: 0,
-              toBlock: 'latest',
-            });
-            events.length > 0 &&
-              events.map(async (event: any) => {
-                const blockData = await web3.eth.getBlock(event.blockNumber);
-                if (
-                  event.returnValues.to === state().wallet.ethAddress ||
-                  event.returnValues.to === token.owner ||
-                  event.returnValues.from === state().wallet.ethAddress ||
-                  event.returnValues.from === token.owner
-                ) {
-                  filteredTxnsHistory.push({
-                    event: event.event,
-                    ...token,
-                    ...event.returnValues,
-                    timestamp: blockData && blockData.timestamp,
-                    transactionHash: event.transactionHash,
-                    blockHash: event.blockHash,
-                    blockNumber: event.blockNumber,
-                    address: event.address,
-                    raw: event.raw,
-                  });
-                }
-              });
-            if (
-              filteredTxnsHistory.length > 0 &&
-              state().chain.transactionHistory.length < filteredTxnsHistory.length
-            ) {
-              dispatch(txnLoading(false));
-              dispatch(getTransactionHistory(filteredTxnsHistory));
-            }
-          }
-          if (index === state().chain.tokenList.length - 1 && filteredTxnsHistory.length === 0) {
+      events.length > 0 &&
+        events.map(async (event: any) => {
+          const blockData = await web3.eth.getBlock(event.blockNumber);
+          filteredTxnsHistory.push({
+            event: event.event,
+            ...token,
+            ...event.returnValues,
+            transactionHash: event.transactionHash,
+            blockHash: event.blockHash,
+            blockNumber: event.blockNumber,
+            address: event.address,
+            raw: event.raw,
+            token_symbol: token.symbol,
+            executed_on: moment(blockData && blockData.timestamp * 1000).format(),
+            sender_pk: event.returnValues.from,
+            receiver_pk: event.returnValues.to,
+            amount: event.returnValues.value,
+          });
+          if (filteredTxnsHistory.length === events.length) {
             dispatch(txnLoading(false));
+            dispatch(getTransactionHistory(filteredTxnsHistory));
           }
         });
     } catch (error) {
@@ -353,12 +301,12 @@ const transferTokens = (
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
     const gasPrice = await web3.eth.getGasPrice();
     const Token = new web3.eth.Contract(TokenTemplateJSON.abi, token.contractAddress, opts);
-    return Token.methods[action](to, amount)
+    return Token.methods[action](to, formatAmount(token, amount))
       .send({
         from: state().wallet.ethAddress,
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
         nonce: web3.utils.toHex(parseInt(nonce, 10)),
-        gas: '94000000',
+        gas: state().wallet.gas,
       })
       .then((data: any) => {
         console.log(data);
@@ -373,12 +321,12 @@ const mintNewToken = (token: ITokenData, amount: number) => {
     const gasPrice = await web3.eth.getGasPrice();
     const Token = new web3.eth.Contract(TokenTemplateJSON.abi, token.contractAddress, opts);
     return Token.methods
-      .mint(state().wallet.ethAddress, amount)
+      .mint(state().wallet.ethAddress, formatAmount(token, amount))
       .send({
         from: state().wallet.ethAddress,
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
         nonce: web3.utils.toHex(parseInt(nonce, 10)),
-        gas: '94000000',
+        gas: state().wallet.gas,
       })
       .then((data: any) => {
         console.log(data);
@@ -472,12 +420,10 @@ export {
   txnLoading,
   getAllToken,
   initialSetup,
-  fetchAllTokens,
   createToken,
   createNewToken,
   transferTokens,
   isMintableToken,
-  mintToken,
   transferToken,
   mintNewToken,
   getTokenBalance,

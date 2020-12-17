@@ -5,13 +5,12 @@ import { Divider } from '@material-ui/core';
 import FramerSlide from '../../FrameMotion/Slide';
 import { useTranslation } from 'react-i18next';
 import ImageCard from 'src/components/ImageCard';
-import itemSold from '../../../images/itemSold.png';
 import maxSupply from '../../../images/maxSupply.png';
 import prizeInstance from '../../../images/prizeInstance.svg';
 import crowdsaleToken from '../../../images/crowdsale_token.svg';
 import Moment from 'react-moment';
 import { useSelector } from 'react-redux';
-import { getTokenName } from 'src/api/co3uum';
+import { getTokenName } from 'src/utils/helper';
 
 interface IProps {
   data: any;
@@ -70,7 +69,14 @@ const BuyStep: React.FC<IProps> = ({ data }) => {
           <Flex padding={5}>
             <Flex width="100%" justifyContent="space-between" flexDirection="row">
               <Flex>
-                <Image width="20px" height="20px" margin="5px 16px 0px -1px" src={itemSold} />
+                <IconButton
+                  cursor={'default'}
+                  icon="coupen"
+                  width="16px"
+                  height="20px"
+                  className="crowdsale-detail-icon"
+                  marginRight="17px"
+                />
                 <Text fontSize={16}>{t('new_crowdsale.item_sold')}</Text>
               </Flex>
               <Text marginTop="3px" fontSize={13}>

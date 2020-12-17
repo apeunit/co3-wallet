@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import IconButton from '../components/IconButton';
 import QRCodeCanvas from 'qrcode.react';
 import { Box, Flex, Text } from 'rebass';
@@ -10,7 +10,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 const Receive = () => {
   const { t } = useTranslation();
   const history = useHistory();
-  const [copied, setCopied] = useState(false);
+  // const [copied, setCopied] = useState(false);
   const { ethAddress } = useSelector(({ wallet }: any) => {
     return {
       ethAddress: wallet.ethAddress,
@@ -20,8 +20,6 @@ const Receive = () => {
   if (!ethAddress) {
     history.replace('/');
   }
-
-  console.log(copied, "copied");
 
   return (
     <Flex
@@ -60,7 +58,7 @@ const Receive = () => {
         >
           <CopyToClipboard
             text={`${window.location.href.split('receive')[0]}tx?to=${ethAddress}`}
-            onCopy={() => setCopied(true)}
+            // onCopy={() => setCopied(true)}
           >
             {ethAddress && (
               <QRCodeCanvas

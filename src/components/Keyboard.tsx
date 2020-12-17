@@ -42,7 +42,7 @@ const ConfirmButton = (props: any) => {
 };
 
 const Keyboard = (props: any) => {
-  const { marginBottom, handleTap, handleErase, handleConfirm, error, disable } = props;
+  const { marginBottom, handleTap, handleErase, handleConfirm, error, disable, disbaleConfirm } = props;
 
   return (
     <Box
@@ -160,13 +160,15 @@ const Keyboard = (props: any) => {
         }}
       />
       <div />
-      <ConfirmButton
-        sx={{
-          gridRow: '4 / 5',
-          gridColumn: '4 / 5',
-        }}
-        onClick={handleConfirm}
-      />
+      {disbaleConfirm && (
+        <ConfirmButton
+          sx={{
+            gridRow: '4 / 5',
+            gridColumn: '4 / 5',
+          }}
+          onClick={handleConfirm}
+        />
+      )}
     </Box>
   );
 };

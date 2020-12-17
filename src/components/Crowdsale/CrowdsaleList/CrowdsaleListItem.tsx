@@ -2,7 +2,7 @@ import React from 'react';
 import { Flex, Image, Text } from 'rebass';
 import { Divider } from '@material-ui/core';
 import { ICrowdsaleData } from 'src/interfaces';
-import { getTokenSymbol } from 'src/api/co3uum';
+import { getTokenSymbol } from 'src/utils/helper';
 import { getCrowdsaleData } from 'src/redux/actions/Chain';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -28,7 +28,6 @@ const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
 
   return (
     <Flex
-      key={crowdsale.crowdsaleId}
       marginTop="10px"
       width="100%"
       paddingX={5}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import IconButton from '../components/IconButton';
 import { Flex, Text } from 'rebass';
-import RadioButtonGroup from '../components/RadioButtonGroup';
+import { Label } from '@rebass/forms';
 import AddImage from '../components/AddImage';
 import { useHistory } from 'react-router-dom';
 import TokenCard from '../components/Tokens/CreateTokens/TokenCard';
@@ -10,7 +10,7 @@ import CreateBuyStep from '../components/StepsComponents/CreateBuyStep';
 import CreateFooterStep from '../components/StepsComponents/CreateFooterStep';
 import CreateInputStep from '../components/StepsComponents/CreateInputStep';
 import CreateDetailStep from '../components/StepsComponents/CreateDetailStep';
-import { contractsRadio, createTokenSteps, tokensRadio } from './commonData';
+import { createTokenSteps } from './commonData';
 import ErrorMsg from '../components/ErrorMsg';
 import _get from 'lodash/get';
 import { motion } from 'framer-motion';
@@ -20,9 +20,11 @@ import { getPermalink, saveResource } from '../api/firstlife';
 import { setModalData } from '../redux/actions/Modal';
 import { createNewToken } from '../redux/actions/Chain';
 import { useLazyQuery } from '@apollo/react-hooks';
-import { BALANCE_NOTIFY_QUERY } from './query';
+import { BALANCE_NOTIFY_QUERY } from '../api/middleware';
 import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
+import { TOKEN_PURPOSE } from 'src/config';
+const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
 const NewToken: React.FC = () => {
   const { t } = useTranslation();
@@ -38,10 +40,8 @@ const NewToken: React.FC = () => {
     symbol: '',
     icon: '',
     description: '',
-    contractType: 'Standard Contract',
     contract: '',
     contractLabel: '',
-    tokenType: 'Mintable Token',
     totalSupply: '',
   });
   const [error, setError] = useState('');
@@ -100,46 +100,35 @@ const NewToken: React.FC = () => {
 
   useEffect(() => {
     if (tokenData) {
-      setStep(9);
+      setStep(7);
       onchangeToken(tokenData);
     }
   }, [tokenData]);
 
   const handleSteps = () => {
-    if (step <= 8) {
+    if (step <= 7) {
       if (
         checkError(1, token.name, t('common.name')) ||
         checkError(2, token.symbol, t('common.symbol')) ||
         checkError(3, token.icon, t('common.icon')) ||
-        checkError(5, token.contractType, '') ||
-        (token.contractType === 'Custom Contract' &&
-          checkError(5, token.contract, t('common.contract'))) ||
-        checkError(6, token.tokenType, '') ||
-        checkError(7, token.totalSupply, t('new_token.total_supply'))
+        checkError(5, token.contract, t('common.contract')) ||
+        checkError(6, token.totalSupply, t('new_token.total_supply'))
       ) {
         setLoader(false);
 
         return;
       }
-      step <= 7 && title.indexOf(t('common.edit')) > -1
-        ? setStep(8)
-        : step === 6 && token.tokenType === 'Mintable Token'
-        ? setStep(step + 2)
-        : setStep(step + 1);
+      step <= 7 && title.indexOf(t('common.edit')) > -1 ? setStep(7) : setStep(step + 1);
     }
   };
 
   const handlebackStep = () => {
     setError('');
-    step === 8 && token.tokenType === 'Mintable Token'
-      ? setStep(step - 2)
-      : step > 1
-      ? setStep(step - 1)
-      : history.push('/');
+    step > 1 ? setStep(step - 1) : history.push('/');
   };
 
   const handleClose = () => {
-    step === 9
+    step === 8
       ? history.push({ pathname: '/', state: { pendingToken: [token] } })
       : history.push('/');
   };
@@ -179,16 +168,6 @@ const NewToken: React.FC = () => {
     setError('');
   };
 
-  const onChange = (e: any, key: string) => {
-    if (e.target.value === 'Standard Contract') {
-      setError('');
-      onchangeToken({ ...token, contract: '', contractLabel: '' });
-    } else if (e.target.value === 'Mintable Token') {
-      onchangeToken({ ...token, totalSupply: '' });
-    }
-    onchangeToken({ ...token, [key]: e.target.value });
-  };
-
   const onChangeContract = (e: any) => {
     setUploading(true);
     setError('');
@@ -209,7 +188,7 @@ const NewToken: React.FC = () => {
           link ? onchangeToken({ ...token, contract: link }) : console.log(data);
         })
         .catch((err: any) => {
-          console.log(err, "err")
+          console.log(err, 'err');
           setUploading(false);
           setError(t('common.invalid_token'));
         });
@@ -244,7 +223,8 @@ const NewToken: React.FC = () => {
         web3.utils.keccak256(token.icon),
         web3.utils.keccak256(token.icon),
         2,
-        web3.utils.toHex(parseInt(token.totalSupply, 10) || 0),
+        web3.utils.toHex(parseInt(token.totalSupply, 10) * 100 || 0),
+        TOKEN_PURPOSE,
       ),
     );
     receipt
@@ -385,45 +365,42 @@ const NewToken: React.FC = () => {
           {step === 5 && (
             <FramerSlide>
               <Flex flexDirection="column" style={{ transform: 'translateY(-10px)' }}>
-                <RadioButtonGroup
-                  value={token.contractType}
-                  onChange={(e: any) => onChange(e, 'contractType')}
-                  radios={contractsRadio}
-                />
-                {token.contractType === 'Custom Contract' && (
-                  <Flex flexDirection="column" height="100%" justifyContent="space-between">
-                    <AddImage
-                      label={contractLabel ? contractLabel : t('common.upload_contract')}
-                      accept="application/pdf"
-                      icon={contractLabel ? 'clouddone' : 'cloud'}
-                      onChange={onChangeContract}
-                      uploading={uploading}
-                      placeholder={''}
-                      padding={6}
-                      marginLeft={20}
-                    />
-                    {error && (
-                      <div>
-                        <ErrorMsg title={error} type="error" style={{ top: '54.6vh' }} />
-                      </div>
-                    )}
-                  </Flex>
-                )}
+                <Flex flexDirection="column" marginBottom={8}>
+                  <Label fontSize="16px" color="#3191919">
+                    {t('new_token.custom_contract')}
+                  </Label>
+                  <Text fontSize="13px" color="#8E949E" paddingX={1} marginTop={2}>
+                    {t('new_token.custom_contract_msg')}{' '}
+                    <a
+                      className="contract-link"
+                      href={pdfContract}
+                      download="Token-Legal-Contract_Template.pdf"
+                    >
+                      {t('new_token.here')}
+                    </a>
+                  </Text>
+                </Flex>
+                <Flex flexDirection="column" height="100%" justifyContent="space-between">
+                  <AddImage
+                    label={contractLabel ? contractLabel : t('common.upload_contract')}
+                    accept="application/pdf"
+                    icon={contractLabel ? 'clouddone' : 'cloud'}
+                    onChange={onChangeContract}
+                    uploading={uploading}
+                    placeholder={''}
+                    padding={6}
+                    marginLeft={20}
+                  />
+                  {error && (
+                    <div>
+                      <ErrorMsg title={error} type="error" style={{ top: '50.6vh' }} />
+                    </div>
+                  )}
+                </Flex>
               </Flex>
             </FramerSlide>
           )}
           {step === 6 && (
-            <FramerSlide>
-              <Flex flexDirection="column" style={{ transform: 'translateY(-10px)' }}>
-                <RadioButtonGroup
-                  value={token.tokenType}
-                  onChange={(e: any) => onChange(e, 'tokenType')}
-                  radios={tokensRadio}
-                />
-              </Flex>
-            </FramerSlide>
-          )}
-          {step === 7 && (
             <CreateInputStep
               type="number"
               value={token.totalSupply}
@@ -437,11 +414,11 @@ const NewToken: React.FC = () => {
               handleKeyChange={_handleKeyDown}
             />
           )}
-          {step === 8 && <CreateBuyStep data={token} />}
-          {step === 9 && <CreateDetailStep handleEdit={handleEdit} data={token} />}
-          {!uploading && error === '' && step !== 9 && (
+          {step === 7 && <CreateBuyStep data={token} />}
+          {step === 8 && <CreateDetailStep handleEdit={handleEdit} data={token} />}
+          {!uploading && error === '' && step !== 8 && (
             <CreateFooterStep
-              lastStep={step === 8}
+              lastStep={step === 7}
               handleSteps={handleSteps}
               onbtnDrag={handleCreateToken}
             />

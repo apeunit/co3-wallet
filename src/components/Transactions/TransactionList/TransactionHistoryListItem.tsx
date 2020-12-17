@@ -140,7 +140,7 @@ const TransactionHistoryListItem: React.FC<IProps> = ({ transaction }) => {
               }}
               fontSize={2}
             >
-              {transaction.amount}
+              {transaction.decimals === 2 ? transaction.amount / 100 : transaction.amount}
             </Text>
             <Text fontSize={1} marginLeft="auto" marginRight="0" style={{ width: 'max-content' }}>
               {transaction.token_symbol}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import IconButton from '../components/IconButton';
 import { Flex, Text } from 'rebass';
-import RadioButtonGroup from '../components/RadioButtonGroup';
+import { Label } from '@rebass/forms';
 import AddImage from '../components/AddImage';
 import { useHistory } from 'react-router-dom';
 import TextArea from '../components/TextArea';
@@ -9,7 +9,7 @@ import CreateBuyStep from '../components/StepsComponents/CreateBuyStep';
 import CreateFooterStep from '../components/StepsComponents/CreateFooterStep';
 import CreateInputStep from '../components/StepsComponents/CreateInputStep';
 import CreateDetailStep from '../components/StepsComponents/CreateDetailStep';
-import { contractsRadio, couponsRadio, createCouponSteps } from './commonData';
+import { createCouponSteps } from './commonData';
 import ErrorMsg from '../components/ErrorMsg';
 import _get from 'lodash/get';
 import { motion } from 'framer-motion';
@@ -21,12 +21,13 @@ import { createNewToken } from '../redux/actions/Chain';
 import { setModalData } from '../redux/actions/Modal';
 import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
+import { COUPON_PURPOSE } from 'src/config';
+const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
 const NewCoupon: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch();
-
   const [loader, setLoader] = useState(false);
   const [step, setStep] = useState(1);
   const [title, setTitle] = useState<string>(t('new_coupon.label'));
@@ -42,10 +43,8 @@ const NewCoupon: React.FC = () => {
     symbol: randomSymbol.toUpperCase(),
     icon: '',
     description: '',
-    contractType: 'Standard Contract',
     contract: '',
     contractLabel: '',
-    couponType: 'Mintable Coupon',
     totalCoupon: '',
   });
   const [error, setError] = useState('');
@@ -71,45 +70,39 @@ const NewCoupon: React.FC = () => {
 
   useEffect(() => {
     if (couponData) {
-      setStep(10);
+      setStep(9);
       onchangeCoupon(couponData);
     }
   }, [couponData]);
 
   const handleSteps = () => {
     setError('');
-    if (step <= 9) {
+    if (step <= 8) {
       if (
         checkError(1, coupon.name, t('common.name')) ||
         checkError(2, coupon.headline, t('new_coupon.headline')) ||
         checkError(5, coupon.icon, t('common.icon')) ||
-        checkError(6, coupon.contractType, '') ||
-        checkError(7, coupon.couponType, '') ||
-        (coupon.contractType === 'Custom Contract' &&
-          checkError(6, coupon.contract, t('common.contract'))) ||
-        checkError(8, coupon.totalCoupon, t('new_coupon.total_coupon'))
+        checkError(6, coupon.contract, t('common.contract')) ||
+        checkError(7, coupon.totalCoupon, t('new_coupon.total_coupon'))
       ) {
         return;
       }
-      step === 7 && coupon.couponType === 'Mintable Coupon' ? setStep(step + 2) : setStep(step + 1);
       if (step <= 8 && title.indexOf(t('common.edit')) > -1) {
-        step === 7 && coupon.couponType !== 'Mintable Coupon' ? setStep(step + 1) : setStep(9);
+        setStep(8);
         setTitle(t('new_coupon.label'));
+      } else {
+        setStep(step + 1);
       }
     }
   };
 
   const handlebackStep = () => {
     setError('');
-    step === 9 && coupon.couponType === 'Mintable Coupon'
-      ? setStep(step - 2)
-      : step > 1
-      ? setStep(step - 1)
-      : history.push('/');
+    step > 1 ? setStep(step - 1) : history.push('/');
   };
 
   const handleClose = () => {
-    step === 10
+    step === 9
       ? history.push({ pathname: '/', state: { pendingToken: [coupon] } })
       : history.push('/');
   };
@@ -143,16 +136,6 @@ const NewCoupon: React.FC = () => {
   const handleChangeToken = (e: any, key: string) => {
     onchangeCoupon({ ...coupon, [key]: e });
     setError('');
-  };
-
-  const onChange = (e: any, key: string) => {
-    if (e.target.value === 'Standard Contract') {
-      setError('');
-      onchangeCoupon({ ...coupon, contract: '', contractLabel: '' });
-    } else if (e.target.value === 'Mintable Coupon') {
-      onchangeCoupon({ ...coupon, totalCoupon: '' });
-    }
-    onchangeCoupon({ ...coupon, [key]: e.target.value });
   };
 
   const onChangeContract = (e: any) => {
@@ -211,6 +194,7 @@ const NewCoupon: React.FC = () => {
         web3.utils.keccak256(coupon.icon),
         0,
         web3.utils.toHex(parseInt(coupon.totalCoupon, 10) || 0),
+        COUPON_PURPOSE,
       ),
     );
     receipt
@@ -342,43 +326,40 @@ const NewCoupon: React.FC = () => {
           {step === 6 && (
             <FramerSlide>
               <Flex flexDirection="column" style={{ transform: 'translateY(-10px)' }}>
-                <RadioButtonGroup
-                  value={coupon.contractType}
-                  onChange={(e: any) => onChange(e, 'contractType')}
-                  radios={contractsRadio}
-                />
-                {coupon.contractType === 'Custom Contract' && (
-                  <Flex flexDirection="column" height="100%" justifyContent="space-between">
-                    <AddImage
-                      label={contractLabel ? contractLabel : t('common.upload_contract')}
-                      accept="application/pdf"
-                      icon={contractLabel ? 'clouddone' : 'cloud'}
-                      onChange={onChangeContract}
-                      uploading={uploading}
-                      placeholder={''}
-                      padding={6}
-                      marginLeft={20}
-                    />
-                    <div>
-                      {error && <ErrorMsg title={error} type="error" style={{ top: '54.6vh' }} />}
-                    </div>
-                  </Flex>
-                )}
+                <Flex flexDirection="column" marginBottom={8}>
+                  <Label fontSize="16px" color="#3191919">
+                    {t('new_token.custom_contract')}
+                  </Label>
+                  <Text fontSize="13px" color="#8E949E" paddingX={1} marginTop={2}>
+                    {t('new_token.custom_contract_msg')}{' '}
+                    <a
+                      className="contract-link"
+                      href={pdfContract}
+                      download="Token-Legal-Contract_Template.pdf"
+                    >
+                      {t('new_token.here')}
+                    </a>
+                  </Text>
+                </Flex>
+                <Flex flexDirection="column" height="100%" justifyContent="space-between">
+                  <AddImage
+                    label={contractLabel ? contractLabel : t('common.upload_contract')}
+                    accept="application/pdf"
+                    icon={contractLabel ? 'clouddone' : 'cloud'}
+                    onChange={onChangeContract}
+                    uploading={uploading}
+                    placeholder={''}
+                    padding={6}
+                    marginLeft={20}
+                  />
+                  <div>
+                    {error && <ErrorMsg title={error} type="error" style={{ top: '52vh' }} />}
+                  </div>
+                </Flex>
               </Flex>
             </FramerSlide>
           )}
           {step === 7 && (
-            <FramerSlide>
-              <Flex flexDirection="column" style={{ transform: 'translateY(-10px)' }}>
-                <RadioButtonGroup
-                  value={coupon.couponType}
-                  onChange={(e: any) => onChange(e, 'couponType')}
-                  radios={couponsRadio}
-                />
-              </Flex>
-            </FramerSlide>
-          )}
-          {step === 8 && (
             <CreateInputStep
               type="number"
               className="coupon-supply-input"
@@ -392,11 +373,11 @@ const NewCoupon: React.FC = () => {
               handleKeyChange={_handleKeyDown}
             />
           )}
-          {step === 9 && <CreateBuyStep data={coupon} />}
-          {step === 10 && <CreateDetailStep handleEdit={handleEdit} data={coupon} />}
-          {!uploading && error === '' && step !== 10 && (
+          {step === 8 && <CreateBuyStep data={coupon} />}
+          {step === 9 && <CreateDetailStep handleEdit={handleEdit} data={coupon} />}
+          {!uploading && error === '' && step !== 9 && (
             <CreateFooterStep
-              lastStep={step === 9}
+              lastStep={step === 8}
               handleSteps={handleSteps}
               onbtnDrag={handleCreateCoupon}
             />

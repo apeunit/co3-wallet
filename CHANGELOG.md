@@ -2,6 +2,46 @@
 ## [Unreleased]
 
 
+<a name="1.3.0"></a>
+## [1.3.0] - 2020-12-17
+### Chore
+- remove netflix env var for REACT_APP_PILOT
+
+### Feat
+- Add total supply screen
+- Update Translation
+- Update Cypress Coupon Testcase
+- Remove Standard contract from coupon
+- Set Coupon Mintable
+- add type selection for attach-sm deeplink
+- webhook support (for firstlife)
+- Update New Token Steps and add custom contract Text
+- use ethereum identicons for addresses images
+- Add 2 for coupon type in purpose
+- all tokens are mintable
+
+### Fix
+- Add Total Supply Screen in Token
+- Remove Copied console
+- Resolve Balance display Issue
+- Resolve Decimal Point Issue
+- Add amount from params in payment
+- misplaced tokens in coupon list
+- minor ui issues
+- Update Transaction Empty Message
+- single token wallet pilot
+- Set default single token
+- Update Coupon icons
+- token details not displayed properly
+- add locales for token description
+
+### Fix
+- display history in descending order
+
+### Test
+- set default tokens for single/multi token pilots
+
+
 <a name="1.2.2"></a>
 ## [1.2.2] - 2020-10-22
 ### Fix
@@ -114,7 +154,8 @@
 <a name="1.0.0"></a>
 ## 1.0.0 - 2020-06-30
 
-[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.2.2...HEAD
+[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.0...HEAD
+[1.3.0]: https://github.com/apeunit/co3-wallet/compare/1.2.2...1.3.0
 [1.2.2]: https://github.com/apeunit/co3-wallet/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/apeunit/co3-wallet/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/apeunit/co3-wallet/compare/1.1.2...1.2.0

@@ -1,7 +1,7 @@
 // <reference types="cypress" />
 import 'cypress-file-upload';
 import 'cypress-wait-until';
-import { getRandomCustomNumber } from '../../../src/api/co3uum';
+import { getRandomCustomNumber } from '../../../src/utils/helper';
 
 const randNo = getRandomCustomNumber(3);
 

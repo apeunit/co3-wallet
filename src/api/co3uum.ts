@@ -46,37 +46,3 @@ export const getProfileImageUrl = (userData: any): string => {
 
   return `${API_URL}/member_image/show/${memberId}.html?image_type=avatar`;
 };
-
-export const getRandomId = () => {
-  return `_${Math.random()
-    .toString(36)
-    .substr(2, 9)}`;
-};
-
-export const getRandomCustomNumber = (count: number) => {
-  let randomNo = '';
-  for (let i = 0; i < count; i = i + 1) {
-    randomNo = `${Math.floor(Math.random() * 9)}${randomNo}`;
-  }
-  return randomNo;
-};
-
-export const getTokenName = (tokenList: any, address: string) => {
-  const token = tokenList.find((tkn: any) => tkn.contractAddress === address);
-
-  return token && token.name;
-};
-
-export const getTokenSymbol = (tokenList: any, address: string) => {
-  const token = tokenList.find((tkn: any) => tkn.contractAddress === address);
-
-  return token && (token.token_symbol || token.symbol);
-};
-
-export const saveCallbackAPI = async (callbackurl: string, data: any): Promise<Object> => {
-  return (
-    await axios.post(callbackurl, data, {
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    })
-  ).data;
-};

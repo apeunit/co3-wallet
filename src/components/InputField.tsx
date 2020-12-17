@@ -38,6 +38,10 @@ const InputField = (props: any) => {
 
   const handleChange = (e: any) => {
     setErr(false);
+    if(msg && label.includes('Supply') && e.target.value.includes('.')) {
+      onChangeValue(e.target.value.replace('.', ''));
+      return ;
+    }
     if (maxLength && e.target.value.length <= maxLength) {
       setTextCount(e.target.value.length);
       onChangeValue(e.target.value);

@@ -3,6 +3,16 @@ const DEV_ADDRESS = process.env.REACT_APP_DEV_ADDRESS;
 
 // pilot name
 const PILOT = process.env.REACT_APP_PILOT || 'turin';
+const TOKEN_PURPOSE = 0;
+const DISCOUNT_PURPOSE = 1;
+const COUPON_PURPOSE = 50;
+const PASS_PURPOSE = 51;
+
+/*
+  Deeplink type params for crowdsale and vending machine
+*/
+const CROWDSALE_TYPE_DP = 100;
+const VENDING_TYPE_DP = 101;
 
 const LISTENER_URL =
   process.env.REACT_APP_LISTENER_URL || 'https://co3-pantheon.di.unito.it:4040/graphql';
@@ -38,6 +48,11 @@ const SENTRY_DSN = process.env.REACT_APP_SENTRY_DSN || undefined;
 
 const BACKUP_WALLET = localStorage.getItem('co3-app-backup');
 
+const TOKEN_CONTRACT_PLACEHOLDER =
+  process.env.TOKEN_CONTRACT_PLACEHOLDER || 'assets/Token-Legal-Contract_Placeholder.pdf';
+
+const WEBHOOKAPI = 'https://example.com/webhook';
+
 export {
   ENV,
   DEV_ADDRESS,
@@ -57,4 +72,12 @@ export {
   THING_ID,
   API_FIRSTLIFE_URL_STORAGE,
   API_FIRSTLIFE_URL,
+  TOKEN_PURPOSE,
+  DISCOUNT_PURPOSE,
+  COUPON_PURPOSE,
+  PASS_PURPOSE,
+  TOKEN_CONTRACT_PLACEHOLDER,
+  WEBHOOKAPI,
+  CROWDSALE_TYPE_DP,
+  VENDING_TYPE_DP,
 };

@@ -7,7 +7,7 @@ import FramerSlide from '../FrameMotion/Slide';
 import { useTranslation } from 'react-i18next';
 import ImageCard from 'src/components/ImageCard';
 import { useSelector } from 'react-redux';
-import { getTokenName } from 'src/api/co3uum';
+import { getTokenName } from 'src/utils/helper';
 import Moment from 'react-moment';
 
 interface IProps {
@@ -84,6 +84,18 @@ const CreateDetailStep: React.FC<IProps> = ({ data, handleEdit, uploading, handl
                 value={data.headline}
               />
               <Divider />
+              <DetailItems
+                handleEdit={handleEdit}
+                title={t('new_coupon.coupon_type')}
+                value={t('new_coupon.mintable_coupon')}
+              />
+              <Divider />
+              <DetailItems
+                handleEdit={handleEdit}
+                title={t('new_coupon.total_coupon')}
+                value={data.totalCoupon}
+              />
+              <Divider />
             </>
           )}
           {!data.maxSupply && (
@@ -108,7 +120,7 @@ const CreateDetailStep: React.FC<IProps> = ({ data, handleEdit, uploading, handl
               <Divider />
             </>
           )}
-          {data.maxSupply ? (
+          {data.maxSupply && (
             <>
               <DetailItems
                 handleEdit={handleEdit}
@@ -155,44 +167,7 @@ const CreateDetailStep: React.FC<IProps> = ({ data, handleEdit, uploading, handl
               />
               <Divider />
             </>
-          ) : (
-            <>
-              <DetailItems
-                handleEdit={handleEdit}
-                title={t('new_token.type')}
-                value={data.contractType}
-              />
-              <Divider />
-            </>
           )}
-          {!data.maxSupply &&
-            (data.tokenType ? (
-              data.tokenType === 'Mintable Token' ? (
-                <DetailItems
-                  handleEdit={handleEdit}
-                  title={t('new_token.token_type')}
-                  value={data.tokenType}
-                />
-              ) : (
-                <DetailItems
-                  handleEdit={handleEdit}
-                  title={t('common.supply')}
-                  value={data.totalSupply}
-                />
-              )
-            ) : data.couponType === 'Mintable Coupon' ? (
-              <DetailItems
-                handleEdit={handleEdit}
-                title={t('new_coupon.coupon_type')}
-                value={data.couponType}
-              />
-            ) : (
-              <DetailItems
-                handleEdit={handleEdit}
-                title={t('new_coupon.total_coupon')}
-                value={data.totalCoupon}
-              />
-            ))}
         </Flex>
       </Box>
     </FramerSlide>

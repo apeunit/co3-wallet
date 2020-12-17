@@ -24,9 +24,9 @@ import { createNewCrowdsale } from 'src/redux/actions/Chain';
 import { setModalData } from 'src/redux/actions/Modal';
 import { getPermalink, saveResource } from 'src/api/firstlife';
 import Loading from '../components/Loading';
-import { saveCallbackAPI } from 'src/api/co3uum';
+import { saveWebhookAPI } from 'src/utils/helper';
 import { useMutation } from '@apollo/react-hooks';
-import { CROWDSALE_ADDED } from './query';
+import { CROWDSALE_ADDED } from '../api/middleware';
 import moment from 'moment';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -194,16 +194,15 @@ const NewCrowdsale: React.FC = () => {
   const handleCreateCrowdsale = async () => {
     setLoader(true);
     let callbackParam: string | null;
+    let webHookParam: string | null;
     if (location.search) {
       const params = new URLSearchParams(location.search);
       callbackParam = params.get('callback');
+      webHookParam = params.get('webhook');
     }
     const receipt: any = dispatch(createNewCrowdsale(accessToken, crowdsale));
     receipt
       .then(async (res: any) => {
-        if (callbackParam) {
-          await saveCallbackAPI(callbackParam, res.contractAddress);
-        }
         if (res) {
           const crowdsaleDataRes = _get(res, 'events.CrowdsaleAdded.returnValues');
           crowdsaleAddedNotification({
@@ -221,7 +220,15 @@ const NewCrowdsale: React.FC = () => {
               },
             },
           })
-            .then((res: any) => {
+            .then(async (res: any) => {
+              if (callbackParam) {
+                window.location.href = `${callbackParam}${
+                  callbackParam.includes('?') ? '&' : '?'
+                }_id=${crowdsaleDataRes._contractAddress}`;
+              }
+              if (webHookParam) {
+                await saveWebhookAPI(webHookParam, crowdsaleDataRes._contractAddress, res);
+              }
               setLoader(false);
               console.log(res);
               history.push('/');
@@ -236,7 +243,12 @@ const NewCrowdsale: React.FC = () => {
             })
             .catch(async (err: any) => {
               if (callbackParam) {
-                await saveCallbackAPI(callbackParam, 'error');
+                window.location.href = `${callbackParam}${
+                  callbackParam.includes('?') ? '&' : '?'
+                }_id=error`;
+              }
+              if (webHookParam) {
+                await saveWebhookAPI(webHookParam, 'error', err);
               }
               setLoader(false);
               console.log(err, 'NewCrowdsale');
@@ -253,7 +265,12 @@ const NewCrowdsale: React.FC = () => {
       })
       .catch(async (err: any) => {
         if (callbackParam) {
-          await saveCallbackAPI(callbackParam, 'error');
+          window.location.href = `${callbackParam}${
+            callbackParam.includes('?') ? '&' : '?'
+          }_id=error`;
+        }
+        if (webHookParam) {
+          await saveWebhookAPI(webHookParam, 'error', err);
         }
         setLoader(false);
         console.log(err, 'NewCrowdsale');

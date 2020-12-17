@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Box, Flex, Text } from 'rebass';
 import ActionButtonGroup from '../components/ActionButtonGroup';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const shade = {
@@ -18,6 +18,8 @@ const modal = {
 export const AssetPopup = ({ setCreateToken }: any) => {
   const { t } = useTranslation();
   const history = useHistory();
+  const location = useLocation();
+  console.log(location.search);
 
   return (
     <Box
@@ -75,7 +77,10 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                       iconBg: 'blue600',
                       className: 'add-token-btn',
                       onClick: () => {
-                        history.replace('/new-token');
+                        history.push({
+                          pathname: `/new-token`,
+                          search: location.search,
+                        });
                       },
                     },
                     {
@@ -86,7 +91,10 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                       className: 'add-coupon-btn',
                       iconBg: 'blue600',
                       onClick: () => {
-                        history.replace('/new-coupon');
+                        history.push({
+                          pathname: `/new-coupon`,
+                          search: location.search,
+                        });
                       },
                     },
                     {
@@ -97,20 +105,12 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                       className: 'add-crowdsale-btn',
                       iconBg: 'blue600',
                       onClick: () => {
-                        history.replace('/new-crowdsale');
+                        history.push({
+                          pathname: `/new-crowdsale`,
+                          search: location.search,
+                        });
                       },
                     },
-                    // TODO: this should not be necessary
-                    // {
-                    //   icon: 'history',
-                    //   label: t('asset_popup.history'),
-                    //   key: 'history',
-                    //   iconColor: 'white',
-                    //   iconBg: 'blue600',
-                    //   onClick: () => {
-                    //     history.replace('/historyPage');
-                    //   },
-                    // },
                   ]}
                 />
               </Flex>

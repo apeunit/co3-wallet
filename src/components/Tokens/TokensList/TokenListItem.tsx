@@ -1,12 +1,13 @@
 import React from 'react';
 import { Flex, Text } from 'rebass';
 import Avatar from '../../Avatar';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setTransferToken } from '../../../redux/actions/Wallet';
 
 const TokenListItem = ({ logoURL, name, symbol, amount, ...rest }: any) => {
   const history = useHistory();
+  const location = useLocation();
   const dispatch = useDispatch();
 
   const selectToken = () => {
@@ -21,7 +22,7 @@ const TokenListItem = ({ logoURL, name, symbol, amount, ...rest }: any) => {
     if (history.location.pathname === '/') {
       history.push({ pathname: '/token-detail', state: { token } });
     } else {
-      history.push({ pathname: '/payment', state: { token } });
+      history.push({ pathname: '/payment', search: location.search, state: { token } });
     }
   };
 
@@ -45,7 +46,7 @@ const TokenListItem = ({ logoURL, name, symbol, amount, ...rest }: any) => {
         {/* <Badge marginY={1}>{symbol}</Badge> */}
       </Flex>
       <Text fontFamily="sans" fontSize={2} fontWeight="bold" marginLeft="auto" marginBottom={5}>
-        {amount}
+        {amount / 100}
       </Text>
     </Flex>
   );

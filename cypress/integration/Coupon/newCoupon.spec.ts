@@ -2,11 +2,13 @@
 import 'cypress-drag-drop';
 import 'cypress-file-upload';
 import 'cypress-wait-until';
-import { getRandomCustomNumber } from '../../../src/api/co3uum';
+import { getRandomCustomNumber } from '../../../src/utils/helper';
 
-const fixtureFile = '../../src/images/U009.png';
-const formData = new FormData();
-formData.append('files', fixtureFile);
+const randNo = getRandomCustomNumber(3);
+
+const image = '../../src/images/U009.png';
+
+const contractFile = '../../src/images/U009-contract.pdf';
 
 const headers = {
   'Content-Type': 'multipart/form-data',
@@ -15,9 +17,7 @@ const headers = {
   status: 'Public',
 };
 
-const randNo = getRandomCustomNumber(3);
-
-describe('Create Coupon Mintable', () => {
+describe('Create Custom Coupon with Contract', () => {
   it('should create new simple coupon', () => {
     window.localStorage.setItem('co3-app-mnemonic', Cypress.env('MNEMONIC_PHRASE'));
     cy.visit(
@@ -49,13 +49,13 @@ describe('Create Coupon Mintable', () => {
     cy.wait(500);
     cy.get('.next-step-btn').click({ force: true });
     cy.wait(500);
-    cy.get('.token-input').attachFile(fixtureFile);
+    cy.get('.token-input').attachFile(image);
     cy.server();
     cy.route({
       method: 'POST',
       url: `${Cypress.env('API_FIRSTLIFE_URL_STORAGE')}/files`,
       response: {
-        rolesCount: 2,
+        rolesCountImage: 2,
       },
       delay: 500,
       headers: headers,
@@ -64,14 +64,37 @@ describe('Create Coupon Mintable', () => {
       },
       onResponse: (xhr) => {
         console.log(xhr);
+        // expect(xhr).to.have.property('ops');
+      },
+    });
+    cy.wait(1000);
+    cy.get('.next-step-btn').click({ force: true });
+    cy.wait(500);
+  });
+  it('should add contract coupon', () => {
+    cy.get('.token-input').attachFile(contractFile);
+    cy.server();
+    cy.route({
+      method: 'POST',
+      url: `${Cypress.env('API_FIRSTLIFE_URL_STORAGE')}/files`,
+      response: {
+        rolesCountContract: 2,
+      },
+      delay: 500,
+      headers: headers,
+      onRequest: (xhr) => {
+        console.log(xhr);
+      },
+      onResponse: (xhr) => {
+        console.log(xhr);
+        // expect(xhr).to.have.property('ops');
       },
     });
     cy.wait(500);
     cy.get('.next-step-btn').click({ force: true });
-    cy.wait(500);
-    cy.get('.next-step-btn').click({ force: true });
-    cy.wait(500);
-    cy.get('.next-step-btn').click({ force: true });
+    cy.get('.coupon-supply-input')
+      .type('10')
+      .should('have.value', '10');
     cy.wait(500);
     cy.get('.next-step-btn').click({ force: true });
     cy.wait(500);

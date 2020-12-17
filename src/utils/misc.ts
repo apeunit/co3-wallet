@@ -1,3 +1,4 @@
+import { COUPON_PURPOSE, TOKEN_PURPOSE } from 'src/config';
 import { ITokenData } from '../interfaces';
 
 export const filterTokenBySymbol = (tokenList: ITokenData[], symbol: string) => {
@@ -14,4 +15,9 @@ export const isAddress = (address: string): boolean => {
   }
 
   return false;
+};
+
+// format an amount based on the purpose of the contract
+export const formatAmount = (token: any, amount: number): number => {
+  return token?.purpose >= TOKEN_PURPOSE && token?.purpose < COUPON_PURPOSE ? amount * 100 : amount;
 };

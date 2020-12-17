@@ -23,7 +23,7 @@ const CreateBuyStep: React.FC<IProps> = ({ data }) => {
           icon={data.icon}
           uploading={false}
         />
-        {(data.headline || data.couponType) && (
+        {data.headline && (
           <Flex marginTop="10px" flexDirection="column" paddingX="15px">
             <Flex flexDirection="column" paddingBottom="20px">
               <Text fontSize={24}>{data.name}</Text>
@@ -43,6 +43,7 @@ const CreateBuyStep: React.FC<IProps> = ({ data }) => {
                   cursor={'default'}
                   icon="fileCopy"
                   width="21px"
+                  marginTop="-2px"
                   height="14px"
                   marginRight="5px"
                 />
@@ -58,22 +59,49 @@ const CreateBuyStep: React.FC<IProps> = ({ data }) => {
               cursor={'default'}
               width="18px"
               height="15px"
+              marginTop="-2px"
               marginRight="7px"
               icon="totalSupply"
             />
-            {data.tokenType === 'Mintable Token' || data.couponType === 'Mintable Coupon' ? (
-              <Text fontSize={13}>{data.tokenType || data.couponType}</Text>
-            ) : (
-              <Text fontSize={13}>
-                {data.couponType ? t('new_coupon.total_coupon') : t('new_token.total_supply')}
-              </Text>
-            )}
+            <Text fontSize={13}>
+              {data.headline ? t('new_coupon.mintable_coupon') : t('common.mintable_token')}
+            </Text>
           </Flex>
-          {(data.tokenType !== 'Mintable Token' || data.couponType !== 'Mintable Coupon') && (
-            <Text fontSize={13}>{data.totalSupply || data.totalCoupon}</Text>
-          )}
         </Flex>
+        {data?.totalCoupon && (
+          <Flex padding={5} flexDirection="row" justifyContent="space-between">
+            <Flex className="token-file-icon" flexDirection="row">
+              <IconButton
+                cursor={'default'}
+                width="18px"
+                height="15px"
+                marginTop="-2px"
+                marginRight="7px"
+                icon="totalSupply"
+              />
+              <Text fontSize={13}>{data?.totalCoupon ? data?.totalCoupon : ''}</Text>
+            </Flex>
+          </Flex>
+        )}
         <Divider />
+        {data.totalSupply && (
+          <>
+            <Flex padding={5}>
+              <Flex className="token-file-icon" flexDirection="row">
+                <IconButton
+                  cursor={'default'}
+                  icon="totalSupply"
+                  width="21px"
+                  marginTop="-2px"
+                  height="14px"
+                  marginRight="5px"
+                />
+                <Text fontSize={13}>{data.totalSupply}</Text>
+              </Flex>
+            </Flex>
+            <Divider />
+          </>
+        )}
       </Flex>
     </FramerSlide>
   );

@@ -7,6 +7,7 @@ import ToolBarTitle from '../components/ToolBarTitle';
 import AvatarBadge from '../components/AvatarBadge';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import Blockies from 'react-blockies';
 
 export const SearchHeader = (props: any) => {
   const { t } = useTranslation();
@@ -27,7 +28,12 @@ export const SearchHeader = (props: any) => {
 
       <InfoBar border={true}>
         <Text variant="base">{t('common.to')}</Text>
-        <AvatarBadge image="https://www.thispersondoesnotexist.com/image" label={to} />
+        <AvatarBadge
+          blockies={
+            <Blockies bgColor="#e2e8f0" spotColor="#e2e8f0" seed={to} size={10} scale={3} />
+          }
+          label={to}
+        />
       </InfoBar>
     </Flex>
   );

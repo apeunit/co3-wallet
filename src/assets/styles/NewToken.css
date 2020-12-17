@@ -4,6 +4,10 @@
   vertical-align: -webkit-baseline-middle;
 }
 
+.contract-link {
+  color: #3340e4;
+  cursor: pointer;
+}
 
 .token-uploading-icon svg {
   width: 0.7em;

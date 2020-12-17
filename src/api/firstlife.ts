@@ -27,6 +27,9 @@ export const saveResource = async (accessToken: string | null, resource: any): P
   });
 };
 
+/* 
+  Save Crowdsale Data in FirstLife
+*/
 export const saveCrowdsaleData = async (
   accessToken: string | null,
   data: any,
@@ -45,6 +48,9 @@ export const saveCrowdsaleData = async (
   });
 };
 
+/* 
+  Get Crowdsale List From FirstLife
+*/
 export const getCrowdsaleList = async (
   accessToken: string | null,
   activityId: string,

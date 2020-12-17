@@ -12,7 +12,8 @@
     "label": "Minting",
     "supply_placeholder": "Enter token supply",
     "token_mint_info": "Token Mint Info",
-    "token_mint_failed": "Token Mint Failed"
+    "token_mint_failed": "Token Mint Failed",
+    "coupon_mint_decimal_error": "Decimals not allowed in coupon minting"
   },
   "multitoken": {
     "label": "Wallet",
@@ -36,7 +37,8 @@
     "total_coupon_placeholder": "Enter total coupon",
     "coupon_created": "Coupon Created",
     "coupon_creation_failed": "Coupon Creation Failed",
-    "coupon_type": "Coupon Type"
+    "coupon_type": "Coupon Type",
+    "mintable_coupon" : "Mintable Coupon"
   },
   "common": {
     "name": "Name",
@@ -61,7 +63,9 @@
     "reload": "Reload",
     "slide_to_create": "Slide to create",
     "invalid_token": "Invalid Token",
-    "upload_contract": "Upload contract"
+    "upload_contract": "Upload contract",
+    "mintable_token" : "Mintable Token",
+    "dummy_text": "lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum"
   },
   "new_crowdsale" : {
     "label": "New Crowdsale",
@@ -90,13 +94,24 @@
     "payment_token":"Payment Token",
     "instance_cost":"How much will one instance cost?",
     "token_choice":"Which Token should be used for your campaign?",
-    "one_instance":"Prize of one Instance",
+    "one_instance":"Price of one Instance",
     "loading":"Loading...",
     "starting_date":"Starting Date of your Crowdsale-Campagne",
     "ending_date":"End Date of your Crowdsale-Campagne",
     "crowdsale_created": "Crowdsale Created",
-    "crowdsale_creation_failed":"Crowdsale Creation Failed",
-    "marketplace":"Marketplace"
+    "crowdsale_creation_failed":"Crowdsale Creation Failed"
+  },
+  "marketplace": {
+    "label":"Marketplace",
+    "goal":"Goal",
+    "closes":"Closes",
+    "days":"days",
+    "hours":"hours",
+    "minutes":"minutes",
+    "seconds":"seconds",
+    "no_details":"Crowdsale details not available.",
+    "started_on":"Started on",
+    "buy_now": "BUY NOW"
   },
   "new_token": {
     "label": "New Token",
@@ -104,13 +119,16 @@
     "symbol_placeholder": "Enter token symbol",
     "symbol_msg": "Symbol is a short identifier eg. ETH",
     "symbol_already": "This symbol is already taken",
-    "description_placeholder": "Enter short description",
+    "description_placeholder": "Please describe how this token can be used and where and how can you get it",
     "total_supply": "Total Supply",
     "total_supply_placeholder": "Enter total supply",
     "token_created": "Token Created",
     "token_creation_failed": "Token Creation Failed",
     "type": "Type",
-    "token_type": "Token Type"
+    "token_type": "Token Type",
+    "custom_contract": "Contract",
+    "custom_contract_msg": "To continue please upload the legal contract for this token. If you don't have one you can download the standard template from",
+    "here": "here"
   },
   "node_error": {
     "failure": "Failure",
@@ -124,8 +142,10 @@
     "payment_info": "Payment info",
     "payment_failed": "Token Payment Failed",
     "slide_to_send": "Slide to Send",
-    "token_error": "Token non trovato",
-    "to_error": "To Address non trovato"
+    "token_error": "Token not found",
+    "to_error": "To Adress not found",
+    "empty_wallet": "Your wallet is empty",
+    "redirecting": "...Redirecting"
   },
   "receive": {
     "ask_sender": "Ask Sender",
@@ -146,6 +166,7 @@
     "transaction_details": "Transactions Details",
     "transaction_history": "Transactions History",
     "no_transaction": "No Transaction Found",
+    "no_token": "There are no tokens in your wallet",
     "event_name": "Event Name",
     "token_mint": "Token Mint",
     "transfer_token": "Transfer Token",

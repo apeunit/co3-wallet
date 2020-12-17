@@ -5,35 +5,8 @@ const contractsRadio = [
       'lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum',
   },
   {
-    label: 'Custom Contract',
-    info:
-      'lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum',
-  },
-];
-
-const tokensRadio = [
-  {
-    label: 'Mintable Token',
-    info:
-      'lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum',
-  },
-  {
-    label: 'Standard Token',
-    info:
-      'lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum',
-  },
-];
-
-const couponsRadio = [
-  {
-    label: 'Mintable Coupon',
-    info:
-      'lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum',
-  },
-  {
-    label: 'Standard Coupon',
-    info:
-      'lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum',
+    label: 'Contract',
+    info: 'contract',
   },
 ];
 
@@ -59,16 +32,8 @@ const createTokenSteps = [
     title: 'common.contract',
   },
   {
-    stepId: 5,
-    title: 'new_token.type',
-  },
-  {
     stepId: 6,
-    title: 'new_token.token_type',
-  },
-  {
-    stepId: 7,
-    title: 'common.supply',
+    title: 'new_token.total_supply',
   },
 ];
 
@@ -98,15 +63,7 @@ const createCouponSteps = [
     title: 'common.contract',
   },
   {
-    stepId: 6,
-    title: 'new_token.type',
-  },
-  {
     stepId: 7,
-    title: 'new_coupon.coupon_type',
-  },
-  {
-    stepId: 8,
     title: 'new_coupon.total_coupon',
   },
 ];
@@ -181,12 +138,4 @@ const languages = [
   },
 ];
 
-export {
-  contractsRadio,
-  tokensRadio,
-  createTokenSteps,
-  couponsRadio,
-  languages,
-  createCouponSteps,
-  createCrowdsaleSteps,
-};
+export { contractsRadio, createTokenSteps, languages, createCouponSteps, createCrowdsaleSteps };

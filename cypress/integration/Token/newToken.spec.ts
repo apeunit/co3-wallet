@@ -2,7 +2,7 @@
 import 'cypress-drag-drop';
 import 'cypress-file-upload';
 import 'cypress-wait-until';
-import { getRandomCustomNumber } from '../../../src/api/co3uum';
+import { getRandomCustomNumber } from '../../../src/utils/helper';
 
 const fixtureFile = '../../src/images/U009.png';
 const formData = new FormData();
@@ -16,6 +16,7 @@ const headers = {
 };
 
 const randNo = getRandomCustomNumber(3);
+const contractFile = '../../src/images/U009-contract.pdf';
 
 describe('Create Token Mintable', () => {
   it('should create new simple token', () => {
@@ -68,7 +69,31 @@ describe('Create Token Mintable', () => {
     cy.wait(500);
     cy.get('.next-step-btn').click({ force: true });
     cy.wait(500);
+  });
+  it('should add contract token', () => {
+    cy.get('.token-input').attachFile(contractFile);
+    cy.server();
+    cy.route({
+      method: 'POST',
+      url: `${Cypress.env('API_FIRSTLIFE_URL_STORAGE')}/files`,
+      response: {
+        rolesCount: 2,
+      },
+      delay: 500,
+      headers: headers,
+      onRequest: (xhr) => {
+        console.log(xhr);
+      },
+      onResponse: (xhr) => {
+        console.log(xhr);
+        // expect(xhr).to.have.property('ops');
+      },
+    });
+    cy.wait(500);
     cy.get('.next-step-btn').click({ force: true });
+    cy.get('.token-totalsupply-input')
+      .type('10')
+      .should('have.value', '10');
     cy.wait(500);
     cy.get('.next-step-btn').click({ force: true });
     cy.wait(500);

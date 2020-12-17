@@ -13,6 +13,7 @@ import { mintNewToken } from '../redux/actions/Chain';
 import { setModalData } from '../redux/actions/Modal';
 import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
+import ErrorMsg from 'src/components/ErrorMsg';
 
 const Minting = () => {
   const { t } = useTranslation();
@@ -20,6 +21,7 @@ const Minting = () => {
   const [loader, setLoader] = useState(false);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [error, setError] = useState('');
 
   const { token } = useSelector(({ wallet }: any) => {
     return {
@@ -37,6 +39,7 @@ const Minting = () => {
           history.push('/');
           dispatch(
             setModalData(
+              true,
               t('minting.token_mint_info'),
               t('common.transaction_complete'),
               'permission',
@@ -47,11 +50,26 @@ const Minting = () => {
           setLoader(false);
           console.log(err, 'Mint');
           dispatch(
-            setModalData(true, t('minting.token_mint_failed'), err.message.split('\n')[0], 'permission'),
+            setModalData(
+              true,
+              t('minting.token_mint_failed'),
+              err.message.split('\n')[0],
+              'permission',
+            ),
           );
         });
     }
   };
+
+  const onKeySupply = (e: any) => {
+    e.preventDefault();
+    if (e.key === '.' && token?.decimals === 0) {
+      setError(t('minting.coupon_mint_decimal_error'))
+      return false;
+    } else {
+      setError('');
+    }
+  }
 
   return (
     <Flex flexDirection="column" justifyContent="space-between" height="100vh">
@@ -80,19 +98,26 @@ const Minting = () => {
           label={t('common.supply')}
           placeholder={t('minting.supply_placeholder')}
           value={supply || ''}
+          handleKeyChange={onKeySupply}
+          msg={token?.decimals === 0 ? t('minting.coupon_mint_decimal_error') : ''}
           onChangeValue={setSupply}
         />
       </Flex>
-      <Flex justifyContent="center" marginBottom={4}>
-        <IconButton
-          icon="next"
-          className="token-mint-next-btn"
-          marginBottom={5}
-          size="s14"
-          backgroundColor="blue600"
-          color="white"
-          onClick={handleConfirm}
-        />
+      <Flex justifyContent="center" marginBottom={4} minHeight="70px">
+        {error ? (
+          <ErrorMsg style={{ top: '87vh' }} title={error} type="warning" />
+        ):
+        (
+          <IconButton
+            icon="next"
+            className="token-mint-next-btn"
+            marginBottom={5}
+            size="s14"
+            backgroundColor="blue600"
+            color="white"
+            onClick={handleConfirm}
+          />
+        )}
       </Flex>
     </Flex>
   );

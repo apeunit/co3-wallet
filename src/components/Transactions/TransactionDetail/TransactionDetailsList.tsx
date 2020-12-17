@@ -50,7 +50,7 @@ const TransactionDetails = ({ transaction }: any) => {
       <TransactionDetailItem title={`${t('common.to')}: `} value={transaction.receiver_pk} />
       <TransactionDetailItem title={`${t('common.from')}: `} value={transaction.sender_pk} />
       <TransactionDetailItem title={`${t('transaction.decimal')}: `} value={transaction.decimals} />
-      <TransactionDetailItem title={`${t('transaction.balance')}: `} value={transaction.amount} />
+      <TransactionDetailItem title={`${t('transaction.balance')}: `} value={transaction.decimals === 2 ? transaction.amount / 100 : transaction.amount} />
       <TransactionDetailItem
         title={`${t('transaction.token_symbol')}: `}
         value={transaction.token_symbol}

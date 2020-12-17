@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Flex, Text } from 'rebass';
 import IconButton from '../IconButton';
 import '../../assets/styles/NewToken.css';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { PILOT } from 'src/config';
 
 interface IProps {
   iconActive: string;
@@ -13,18 +15,7 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
   const history = useHistory();
   const { t } = useTranslation();
   const [active, setActive] = useState(iconActive);
-
-  const changeTab = (icon: string, url: string) => {
-    setActive(icon);
-    history.push(url);
-  };
-
-  const icons = [
-    {
-      label: t('new_crowdsale.marketplace'),
-      icon: 'sellIcon',
-      url: '/marketplace',
-    },
+  const [icons, setIcons] = useState([
     {
       label: t('multitoken.label'),
       icon: 'walletIcon',
@@ -35,7 +26,32 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
       icon: 'settings',
       url: '/settings',
     },
-  ];
+  ]);
+
+  const { _pilot } = useSelector(({ pilot }: any) => {
+    return {
+      _pilot: pilot,
+    };
+  });
+
+  const changeTab = (icon: string, url: string) => {
+    setActive(icon);
+    history.push(url);
+  };
+
+  useEffect(() => {
+    if ((_pilot && _pilot.features.indexOf('multiToken') > -1) || PILOT === 'turin') {
+      setIcons([
+        {
+          label: t('marketplace.label'),
+          icon: 'sellIcon',
+          url: '/marketplace',
+        },
+        ...icons,
+      ]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [_pilot]);
 
   return (
     <Flex
@@ -55,7 +71,7 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
             key={index}
             className="token-footer-icon"
             height="40px"
-            width={icon === 'sellIcon' ? '130px': '105px'}
+            width={icon === 'sellIcon' ? '130px' : '105px'}
             backgroundColor="blue100"
             sx={{ borderRadius: 'full' }}
           >

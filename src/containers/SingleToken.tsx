@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import ToolBar from '../components/ToolBar';
-import IconButton from '../components/IconButton';
-import ToolBarTitle from '../components/ToolBarTitle';
 import ActionButtonGroup from '../components/ActionButtonGroup';
 import TokenCard from '../components/Tokens/CreateTokens/TokenCard';
 import { Flex } from 'rebass';
 import STFooter from '../components/SingleTokenComponents/STFooter';
-import { setTransferToken } from '../redux/actions/Wallet';
-import { IToken } from '../interfaces';
-import { useLazyQuery } from '@apollo/react-hooks';
-import { BALANCE_NOTIFY_QUERY } from './query';
 import { useTranslation } from 'react-i18next';
+import ScenarioJSON from '../config/scenario.config.json';
+import { fetchTokenByTicker } from 'src/redux/actions/Chain';
 
 /**
  * TODO: Define props and state interface for component and remove all 'any(s)'
@@ -21,44 +16,25 @@ const SingleToken: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const [token, setToken] = useState<IToken>();
-  const [tokenList, setTokenList] = useState([]);
+  const [loading, setLoading] = useState(true);
   // -------------------------------------------------------------------------- */
   //                           Get data from the store                          */
   // -------------------------------------------------------------------------- */
 
-  const { ethAddress } = useSelector(({ wallet }: any) => {
+  const { contracts, token } = useSelector(({ chain, wallet }: any) => {
     return {
-      ethAddress: wallet.ethAddress,
+      contracts: chain.contracts,
+      token: wallet.transfer.token,
     };
   });
 
-  const [balanceTokenQuery, { loading, data }] = useLazyQuery(BALANCE_NOTIFY_QUERY, {
-    fetchPolicy: 'no-cache',
-    variables: {
-      accountPk: ethAddress,
-    },
-  });
-
   useEffect(() => {
-    if (ethAddress) {
-      balanceTokenQuery();
+    if (contracts?.tokenFactory) {
+      dispatch(fetchTokenByTicker(ScenarioJSON.athens.tokens[0]));
+      setLoading(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ethAddress]);
-
-  useEffect(() => {
-    if (data) {
-      setTokenList(data.balanceNotificationMany);
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (!token && tokenList.length > 0) {
-      dispatch(setTransferToken(tokenList[0]));
-      setToken(tokenList[0]);
-    }
-  }, [dispatch, token, tokenList]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contracts]);
 
   return (
     <Flex
@@ -67,28 +43,23 @@ const SingleToken: React.FC = () => {
       backgroundColor="blue100"
       justifyContent="space-between"
     >
-      <Flex flexDirection="column">
-        <ToolBar>
-          <IconButton icon="menu" />
-          <ToolBarTitle>{t('multitoken.label')}</ToolBarTitle>
-        </ToolBar>
-      </Flex>
+      <Flex flexDirection="column" />
       <Flex flexDirection="column" paddingX={6}>
         {token && (
           <TokenCard
             key={token && token.contractAddress}
-            loading={tokenList === undefined || loading}
             icon={token && token.logoURL}
+            loading={loading}
             name={token && token.name}
-            symbol={token && token.token_symbol}
+            symbol={token && (token.token_symbol || token.symbol)}
             amount={token && token.amount}
           />
         )}
         <ActionButtonGroup
           marginTop={10}
           marginBottom="auto"
+          loading={loading}
           gap={2}
-          loading={tokenList === undefined || loading}
           buttons={[
             {
               icon: 'pay',
@@ -97,7 +68,7 @@ const SingleToken: React.FC = () => {
               iconBg: 'blue600',
               iconColor: 'white',
               onClick: () => {
-                history.replace({ pathname: '/scan', state: { token: tokenList && tokenList[0] } });
+                history.replace({ pathname: '/scan', state: { token } });
               },
             },
             {
@@ -109,19 +80,20 @@ const SingleToken: React.FC = () => {
               onClick: () => {
                 history.replace({
                   pathname: '/receive',
-                  state: { token: tokenList && tokenList[0] },
+                  state: { token },
                 });
               },
             },
             {
               icon: 'history',
               label: t('multitoken.history'),
-              key: 'history',
+              iconBorderColor: 'primary',
               iconBg: 'white',
-              iconColor: 'blue600',
-              iconBorderColor: 'blue600',
+              labelColor: 'primary',
+              color: 'primary',
+              className: 'txnhistory-btn',
               onClick: () => {
-                history.replace('/history');
+                history.replace('/singletxnhistory');
               },
             },
           ]}

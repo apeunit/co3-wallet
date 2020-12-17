@@ -1,9 +1,9 @@
 {
     "athens": {
-        "tokens": ["GRCC"]
+        "tokens": ["TSST"]
     },
     "turin": {
-        "tokens": []
+        "tokens": ["TBM"]
     },
     "paris": {
         "tokens": []

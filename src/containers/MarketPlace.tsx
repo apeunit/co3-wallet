@@ -5,7 +5,7 @@ import STFooter from 'src/components/SingleTokenComponents/STFooter';
 import { useDispatch, useSelector } from 'react-redux';
 import { THING_ID } from 'src/config';
 import { getAllCrowdsale } from 'src/redux/actions/Chain';
-import { CrowdsaleSortEnum, GET_ALL_TOKENS, GET_CROWDSALE_ADDED } from './query';
+import { CrowdsaleSortEnum, GET_ALL_TOKENS, GET_CROWDSALE_ADDED } from '../api/middleware';
 import { useLazyQuery, useQuery } from '@apollo/react-hooks';
 import { getCrowdsaleList } from 'src/api/firstlife';
 import { ICrowdsaleData } from 'src/interfaces';

@@ -29,29 +29,18 @@ const NewPayment = () => {
       const toParam = params.get('to');
       const tokenParam = params.get('token');
       const amountParam = params.get('amount');
-      const callbackParam = params.get('callback');
       if (toParam && tokenParam && amountParam) {
         dispatch(setToAddress(toParam));
-        history.push(
-          `/confirmpayment?to=${toParam}&&token=${tokenParam}&&amount=${amountParam}${
-            callbackParam ? `&&callback=${callbackParam}` : ''
-          }`,
-        );
+        history.push({ pathname: '/confirmpayment', search: location.search });
       } else if (toParam && tokenParam) {
         dispatch(setToAddress(toParam));
-        history.push(
-          `/payment?to=${toParam}&&token=${tokenParam}${
-            callbackParam ? `&&callback=${callbackParam}` : ''
-          }`,
-        );
+        history.push({ pathname: '/payment', search: location.search });
       } else if (toParam && !tokenParam && amountParam) {
         dispatch(setToAddress(toParam));
         history.push('/404');
       } else if (toParam) {
         dispatch(setToAddress(toParam));
-        history.push(
-          `/select-token?to=${toParam}${callbackParam ? `&&callback=${callbackParam}` : ''}`,
-        );
+        history.push({ pathname: '/select-token', search: location.search });
       }
       accessTokenCalls(params);
     }

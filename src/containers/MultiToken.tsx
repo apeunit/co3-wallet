@@ -15,7 +15,7 @@ import PendingTokenItem from '../components/SingleTokenComponents/PendingTokenIt
 import CouponList from '../components/Coupons/CouponsList/CouponList';
 import Draggable from 'react-draggable';
 import { getBound, getPos } from '../utils/sliderFtns';
-import { BALANCE_NOTIFY_QUERY } from './query';
+import { BALANCE_NOTIFY_QUERY } from '../api/middleware';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { useTranslation } from 'react-i18next';
 import { LISTENER_POLL_INTERVAL, SSO_LOGIN_URL } from 'src/config';

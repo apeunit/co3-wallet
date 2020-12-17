@@ -34,18 +34,30 @@ const Payment: React.FC = () => {
       const params = new URLSearchParams(location.search);
       const toParam = params.get('to');
       const tokenParam = params.get('token');
+      const amountParam = params.get('amount');
+      amountParam && dispatch(setTransferAmount(amountParam));
       toParam && dispatch(setToAddress(_replace(toParam, /['"]+/g, '')));
       if (tokenParam && tokenList.length > 0) {
         const tokenNew = tokenList.find(
           (tkn: any) => tkn.token_symbol === _replace(tokenParam, /['"]+/g, ''),
         );
-        dispatch(setTransferToken(tokenNew));
+        if (tokenNew) {
+          dispatch(setTransferToken(tokenNew))
+        } else {
+          params.delete('token')
+          setError(`${t('payment.token_error')}`);
+        }
       }
     }
-  }, [dispatch, location.search, tokenList]);
+  }, [dispatch, history, location.search, t, tokenList]);
 
   const handleTap = (tap: string) => {
     const amountString: string = `${amount}${tap}`;
+    if (token?.decimals === 0 && tap.includes('.')) {
+      dispatch(setTransferAmount(amount));
+
+      return;
+    }
     if (amountString === '0') {
       dispatch(setTransferAmount(`0`));
     }
@@ -74,22 +86,8 @@ const Payment: React.FC = () => {
   };
 
   const handleConfirm = () => {
-    if (parseInt(amount, 10) <= parseInt(token.amount, 10)) {
-      if (location.search) {
-        const params = new URLSearchParams(location.search);
-        const toParam = params.get('to');
-        const tokenParam = params.get('token');
-        const callbackParam = params.get('callback');
-        history.push({
-          pathname: `/confirmpayment`,
-          search: `?to=${toParam}&&token=${tokenParam}${
-            callbackParam ? `&&callback=${callbackParam}` : ''
-          }`,
-          state: { token },
-        });
-      } else {
-        history.push({ pathname: '/confirmpayment', state: { token } });
-      }
+    if (parseInt(amount, 10) <= (token.decimals === 2 ? parseInt(token?.amount, 10) / 100 : parseInt(token?.amount, 10))) {
+      history.push({ pathname: '/confirmpayment', search: location.search, state: { token } });
       setError('');
     } else {
       setError(t('payment.amount_error'));
@@ -134,6 +132,7 @@ const Payment: React.FC = () => {
         handleConfirm={handleConfirm}
         disable={keyDisable}
         error={error}
+        disbaleConfirm={error === ''}
       />
     </Flex>
   );

@@ -16,7 +16,7 @@ import {
 import _get from 'lodash/get';
 import { saveAccessToken, saveAid } from './redux/actions/CO3UUM';
 import { useLazyQuery } from '@apollo/react-hooks';
-import { BALANCE_NOTIFY_QUERY } from './containers/query';
+import { BALANCE_NOTIFY_QUERY } from './api/middleware';
 import { LISTENER_POLL_INTERVAL } from './config';
 import { getAllToken } from './redux/actions/Chain';
 import _isEqual from 'lodash/isEqual';

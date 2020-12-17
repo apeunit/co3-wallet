@@ -2,7 +2,7 @@ import React from 'react';
 import { Flex, Image, Text } from 'rebass';
 
 const AvatarBadge = (props: any) => {
-  const { image, label } = props;
+  const { image, label, blockies } = props;
 
   return (
     <Flex
@@ -16,14 +16,18 @@ const AvatarBadge = (props: any) => {
         overflow: 'hidden',
       }}
     >
-      <Image
-        src={image}
-        backgroundColor="white"
-        sx={{
-          flexShrink: 0,
-          maxHeight: '100%',
-        }}
-      />
+      {image && (
+        <Image
+          src={image}
+          backgroundColor="white"
+          sx={{
+            flexShrink: 0,
+            maxHeight: '100%',
+          }}
+        />
+      )}
+
+      {blockies && blockies}
 
       {label && (
         <Text

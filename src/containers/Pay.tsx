@@ -76,6 +76,7 @@ const Pay = (props: any) => {
         handleTap={handleTap}
         handleErase={handleErase}
         handleConfirm={handleConfirm}
+        disbaleConfirm={true}
       />
     </Flex>
   );
