@@ -40,7 +40,7 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
   };
 
   useEffect(() => {
-    if ((_pilot && _pilot.features.indexOf('multiToken') > -1) || PILOT === 'turin') {
+    if (((_pilot && _pilot.features.indexOf('multiToken') > -1) || PILOT === 'turin') && !icons.find((icon) => icon.url === '/marketplace')) {
       setIcons([
         {
           label: t('marketplace.label'),

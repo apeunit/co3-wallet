@@ -165,7 +165,7 @@
   "transaction": {
     "transaction_details": "Dettagli sulle transazioni",
     "transaction_history": "Cronologia delle transazioni",
-    "no_transaction": "Nessuna transazione trovata",
+    "no_transaction": "Non ci sono transazioni",
     "no_token": "Non ci sono gettoni nel tuo portafoglio",
     "event_name": "Nome dell'evento",
     "token_mint": "Conia valuta",

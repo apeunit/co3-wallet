@@ -22,6 +22,7 @@ import { setModalData } from '../redux/actions/Modal';
 import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
 import { COUPON_PURPOSE } from 'src/config';
+import { setTransferToken } from 'src/redux/actions/Wallet';
 const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
 const NewCoupon: React.FC = () => {
@@ -45,7 +46,6 @@ const NewCoupon: React.FC = () => {
     description: '',
     contract: '',
     contractLabel: '',
-    totalCoupon: '',
   });
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -70,25 +70,24 @@ const NewCoupon: React.FC = () => {
 
   useEffect(() => {
     if (couponData) {
-      setStep(9);
+      setStep(8);
       onchangeCoupon(couponData);
     }
   }, [couponData]);
 
   const handleSteps = () => {
     setError('');
-    if (step <= 8) {
+    if (step <= 7) {
       if (
         checkError(1, coupon.name, t('common.name')) ||
         checkError(2, coupon.headline, t('new_coupon.headline')) ||
         checkError(5, coupon.icon, t('common.icon')) ||
-        checkError(6, coupon.contract, t('common.contract')) ||
-        checkError(7, coupon.totalCoupon, t('new_coupon.total_coupon'))
+        checkError(6, coupon.contract, t('common.contract'))
       ) {
         return;
       }
-      if (step <= 8 && title.indexOf(t('common.edit')) > -1) {
-        setStep(8);
+      if (step <= 7 && title.indexOf(t('common.edit')) > -1) {
+        setStep(7);
         setTitle(t('new_coupon.label'));
       } else {
         setStep(step + 1);
@@ -102,7 +101,7 @@ const NewCoupon: React.FC = () => {
   };
 
   const handleClose = () => {
-    step === 9
+    step === 8
       ? history.push({ pathname: '/', state: { pendingToken: [coupon] } })
       : history.push('/');
   };
@@ -142,8 +141,8 @@ const NewCoupon: React.FC = () => {
     setUploading(true);
     setError('');
     if (e.target.files[0]) {
+      let label = e.target.files[0].name;
       changeContractLabel(e.target.files[0].name);
-      onchangeCoupon({ ...coupon, contractLabel: e.target.files[0].name });
       if (!accessToken || accessToken === null) {
         setUploading(false);
         setError(t('common.access_token_error'));
@@ -155,7 +154,7 @@ const NewCoupon: React.FC = () => {
         .then(({ data }: any) => {
           setUploading(false);
           const link = getPermalink(data);
-          link ? onchangeCoupon({ ...coupon, contract: link }) : console.log(data);
+          link ? onchangeCoupon({ ...coupon, contract: link, contractLabel: contractLabel || label }) : console.log(data);
         })
         .catch((err: any) => {
           console.log(err, "err")
@@ -191,16 +190,15 @@ const NewCoupon: React.FC = () => {
         coupon.symbol,
         coupon.icon,
         web3.utils.keccak256(coupon.icon),
-        web3.utils.keccak256(coupon.icon),
+        web3.utils.keccak256(coupon.contract),
         0,
-        web3.utils.toHex(parseInt(coupon.totalCoupon, 10) || 0),
+        web3.utils.toHex(0),
         COUPON_PURPOSE,
       ),
     );
     receipt
       .then((res: any) => {
         setLoader(false);
-        history.push('/');
         dispatch(
           setModalData(
             true,
@@ -209,6 +207,24 @@ const NewCoupon: React.FC = () => {
             'permission',
           ),
         );
+        const resData = res?.events?.TokenAdded?.returnValues;
+        const token = {
+          amount: resData?._hardCap,
+          computed_at: resData?._timestamp,
+          contractAddress: resData?._contractAddress,
+          decimals: resData?._decimals,
+          logoURL: resData?._logoURL,
+          name: resData?._name,
+          owner: resData?._from,
+          purpose: resData?._purpose,
+          symbol: resData?._symbol,
+          token_symbol: resData?._symbol,
+        }
+        dispatch(setTransferToken(token));
+        setTimeout(() => {
+          dispatch(setModalData(false, '', '', '', ));
+          history.push('/token-mint');
+        }, 1000)
       })
       .catch((err: any) => {
         setLoader(false);
@@ -353,31 +369,17 @@ const NewCoupon: React.FC = () => {
                     marginLeft={20}
                   />
                   <div>
-                    {error && <ErrorMsg title={error} type="error" style={{ top: '52vh' }} />}
+                    {error && <ErrorMsg title={error} type="error" style={{ top: '54.6vh' }} />}
                   </div>
                 </Flex>
               </Flex>
             </FramerSlide>
           )}
-          {step === 7 && (
-            <CreateInputStep
-              type="number"
-              className="coupon-supply-input"
-              value={coupon.totalCoupon}
-              onChangeValue={(e: any) => handleChangeToken(e, 'totalCoupon')}
-              label={t('new_coupon.total_coupon')}
-              placeholder={t('new_coupon.total_coupon_placeholder')}
-              maxLength=""
-              msg=""
-              error={error}
-              handleKeyChange={_handleKeyDown}
-            />
-          )}
-          {step === 8 && <CreateBuyStep data={coupon} />}
-          {step === 9 && <CreateDetailStep handleEdit={handleEdit} data={coupon} />}
-          {!uploading && error === '' && step !== 9 && (
+          {step === 7 && <CreateBuyStep data={coupon} />}
+          {step === 8 && <CreateDetailStep handleEdit={handleEdit} data={coupon} />}
+          {!uploading && error === '' && step !== 8 && (
             <CreateFooterStep
-              lastStep={step === 8}
+              lastStep={step === 7}
               handleSteps={handleSteps}
               onbtnDrag={handleCreateCoupon}
             />

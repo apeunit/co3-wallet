@@ -2,6 +2,12 @@
 ## [Unreleased]
 
 
+<a name="1.3.1"></a>
+## [1.3.1] - 2020-12-18
+### Fix
+- Refactor Token and coupon minting logic
+
+
 <a name="1.3.0"></a>
 ## [1.3.0] - 2020-12-17
 ### Chore
@@ -154,7 +160,8 @@
 <a name="1.0.0"></a>
 ## 1.0.0 - 2020-06-30
 
-[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.0...HEAD
+[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.1...HEAD
+[1.3.1]: https://github.com/apeunit/co3-wallet/compare/1.3.0...1.3.1
 [1.3.0]: https://github.com/apeunit/co3-wallet/compare/1.2.2...1.3.0
 [1.2.2]: https://github.com/apeunit/co3-wallet/compare/1.2.1...1.2.2
 [1.2.1]: https://github.com/apeunit/co3-wallet/compare/1.2.0...1.2.1

@@ -73,9 +73,7 @@ const TransactionsHistory: React.FC = () => {
         <TransactionHistoryListPlaceholder />
       ) : !txnsLoading && transactionHistory.length === 0 ? (
         <Text marginX="auto" marginY={50}>
-          {balanceData.data.balanceNotificationMany.length === 0
-            ? t('transaction.no_token')
-            : t('transaction.no_transaction')}
+          {t('transaction.no_transaction')}
         </Text>
       ) : (
         <TransactionHistoryList transactions={transactionHistory} />

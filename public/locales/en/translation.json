@@ -165,7 +165,7 @@
   "transaction": {
     "transaction_details": "Transactions Details",
     "transaction_history": "Transactions History",
-    "no_transaction": "No Transaction Found",
+    "no_transaction": "There are no transactions",
     "no_token": "There are no tokens in your wallet",
     "event_name": "Event Name",
     "token_mint": "Token Mint",

@@ -226,6 +226,7 @@ const createNewToken = (
       })
       .then((data: any) => {
         dispatch(createToken(data.events.TokenAdded));
+        return data;
         /**
          * Refresh token list after new token is added
          */
