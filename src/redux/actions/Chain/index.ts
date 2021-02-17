@@ -94,7 +94,9 @@ const fetchTokenByTicker = (ticker: string) => {
             .call()
             .then((amount: any) => {
               const token = formatTokenData(data);
-              dispatch(setTransferToken({ ...token, amount }));
+              const newtknData = token.logoURL && token.logoURL.includes('description') && JSON.parse(token.logoURL);
+              const newObj = newtknData ? {...token, ...newtknData, logoURL: newtknData.logoURL} : {...token}
+              dispatch(setTransferToken({ ...newObj,  amount }));
             });
         } else {
           console.log('Not found');

@@ -2,6 +2,15 @@
 ## [Unreleased]
 
 
+<a name="1.3.6"></a>
+## [1.3.6] - 2021-02-17
+### Fix
+- Resolve Token List Issue
+- Pilot feature not found issue
+- Resolved Issue
+- Athens Issues
+
+
 <a name="1.3.5"></a>
 ## [1.3.5] - 2021-02-17
 ### Fix
@@ -221,7 +230,8 @@
 <a name="1.0.0"></a>
 ## 1.0.0 - 2020-06-30
 
-[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.5...HEAD
+[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.6...HEAD
+[1.3.6]: https://github.com/apeunit/co3-wallet/compare/1.3.5...1.3.6
 [1.3.5]: https://github.com/apeunit/co3-wallet/compare/1.3.4...1.3.5
 [1.3.4]: https://github.com/apeunit/co3-wallet/compare/1.3.3...1.3.4
 [1.3.3]: https://github.com/apeunit/co3-wallet/compare/1.3.2...1.3.3

@@ -3,17 +3,11 @@ import { Box, Flex } from 'rebass';
 import TokenListItem from './TokenListItem';
 import { IToken } from '../../../interfaces';
 import TokenListPlaceholder from './TokenListPlaceholder';
-import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { TOKEN_PURPOSE } from 'src/config';
 
 const TokenList = (props: any) => {
   const location = useLocation();
-  const { ethAddress } = useSelector(({ wallet }: any) => {
-    return {
-      ethAddress: wallet.ethAddress,
-    };
-  });
 
   return (
     <Flex
@@ -37,7 +31,6 @@ const TokenList = (props: any) => {
               const newObj = newtknData ? {...token, ...newtknData, logoURL: newtknData.logoURL} : {...token}
     
               return (
-                token.owner === ethAddress &&
                 (location.pathname === '/select-token' ? token.decimals > -1 : token.decimals > 0 ) && <TokenListItem {...newObj} key={index} />
               );
             })

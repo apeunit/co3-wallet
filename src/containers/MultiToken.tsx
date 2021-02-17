@@ -112,7 +112,7 @@ const MultiToken: React.FC = () => {
   const BoundToTop = (val: any) => {
     if (val) {
       setBound({ left: 0, top: 0, right: 0, bottom: 0 });
-      setControlledPosition({ x: 0, y: tokenList.length === 0 ? 100 : 0 });
+      setControlledPosition({ x: 0, y: tokenList.length === 0 ? 60 : 0 });
     } else {
       setBound(recentbound);
       setControlledPosition(recentPos);
@@ -212,6 +212,10 @@ const MultiToken: React.FC = () => {
           {t('multitoken.label')}
         </ToolBarTitle>
       </ToolBar>
+
+      <Flex className="pending-token">
+
+      </Flex>
 
       <Flex flexDirection="column" style={{ overflow: 'hidden' }}>
         <Flex flexDirection="column" flex="1">

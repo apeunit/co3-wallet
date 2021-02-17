@@ -2,15 +2,25 @@ import React, { useEffect } from 'react';
 import { Flex } from 'rebass';
 import { useHistory, useLocation } from 'react-router-dom';
 import { getPublicKey } from 'src/api/co3uum';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfileData } from 'src/redux/actions/CO3UUM';
 import { setPublicKey, setToAddress } from 'src/redux/actions/Wallet';
 import _get from 'lodash/get';
+import { fetchTokenByTicker } from 'src/redux/actions/Chain';
+import ScenarioJSON from '../config/scenario.config.json';
+import { PILOT } from 'src/config';
 
 const NewPayment = () => {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const { contracts, token } = useSelector(({ chain, pilot, wallet }: any) => {
+    return {
+      contracts: chain.contracts,
+      token: wallet.transfer.token,
+    };
+  });
 
   const accessTokenCalls = async (params: any) => {
     const accessTokenParam = params.get('access_token');
@@ -22,6 +32,18 @@ const NewPayment = () => {
       }
     }
   };
+
+
+  useEffect(() => {
+    if (PILOT === 'athens' && contracts?.tokenFactory && location.search) {
+      const params = new URLSearchParams(location.search);
+      const toParam = params.get('to');
+      dispatch(fetchTokenByTicker(ScenarioJSON.athens.tokens[0]));
+      dispatch(setToAddress(toParam));
+      history.push({ pathname: '/payment', search: location.search, state: { token } });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contracts]);
 
   useEffect(() => {
     if (location.search) {
@@ -38,7 +60,7 @@ const NewPayment = () => {
       } else if (toParam && !tokenParam && amountParam) {
         dispatch(setToAddress(toParam));
         history.push('/404');
-      } else if (toParam) {
+      } else if (toParam && PILOT === 'turin') {
         dispatch(setToAddress(toParam));
         history.push({ pathname: '/select-token', search: location.search });
       }

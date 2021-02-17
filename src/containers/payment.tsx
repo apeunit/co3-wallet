@@ -147,7 +147,7 @@ const Payment: React.FC = () => {
   };
 
   const handleConfirm = () => {
-    if (parseInt(amount, 10) <= (token.decimals === 2 ? parseInt(token?.amount, 10) / 100 : parseInt(token?.amount, 10))) {
+    if (amount > 0 && amount <= (token.decimals === 2 ? token?.amount / 100 : parseInt(token?.amount, 10))) {
       history.push({ pathname: '/confirmpayment', search: location.search, state: { token } });
       setError('');
     } else {

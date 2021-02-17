@@ -3,15 +3,8 @@ import { Box, Flex } from 'rebass';
 import CouponListItem from './CouponListItem';
 import { IToken } from '../../../interfaces';
 import CouponListPlaceholder from './CouponListPlaceholder';
-import { useSelector } from 'react-redux';
 
 const CouponList = (props: any) => {
-  const { ethAddress } = useSelector(({ wallet }: any) => {
-    return {
-      ethAddress: wallet.ethAddress,
-    };
-  });
-
   return (
     <Box style={{ overflowY: 'auto', height: '55vh', marginBottom: '70px' }}>
       <Flex alignItems="center" justifyContent="space-between" flexWrap="wrap" margin="0px 10px">
@@ -24,7 +17,7 @@ const CouponList = (props: any) => {
               const newObj = newtknData ? {...token, ...newtknData, logoURL: newtknData.logoURL} : {...token}
 
               return (
-                ((token.amount && token.amount > 0) || token.owner === ethAddress) &&
+                (token.amount && token.amount > 0) &&
                 parseInt(token.decimals.toString(), 10) === 0 && (
                   <CouponListItem {...newObj} key={index} />
                 )

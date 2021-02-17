@@ -52,7 +52,7 @@ const SingleToken: React.FC = () => {
             loading={loading}
             name={token && token.name}
             symbol={token && (token.token_symbol || token.symbol)}
-            amount={token && token.amount}
+            amount={token?.decimals === 2 ? token?.amount / 100 : token?.amount }
           />
         )}
         <ActionButtonGroup

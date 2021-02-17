@@ -19,5 +19,5 @@ export const isAddress = (address: string): boolean => {
 
 // format an amount based on the purpose of the contract
 export const formatAmount = (token: any, amount: number): number => {
-  return token?.purpose >= TOKEN_PURPOSE && token?.purpose < COUPON_PURPOSE ? amount * 100 : amount;
+  return  (token?.decimals > 0 || (token?.purpose >= TOKEN_PURPOSE && token?.purpose < COUPON_PURPOSE)) ? amount * 100 : amount;
 };
