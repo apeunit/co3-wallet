@@ -7,7 +7,14 @@ export const getResourceURL = async (resourceId: string): Promise<Object> => {
 
 export const getPermalink = (resourceUploadReply: any): string => {
   const index = resourceUploadReply.result.n - 1;
+
   return resourceUploadReply.ops[index].permalink;
+};
+
+export const getOriginalName = (resourceUploadReply: any): string => {
+  const index = resourceUploadReply.result.n - 1;
+
+  return resourceUploadReply.ops[index].originalname;
 };
 
 export const saveResource = async (accessToken: string | null, resource: any): Promise<Object> => {
@@ -21,6 +28,7 @@ export const saveResource = async (accessToken: string | null, resource: any): P
   // form data
   const formData = new FormData();
   formData.append('files', resource);
+
   // data key files
   return axios.post(`${API_FIRSTLIFE_URL_STORAGE}/files`, formData, {
     headers: headers,

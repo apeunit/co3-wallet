@@ -10,13 +10,19 @@
   },
   "minting": {
     "label": "Minting",
+    "mint_token": "Mint Token",
+    "mint_coupon": "Mint Coupon",
     "supply_placeholder": "Enter token supply",
+    "supply_coupon_placeholder": "Enter coupon supply",
     "token_mint_info": "Token Mint Info",
+    "coupon_mint_info": "Coupon Mint Info",
     "token_mint_failed": "Token Mint Failed",
+    "coupon_mint_failed": "Coupon Mint Failed",
     "coupon_mint_decimal_error": "Decimals not allowed in coupon minting"
   },
   "multitoken": {
     "label": "Wallet",
+    "no_assets": "You don't have any assets at the moment",
     "creating_tokens": "Creating Tokens...",
     "pay": "Pay",
     "receive": "Receive",
@@ -25,7 +31,9 @@
     "coupons_passes": "Coupons & Passes",
     "login": "Login",
     "error_login": "Login Required",
-    "error_login_msg": "This action requires to be logged in, do you want to proceed?"
+    "error_login_msg": "This action requires to be logged in, do you want to proceed?",
+    "tokens": "Tokens",
+    "discounts": "Discounts"
   },
   "new_coupon": {
     "label": "New Coupon",
@@ -65,7 +73,9 @@
     "invalid_token": "Invalid Token",
     "upload_contract": "Upload contract",
     "mintable_token" : "Mintable Token",
-    "dummy_text": "lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum"
+    "dummy_text": "lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum",
+    "token_expire": "Token is Expired",
+    "token_expire_msg": "Token is Expired or Invalid. Please login again!"
   },
   "new_crowdsale" : {
     "label": "New Crowdsale",
@@ -139,17 +149,25 @@
   "payment": {
     "amount": "Amount",
     "amount_error": "Amount is not sufficient",
+    "amount_coupon_error": "Decimals not allowed",
+    "amount_negative_error_msg": "Amount should be integer and greater than zero",
+    "amount_coupon_error_msg": "Decimals are not allowed in coupon",
     "payment_info": "Payment info",
     "payment_failed": "Token Payment Failed",
     "slide_to_send": "Slide to Send",
     "token_error": "Token not found",
     "to_error": "To Adress not found",
     "empty_wallet": "Your wallet is empty",
-    "redirecting": "...Redirecting"
+    "redirecting": "...Redirecting",
+    "back_home": "Back to Wallet",
+    "go_back": "Go Back",
+    "invalid_address": "Address is Invalid"
   },
   "receive": {
     "ask_sender": "Ask Sender",
-    "to_scan": "to scan"
+    "to_scan": "to scan",
+    "click_qr": "Note: Click QR code to copy address link",
+    "address_copied": "Address Link Copied"
   },
   "scan_qr": {
     "scan": "Scan a",
@@ -165,7 +183,7 @@
   "transaction": {
     "transaction_details": "Transactions Details",
     "transaction_history": "Transactions History",
-    "no_transaction": "There are no transactions",
+    "no_transaction": "You don't have made any transaction yet",
     "no_token": "There are no tokens in your wallet",
     "event_name": "Event Name",
     "token_mint": "Token Mint",

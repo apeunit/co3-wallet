@@ -38,7 +38,11 @@
 }
 
 .selectTokenList > div {
-  max-height: 100%;
+  max-height: 98%;
+}
+
+.selectTokenList {
+  overflow: scroll;
 }
 
 .pending-token .avatar {
@@ -50,6 +54,7 @@
 .crowdsale-input {
   z-index: 999;
   margin-left: -24px;
+  margin-right: -24px;
   margin-top: -22px;
   height: 47px;
   width: 48px;
@@ -112,4 +117,17 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.popover__content:before {
+  position: absolute;
+  z-index: 0;
+  content: "";
+  right: calc(50% - 10px);
+  bottom: -10px;
+  border-style: solid;
+  border-width: 10px 10px 0px 10px;
+  border-color: #000000cf transparent transparent transparent;
+  transition-duration: 0.3s;
+  transition-property: transform;
 }

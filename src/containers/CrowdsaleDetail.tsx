@@ -147,8 +147,9 @@ const CrowdsaleDetail: React.FC = () => {
               </Flex>
             </Flex>
             <Flex color="#757575" padding="25px 0px 30px">
-              {/* TODO: get description from First Life */}
-              {t('marketplace.no_details')}
+              <Text fontSize="16px" color="#757575">
+                {crowdsaleData?.description}
+              </Text>
             </Flex>
             <Flex>
               <Text fontSize="12px" color="#757575">

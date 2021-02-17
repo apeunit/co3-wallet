@@ -26,6 +26,8 @@ export default {
 export const Base = () => (
   <MemoryRouter>
     <CrowdsaleList
+      limit={20}
+      fetchMore={console.log}
       crowdsaleList={[
         {
           crowdsaleId: '_oqqfov1fd',

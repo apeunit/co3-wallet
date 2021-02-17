@@ -18,6 +18,21 @@ code {
   margin: 0 auto;
 }
 
+.react-draggable {
+  z-index: 12 !important;
+  min-height: 32em !important;
+}
+
+@media only screen and (max-height: 800px) {
+  .react-draggable {
+    z-index: 12 !important;
+    min-height: 27em !important;
+  }
+}
+
+.head-title {
+  position: absolute;
+}
 
 /* .dragger-wrapper  */
 .dragger-wrapper .react-draggable{

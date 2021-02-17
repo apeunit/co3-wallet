@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Text } from 'rebass';
+import { Flex, Image, Text } from 'rebass';
 import TransactionHistoryList from '../components/Transactions/TransactionList/TransactionHistoryList';
 import TransactionHistoryListPlaceholder from '../components/Transactions/TransactionList/TransactionHistoryListPlaceholder';
 import { useSelector } from 'react-redux';
@@ -9,6 +9,7 @@ import { useLazyQuery } from '@apollo/react-hooks';
 import { BALANCE_NOTIFY_QUERY, CrowdsaleSortEnum, TRANSFER_NOTIFY_QUERY } from '../api/middleware';
 import _merge from 'lodash/merge';
 import { useTranslation } from 'react-i18next';
+import EmptyImg from '../images/empty.png';
 
 const TransactionsHistory: React.FC = () => {
   const { t } = useTranslation();
@@ -52,9 +53,16 @@ const TransactionsHistory: React.FC = () => {
             (_trns: any) => _trns.token_symbol === trns.token_symbol,
           );
 
-          return _merge(trns, {
-            logoURL: token[0].logoURL,
-          });
+          let newtknData = token[0].logoURL && token[0].logoURL.includes('description') && JSON.parse(token[0].logoURL);
+
+          return token[0].logoURL && token[0].logoURL.includes('description') ?  
+            _merge(trns, {
+              logoURL: newtknData?.logoURL,
+            })
+            : 
+            _merge(trns, {
+              logoURL: token[0].logoURL,
+            })
         });
         setTransactionHistory(data.transferNotificationMany);
         setTxnsLoading(false);
@@ -72,9 +80,11 @@ const TransactionsHistory: React.FC = () => {
       {txnsLoading && transactionHistory.length === 0 ? (
         <TransactionHistoryListPlaceholder />
       ) : !txnsLoading && transactionHistory.length === 0 ? (
-        <Text marginX="auto" marginY={50}>
-          {t('transaction.no_transaction')}
-        </Text>
+        <Flex paddingBottom="125px" width="212px" margin="auto"  flexDirection="column">
+          <Image marginBottom="35px" src={EmptyImg} />
+          <Text width="195px" textAlign="center">{t('transaction.no_transaction')}</Text>
+        </Flex>
+
       ) : (
         <TransactionHistoryList transactions={transactionHistory} />
       )}

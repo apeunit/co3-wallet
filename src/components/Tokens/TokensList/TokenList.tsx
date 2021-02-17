@@ -4,8 +4,11 @@ import TokenListItem from './TokenListItem';
 import { IToken } from '../../../interfaces';
 import TokenListPlaceholder from './TokenListPlaceholder';
 import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { TOKEN_PURPOSE } from 'src/config';
 
 const TokenList = (props: any) => {
+  const location = useLocation();
   const { ethAddress } = useSelector(({ wallet }: any) => {
     return {
       ethAddress: wallet.ethAddress,
@@ -18,7 +21,7 @@ const TokenList = (props: any) => {
       color="text"
       flexDirection="column"
       maxHeight={
-        props.tokens.find((tkn: IToken) => parseInt(tkn.decimals.toString(), 10) === 0) ? 155 : 280
+        props.tokens.find((tkn: IToken) => (tkn.purpose === TOKEN_PURPOSE)) ? 160 : 280
       }
       sx={{
         overflowY: 'auto',
@@ -30,9 +33,12 @@ const TokenList = (props: any) => {
         <Box>
           {props.tokens
             .map((token: IToken, index: number) => {
+              const newtknData = token.logoURL && token.logoURL.includes('description') && JSON.parse(token.logoURL);
+              const newObj = newtknData ? {...token, ...newtknData, logoURL: newtknData.logoURL} : {...token}
+    
               return (
-                ((token.amount && token.amount > 0) || token.owner === ethAddress) &&
-                token.decimals > 0 && <TokenListItem {...token} key={index} />
+                token.owner === ethAddress &&
+                (location.pathname === '/select-token' ? token.decimals > -1 : token.decimals > 0 ) && <TokenListItem {...newObj} key={index} />
               );
             })
             .reverse()}

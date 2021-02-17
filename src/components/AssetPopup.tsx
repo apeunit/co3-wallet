@@ -1,9 +1,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Box, Flex, Text } from 'rebass';
+import { Button, Box, Flex, Text } from 'rebass';
 import ActionButtonGroup from '../components/ActionButtonGroup';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { getUserIDName } from 'src/api/co3uum';
+import { setModalData } from 'src/redux/actions/Modal';
+import { useDispatch } from 'react-redux';
+import { SSO_LOGIN_URL } from 'src/config';
 
 const shade = {
   hidden: { opacity: 0 },
@@ -19,11 +23,60 @@ export const AssetPopup = ({ setCreateToken }: any) => {
   const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation();
-  console.log(location.search);
+  const dispatch = useDispatch();
+
+  const errorModalBody = (title: string) => (
+    <Flex flexDirection="column" width="max-content" margin="auto">
+      <Text margin="10px 0px" width="275px">
+        {t(title)}
+      </Text>
+      <Button
+        className="modal-login-btn"
+        height="30px"
+        margin="20px auto 0px"
+        width="170px"
+        style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
+        onClick={() => window.location.assign(SSO_LOGIN_URL)}
+      >
+        {t('multitoken.login')}
+      </Button>
+    </Flex>
+  );
+
+  
+  const handleoption = async (path: string) => {
+    if (location.search) {
+      const params = new URLSearchParams(location.search);
+      const accessTokenParam = params.get('access_token');
+      try {
+        const data: any = accessTokenParam && await getUserIDName(accessTokenParam);
+        data &&
+          history.push({
+            pathname: path,
+            search: location.search,
+          })
+      } catch (err) {
+        dispatch(
+          setModalData(
+            true,
+            t('common.token_expire'),
+            errorModalBody('common.token_expire_msg'),
+            'permission',
+          ),
+        );
+      }
+    } else {
+      history.push({
+        pathname: path,
+        search: location.search,
+      })
+    }
+  };
 
   return (
     <Box
       sx={{
+        zIndex: '120',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -77,10 +130,7 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                       iconBg: 'blue600',
                       className: 'add-token-btn',
                       onClick: () => {
-                        history.push({
-                          pathname: `/new-token`,
-                          search: location.search,
-                        });
+                        handleoption(`/new-token`);
                       },
                     },
                     {
@@ -91,10 +141,7 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                       className: 'add-coupon-btn',
                       iconBg: 'blue600',
                       onClick: () => {
-                        history.push({
-                          pathname: `/new-coupon`,
-                          search: location.search,
-                        });
+                        handleoption(`/new-coupon`);
                       },
                     },
                     {
@@ -105,10 +152,7 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                       className: 'add-crowdsale-btn',
                       iconBg: 'blue600',
                       onClick: () => {
-                        history.push({
-                          pathname: `/new-crowdsale`,
-                          search: location.search,
-                        });
+                        handleoption(`/new-crowdsale`);
                       },
                     },
                   ]}

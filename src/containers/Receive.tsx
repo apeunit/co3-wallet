@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import IconButton from '../components/IconButton';
 import QRCodeCanvas from 'qrcode.react';
 import { Box, Flex, Text } from 'rebass';
@@ -10,7 +10,8 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 const Receive = () => {
   const { t } = useTranslation();
   const history = useHistory();
-  // const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState(false);
+
   const { ethAddress } = useSelector(({ wallet }: any) => {
     return {
       ethAddress: wallet.ethAddress,
@@ -21,6 +22,13 @@ const Receive = () => {
     history.replace('/');
   }
 
+  const handleCopy = (e: any) => {
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 1500);
+  }
+  
   return (
     <Flex
       flexDirection="column"
@@ -34,6 +42,9 @@ const Receive = () => {
       </Text>
       <Text variant="headingXl" fontSize={6} color="#3948FF">
         {t('receive.to_scan')}
+      </Text>
+      <Text fontSize={1} color="#ababab">
+        {t('receive.click_qr')}
       </Text>
       <Box
         backgroundColor="background"
@@ -56,9 +67,12 @@ const Receive = () => {
             position: 'absolute',
           }}
         >
+          {copied && <Flex className="popover__content" paddingY={2} paddingX={4} sx={{ background: '#000000cf', color: '#ffffff', position: 'absolute', top: '100px', borderRadius: '5px' }}>
+            {t('receive.address_copied')}
+          </Flex>}
           <CopyToClipboard
             text={`${window.location.href.split('receive')[0]}tx?to=${ethAddress}`}
-            // onCopy={() => setCopied(true)}
+            onCopy={handleCopy}
           >
             {ethAddress && (
               <QRCodeCanvas

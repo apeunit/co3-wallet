@@ -10,13 +10,19 @@
   },
   "minting": {
     "label": "Conio",
+    "mint_token": "Gettone di menta",
+    "mint_coupon": "Buono Menta",
     "supply_placeholder": "Inserisci la riserva della valuta",
+    "supply_coupon_placeholder": "Inserisci offerta coupon",
     "token_mint_info": "Informazioni sulla coniazione",
+    "coupon_mint_info": "Coupon Mint Info",
     "token_mint_failed": "Coniazione non riuscita",
+    "coupon_mint_failed": "Coupon Mint Failed",
     "coupon_mint_decimal_error": "Decimali non consentiti nel conio di coupon"
   },
   "multitoken": {
     "label": "Portafoglio",
+    "no_assets": "Al momento non hai risorse",
     "creating_tokens": "Generazione in corso...",
     "pay": "Trasferisci",
     "receive": "Ricevi",
@@ -25,7 +31,9 @@
     "coupons_passes": "Coupon e pass",
     "login": "Accesso",
     "error_login": "Autenticazione obbligatoria",
-    "error_login_msg": "Questa operazione richiede il login, vuoi procedere?"
+    "error_login_msg": "Questa operazione richiede il login, vuoi procedere?",
+    "tokens": "Tokens",
+    "discounts": "Discounts"
   },
   "new_coupon": {
     "label": "Nuovo coupon",
@@ -65,7 +73,9 @@
     "invalid_token": "Gettone non valido",
     "upload_contract": "Carica contratto",
     "mintable_token" : "Token Mintable",
-    "dummy_text": "lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum"
+    "dummy_text": "lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum",
+    "token_expire": "Il token è scaduto",
+    "token_expire_msg": "Il token è scaduto o non valido. Per favore esegui l'accesso di nuovo!"
   },
   "new_crowdsale" : {
     "label": "Nuovo crowdsale",
@@ -139,17 +149,25 @@
   "payment": {
     "amount": "Importo",
     "amount_error": "Importo insufficiente",
+    "amount_coupon_error": "Decimali non consentiti",
+    "amount_negative_error_msg": "L'importo deve essere intero e maggiore di zero",
+    "amount_coupon_error_msg": "I decimali non sono ammessi nel coupon",
     "payment_info": "Informazioni sul transferimento",
     "payment_failed": "Trasferimento non riuscito",
     "slide_to_send": "Trascina per inviare",
     "token_error": "Token non trovato",
     "to_error": "To Address non trovato",
     "empty_wallet": "Il tuo portafoglio è vuoto",
-    "redirecting": "...Reindirizzamento"
+    "redirecting": "...Reindirizzamento",
+    "back_home": "Torna a Wallet",
+    "go_back": "Torna indietro",
+    "invalid_address": "L'indirizzo non è valido"
   },
   "receive": {
     "ask_sender": "Chiedi al mittente",
-    "to_scan": "Scansionare"
+    "to_scan": "Scansionare",
+    "click_qr": "Nota: fare clic sul codice QR per copiare il collegamento dell'indirizzo",
+    "address_copied": "Collegamento indirizzo copiato"
   },
   "scan_qr": {
     "scan": "Scansione",
@@ -165,7 +183,7 @@
   "transaction": {
     "transaction_details": "Dettagli sulle transazioni",
     "transaction_history": "Cronologia delle transazioni",
-    "no_transaction": "Non ci sono transazioni",
+    "no_transaction": "Non hai ancora effettuato alcuna transazione",
     "no_token": "Non ci sono gettoni nel tuo portafoglio",
     "event_name": "Nome dell'evento",
     "token_mint": "Conia valuta",

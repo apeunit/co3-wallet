@@ -16,7 +16,7 @@ import { motion } from 'framer-motion';
 import FramerSlide from '../components/FrameMotion/Slide';
 import CouponImageCard from '../components/Coupons/CreateCoupon/CouponImageCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPermalink, saveResource } from '../api/firstlife';
+import { getOriginalName, getPermalink, saveResource } from '../api/firstlife';
 import { createNewToken } from '../redux/actions/Chain';
 import { setModalData } from '../redux/actions/Modal';
 import { useTranslation } from 'react-i18next';
@@ -75,6 +75,11 @@ const NewCoupon: React.FC = () => {
     }
   }, [couponData]);
 
+  const handleEditStep = () => {
+    setStep(7)
+    setTitle(t('new_coupon.label'))
+  }
+
   const handleSteps = () => {
     setError('');
     if (step <= 7) {
@@ -86,12 +91,7 @@ const NewCoupon: React.FC = () => {
       ) {
         return;
       }
-      if (step <= 7 && title.indexOf(t('common.edit')) > -1) {
-        setStep(7);
-        setTitle(t('new_coupon.label'));
-      } else {
-        setStep(step + 1);
-      }
+      step <= 7 && title.indexOf(t('common.edit')) > -1 ? handleEditStep() : setStep(step + 1);
     }
   };
 
@@ -141,7 +141,6 @@ const NewCoupon: React.FC = () => {
     setUploading(true);
     setError('');
     if (e.target.files[0]) {
-      let label = e.target.files[0].name;
       changeContractLabel(e.target.files[0].name);
       if (!accessToken || accessToken === null) {
         setUploading(false);
@@ -154,10 +153,10 @@ const NewCoupon: React.FC = () => {
         .then(({ data }: any) => {
           setUploading(false);
           const link = getPermalink(data);
-          link ? onchangeCoupon({ ...coupon, contract: link, contractLabel: contractLabel || label }) : console.log(data);
+          link ? onchangeCoupon({ ...coupon, contract: link, contractLabel: getOriginalName(data) }) : console.log(data);
         })
         .catch((err: any) => {
-          console.log(err, "err")
+          console.log(err, 'err')
           setUploading(false);
           setError(t('common.invalid_token'));
         });
@@ -188,7 +187,7 @@ const NewCoupon: React.FC = () => {
         tokenFactory,
         coupon.name,
         coupon.symbol,
-        coupon.icon,
+        JSON.stringify({logoURL: coupon.icon, headline: coupon.headline, description: coupon.description, contractHash: coupon.contract, contractLabel: coupon.contractLabel}),
         web3.utils.keccak256(coupon.icon),
         web3.utils.keccak256(coupon.contract),
         0,
@@ -213,7 +212,10 @@ const NewCoupon: React.FC = () => {
           computed_at: resData?._timestamp,
           contractAddress: resData?._contractAddress,
           decimals: resData?._decimals,
-          logoURL: resData?._logoURL,
+          logoURL: coupon.icon,
+          description: coupon.description,
+          contractHash: coupon.contract,
+          contractLabel: coupon.contractLabel,
           name: resData?._name,
           owner: resData?._from,
           purpose: resData?._purpose,
@@ -222,7 +224,7 @@ const NewCoupon: React.FC = () => {
         }
         dispatch(setTransferToken(token));
         setTimeout(() => {
-          dispatch(setModalData(false, '', '', '', ));
+          dispatch(setModalData(false, '', '', '' ));
           history.push('/token-mint');
         }, 1000)
       })
@@ -249,16 +251,30 @@ const NewCoupon: React.FC = () => {
       style={{ overflow: 'hidden' }}
     >
       <Loading loader={loader} />
-      <Flex
-        justifyContent="space-between"
-        alignItems="center"
-        paddingY={4}
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
-      >
-        <IconButton onClick={handlebackStep} sx={{ cursor: 'pointer' }} icon="back" />
-        <Text>{title}</Text>
-        <IconButton onClick={handleClose} sx={{ cursor: 'pointer' }} icon="close" />
-      </Flex>
+      {step === 8 || title.indexOf(t('common.edit')) > -1 ? (
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            paddingY={4}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
+          >
+            <IconButton onClick={handleEditStep} sx={{ cursor: 'pointer' }} icon="close" />
+            <Text>{title}</Text>
+            <Text></Text>
+          </Flex>
+        ) : (
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            paddingY={4}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
+          >
+            <IconButton onClick={handlebackStep} sx={{ cursor: 'pointer' }} icon="back" />
+            <Text>{title}</Text>
+            <IconButton onClick={handleClose} sx={{ cursor: 'pointer' }} icon="close" />
+          </Flex>
+        )
+      }
       <motion.div
         initial="hidden"
         animate="visible"
@@ -351,7 +367,7 @@ const NewCoupon: React.FC = () => {
                     <a
                       className="contract-link"
                       href={pdfContract}
-                      download="Token-Legal-Contract_Template.pdf"
+                      download="Token-Legal-Contract_Placeholder.pdf"
                     >
                       {t('new_token.here')}
                     </a>
@@ -369,7 +385,7 @@ const NewCoupon: React.FC = () => {
                     marginLeft={20}
                   />
                   <div>
-                    {error && <ErrorMsg title={error} type="error" style={{ top: '54.6vh' }} />}
+                    {error && <ErrorMsg title={error} type="error" style={{ top: '49vh' }} />}
                   </div>
                 </Flex>
               </Flex>

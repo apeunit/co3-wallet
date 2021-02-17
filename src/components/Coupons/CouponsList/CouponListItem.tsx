@@ -14,11 +14,12 @@ const CouponListItem = ({ logoURL, symbol, name, description, amount, ...rest }:
       name,
       symbol,
       amount,
+      description,
       ...rest,
     };
     dispatch(setTransferToken(token));
     if (history.location.pathname === '/') {
-      history.push({ pathname: '/token-detail', state: { token } });
+      history.push({ pathname: '/coupon-detail', state: { token } });
     } else {
       history.push({ pathname: '/payment', state: { token } });
     }
@@ -29,13 +30,12 @@ const CouponListItem = ({ logoURL, symbol, name, description, amount, ...rest }:
       onClick={selectToken}
       flexDirection="column"
       backgroundColor="#fff"
-      marginRight="6"
       sx={{ flexShrink: '0' }}
     >
       <Box
         backgroundColor="#f0f0f0"
         sx={{ borderRadius: 8, position: 'relative', overflow: 'hidden', display: 'flex' }}
-        style={{ width: '144px', height: '144px' }}
+        style={{ width: '163px', height: '163px' }}
       >
         <Image
           src={logoURL}

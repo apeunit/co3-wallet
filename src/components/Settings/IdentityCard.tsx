@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Button, Flex, Text } from 'rebass';
 import { useTranslation } from 'react-i18next';
 import { Divider } from '@material-ui/core';
@@ -14,6 +15,11 @@ const IdentityCard = (props: any) => {
   const handleLink = () => {
     window.location.assign(SSO_LOGIN_URL);
   };
+  const { accessToken } = useSelector(({ co3uum, wallet }: any) => {
+    return {
+      accessToken: co3uum.accessToken
+    };
+  });
 
   return (
     <Flex
@@ -29,7 +35,7 @@ const IdentityCard = (props: any) => {
             label={''}
             uploading={false}
             uploadIcon="hide"
-            image={userData && userData.id ? getProfileImageUrl(userData) : avatarImg}
+            image={userData && userData.id ? getProfileImageUrl(accessToken, userData) : avatarImg}
             placeholder={avatarImg}
             padding={0}
           />

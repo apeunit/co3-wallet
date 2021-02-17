@@ -6,7 +6,7 @@
     "tslint-plugin-prettier", "tslint-config-prettier"
   ],
   "rules": {
-    "prettier": true,
+    "prettier": false,
     "ordered-imports": [true, {
       "import-sources-order": "any",
       "named-imports-order": "case-insensitive"

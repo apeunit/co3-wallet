@@ -25,7 +25,7 @@ export const preset = {
     gray200: '#F1F3F6',
   },
   fonts: {
-    sans: "'Inter-regular', sans-serif",
+    sans: '\'Inter-regular\', sans-serif',
     mono: 'monospace',
   },
   fontSizes: [11, 13, 16, 20, 24, 32, 40, 90],

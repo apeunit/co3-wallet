@@ -19,26 +19,30 @@ const CouponImageCard: React.FC<IProps> = ({
   error,
   icon,
 }) => {
-  const getImg = '';
 
   return (
     <FramerSlide>
       <Flex flexDirection="column" width="100%" height="80%">
         <Flex flexDirection="column" width="100%" justifyContent="space-between">
-          <ImageCard
-            name=""
-            symbol=""
-            icon={coupon.icon}
-            onChange={handleChangeIcon}
-            uploading={uploading}
-            getImg={getImg}
-            type="add"
-            alignItems="center"
-            style={{
-              alignContent: 'center',
-              justifyContent: 'flex-end !important',
-            }}
-          />
+          {handleChangeIcon ? (
+            <ImageCard
+              name=""
+              symbol=""
+              icon={coupon.icon}
+              onChange={handleChangeIcon}
+              uploading={uploading}
+              type="add"
+              alignItems="center"
+              style={{
+                alignContent: 'center',
+                justifyContent: 'flex-end !important',
+              }}
+            />
+          ) : (
+            <Flex sx={{ borderRadius: 8, overflow: 'hidden' }} width="94%" marginX="auto" maxHeight="339px">
+              <img src={coupon.icon} style={{ width: '100%', margin: 'auto', maxHeight: '339px', maxWidth: '339px', height: 'auto' }} alt="CouponImage" />
+            </Flex>
+          )}
           <div>
             {error && (
               <ErrorMsg

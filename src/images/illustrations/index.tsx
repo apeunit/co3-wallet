@@ -34,5 +34,3 @@ export const importImages = [
     undefined,
     import_02,
 ]
-
-

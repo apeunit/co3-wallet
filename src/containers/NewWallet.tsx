@@ -80,7 +80,7 @@ const NewWallet = () => {
     setLoader(true);
     await mnemonicToSeed(mnemonicPhrase).then(async (seed: any) => {
       const hdkeyInstance = hdkey.fromMasterSeed(seed);
-      const node = hdkeyInstance.derivePath("m/44'/60'/0'/0'/0");
+      const node = hdkeyInstance.derivePath('m/44\'/60\'/0\'/0\'/0');
       const child = node.deriveChild(0);
       const wallet = child.getWallet();
       const publicKey = toChecksumAddress(

@@ -1,4 +1,5 @@
 import NotFound404 from 'src/containers/404NotFound';
+import CouponDetail from 'src/containers/CouponDetail';
 import CrowdsaleCS from 'src/containers/Crowdsale';
 import DeleteWallet from 'src/containers/DeleteWallet';
 import ImportWallet from 'src/containers/ImportWallet';
@@ -79,6 +80,10 @@ export const routes = [
   {
     path: '/token-detail',
     component: TokenDetail,
+  },
+  {
+    path: '/coupon-detail',
+    component: CouponDetail,
   },
   {
     path: '/new-token',

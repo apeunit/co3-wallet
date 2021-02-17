@@ -2,6 +2,61 @@
 ## [Unreleased]
 
 
+<a name="1.3.4"></a>
+## [1.3.4] - 2021-02-17
+### Feat
+- Add Copied Popover on QR code
+- Design Empty Screens
+
+### Feat
+- Redesign coupon list for main page
+- Token list redesign
+- Add description, contract hash, headline in coupon detail
+- Add Description, contract hash in token details
+- Add callback in deeplink error popup
+- Add callback in deeplink error popup
+- Deeplink error
+- Close button disable in modal
+- Add Contract screen like others
+- Add coupon in send list
+
+### Fix
+- Increase Crowdsale Limit
+- Remove Sell button from Coupon Detail
+- Crowdsale icon button issue resolved
+- Token Loader False on error
+- Resolve edit button issue
+- Crowdsale Coupon and token dropdown remove duplication
+- Amount popup error resolve
+- Fix Min Height for tokens list
+- Resolve Token Detail send transfer action props
+- Resolve Token Icon load issue in transaction history
+- Resolve pay,receive... btns click issue
+- Popup btn issue resolve
+- Catch Error in Create Crowdsale
+- Check token is valid or expire and display msg
+- Refactor created by text in detail pages
+- Work on Coupon Detail UI
+- Redesign Coupon Image Card
+
+### Fix
+- Resolve Coupon Icon issues
+- Redesign Main page
+- down padding coupon list title
+- End date set after month from today
+- Resolve issues and update detail
+- Resolve File Download Issue
+-  Resolve Date/Time issue in crowdsale creation
+- Resolve placeholder issue
+- Rename Mint Page
+
+
+<a name="1.3.3"></a>
+## [1.3.3] - 2021-02-11
+
+<a name="1.3.2"></a>
+## [1.3.2] - 2020-12-22
+
 <a name="1.3.1"></a>
 ## [1.3.1] - 2020-12-18
 ### Fix
@@ -160,7 +215,10 @@
 <a name="1.0.0"></a>
 ## 1.0.0 - 2020-06-30
 
-[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.1...HEAD
+[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.4...HEAD
+[1.3.4]: https://github.com/apeunit/co3-wallet/compare/1.3.3...1.3.4
+[1.3.3]: https://github.com/apeunit/co3-wallet/compare/1.3.2...1.3.3
+[1.3.2]: https://github.com/apeunit/co3-wallet/compare/1.3.1...1.3.2
 [1.3.1]: https://github.com/apeunit/co3-wallet/compare/1.3.0...1.3.1
 [1.3.0]: https://github.com/apeunit/co3-wallet/compare/1.2.2...1.3.0
 [1.2.2]: https://github.com/apeunit/co3-wallet/compare/1.2.1...1.2.2

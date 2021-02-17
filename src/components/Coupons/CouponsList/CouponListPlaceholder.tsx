@@ -17,8 +17,11 @@ const CouponListPlaceholder = (props: ICouponListPlaceHolderProps) => {
       width="100%"
       color="text"
       maxHeight={400}
+      flexWrap="wrap"
+      justifyContent="space-between"
       sx={{
         overflowY: 'auto',
+        height: '52vh',
       }}
     >
       {couponListPlaceHolders}

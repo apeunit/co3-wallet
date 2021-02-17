@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import IconButton from '../components/IconButton';
 import { Flex, Text } from 'rebass';
-import RadioButtonGroup from '../components/RadioButtonGroup';
+import { Label } from '@rebass/forms';
 import AddImage from '../components/AddImage';
 import { useHistory, useLocation } from 'react-router-dom';
 import TextArea from '../components/TextArea';
@@ -9,7 +9,7 @@ import BuyStep from '../components/Crowdsale/NewCrowdsale/BuyStep';
 import CreateFooterStep from '../components/StepsComponents/CreateFooterStep';
 import CreateInputStep from '../components/StepsComponents/CreateInputStep';
 import CreateDetailStep from '../components/StepsComponents/CreateDetailStep';
-import { contractsRadio, createCrowdsaleSteps } from './commonData';
+import { createCrowdsaleSteps } from './commonData';
 import ErrorMsg from '../components/ErrorMsg';
 import _get from 'lodash/get';
 import { motion } from 'framer-motion';
@@ -22,14 +22,16 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNewCrowdsale } from 'src/redux/actions/Chain';
 import { setModalData } from 'src/redux/actions/Modal';
-import { getPermalink, saveResource } from 'src/api/firstlife';
+import { getPermalink, saveCrowdsaleData, saveResource } from 'src/api/firstlife';
 import Loading from '../components/Loading';
 import { saveWebhookAPI } from 'src/utils/helper';
 import { useMutation } from '@apollo/react-hooks';
 import { CROWDSALE_ADDED } from '../api/middleware';
-import moment from 'moment';
+import { THING_ID } from 'src/config';
+const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
 const isDev = process.env.NODE_ENV === 'development';
+const endDateInt = new Date(new Date().setMonth(new Date().getMonth()+1));
 
 const NewCrowdsale: React.FC = () => {
   const dispatch = useDispatch();
@@ -45,9 +47,8 @@ const NewCrowdsale: React.FC = () => {
     name: '',
     icon: '',
     startDate: new Date(),
-    endDate: '2025-08-18T21:11:54',
+    endDate: endDateInt,
     description: '',
-    contractType: 'Standard Contract',
     contract: '',
     contractLabel: '',
     maxSupply: '',
@@ -58,9 +59,10 @@ const NewCrowdsale: React.FC = () => {
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
   const [crowdsaleAddedNotification] = useMutation(CROWDSALE_ADDED);
-  const { accessToken } = useSelector(({ co3uum }: any) => {
+  const { accessToken, activityID } = useSelector(({ co3uum }: any) => {
     return {
       accessToken: co3uum.accessToken,
+      activityID: co3uum.activityID
     };
   });
 
@@ -81,6 +83,11 @@ const NewCrowdsale: React.FC = () => {
     }
   }, [crowdsaleData]);
 
+  const handleEditStep = () => {
+    setStep(8)
+    setTitle(t('new_crowdsale.label'))
+  }
+
   const handleSteps = () => {
     setError('');
     if (step <= 9) {
@@ -89,9 +96,7 @@ const NewCrowdsale: React.FC = () => {
         checkError(2, crowdsale.icon, t('common.icon')) ||
         checkError(3, crowdsale.startDate, t('new_crowdsale.start_date')) ||
         checkError(3, crowdsale.endDate, t('new_crowdsale.end_date')) ||
-        checkError(5, crowdsale.contractType, '') ||
-        (crowdsale.contractType === 'Custom Contract' &&
-          checkError(5, crowdsale.contract, t('common.contract'))) ||
+        checkError(5, crowdsale.contract, t('common.contract')) ||
         checkError(6, crowdsale.maxSupply, t('new_crowdsale.max_supply')) ||
         checkError(6, crowdsale.itemToSell, t('new_crowdsale.item_to_sell')) ||
         checkError(7, crowdsale.giveRatio, t('new_crowdsale.give_ratio')) ||
@@ -99,7 +104,7 @@ const NewCrowdsale: React.FC = () => {
       ) {
         return;
       }
-      step <= 7 && title.indexOf(t('common.edit')) > -1 ? setStep(8) : setStep(step + 1);
+      step <= 7 && title.indexOf(t('common.edit')) > -1 ? handleEditStep() : setStep(step + 1);
     }
   };
 
@@ -140,20 +145,12 @@ const NewCrowdsale: React.FC = () => {
     setError('');
   };
 
-  const onChange = (e: any, key: string) => {
-    if (e.target.value === 'Standard Contract') {
-      setError('');
-      onchangeCrowdsale({ ...crowdsale, contract: '', contractLabel: '' });
-    }
-    onchangeCrowdsale({ ...crowdsale, [key]: e.target.value });
-  };
-
   const onChangeContract = (e: any) => {
     setUploading(true);
     setError('');
     if (e.target.files[0]) {
+      const label = e.target.files[0].name;
       changeContractLabel(e.target.files[0].name);
-      onchangeCrowdsale({ ...crowdsale, contractLabel: e.target.files[0].name });
       if (!accessToken || accessToken === null) {
         setUploading(false);
         setError(t('common.access_token_error'));
@@ -165,7 +162,7 @@ const NewCrowdsale: React.FC = () => {
         .then(({ data }: any) => {
           setUploading(false);
           const link = getPermalink(data);
-          link ? onchangeCrowdsale({ ...crowdsale, contract: link }) : console.log(data);
+          link ? onchangeCrowdsale({ ...crowdsale, contract: link, contractLabel: contractLabel || label }) : console.log(data);
         })
         .catch((err: any) => {
           setUploading(false);
@@ -191,6 +188,33 @@ const NewCrowdsale: React.FC = () => {
     }
   };
 
+  const handleCatch = async (err: any) => {
+    if (location.search) {
+      const params = new URLSearchParams(location.search);
+      let callbackParam = params.get('callback');
+      let webHookParam = params.get('webhook');
+
+      if (callbackParam) {
+        window.location.href = `${callbackParam}${
+          callbackParam.includes('?') ? '&' : '?'
+        }_id=error`;
+      }
+      if (webHookParam) {
+        await saveWebhookAPI(webHookParam, 'error', err);
+      }
+      setLoader(false);
+      console.log(err, 'NewCrowdsale');
+      dispatch(
+        setModalData(
+          true,
+          t('new_crowdsale.crowdsale_creation_failed'),
+          err.message.split('\n')[0],
+          'permission',
+        ),
+      );
+    }
+  }
+
   const handleCreateCrowdsale = async () => {
     setLoader(true);
     let callbackParam: string | null;
@@ -204,84 +228,56 @@ const NewCrowdsale: React.FC = () => {
     receipt
       .then(async (res: any) => {
         if (res) {
-          const crowdsaleDataRes = _get(res, 'events.CrowdsaleAdded.returnValues');
-          crowdsaleAddedNotification({
-            variables: {
-              record: {
-                contractAddress: crowdsaleDataRes._contractAddress,
-                identifier: crowdsaleDataRes._id,
-                start: moment.unix(crowdsaleDataRes._start),
-                end: moment.unix(crowdsaleDataRes._end),
-                acceptRatio: parseFloat(crowdsaleDataRes._acceptRatio),
-                giveRatio: parseFloat(crowdsaleDataRes._giveRatio),
-                owner: crowdsaleDataRes.owner,
-                timestamp: moment.unix(crowdsaleDataRes._timestamp),
-                maxCap: parseFloat(crowdsaleDataRes._maxCap),
+          saveCrowdsaleData(accessToken, res?.cddata, activityID || THING_ID).then((res) => {
+            const crowdsaleDataRes = _get(res, 'events.CrowdsaleAdded.returnValues');
+            crowdsaleAddedNotification({
+              variables: {
+                record: {
+                  contractAddress: crowdsaleDataRes._contractAddress,
+                  identifier: crowdsaleDataRes._id,
+                  start: new Date(crowdsaleDataRes._start * 1000),
+                  end: new Date(crowdsaleDataRes._end * 1000),
+                  acceptRatio: parseFloat(crowdsaleDataRes._acceptRatio),
+                  giveRatio: parseFloat(crowdsaleDataRes._giveRatio),
+                  owner: crowdsaleDataRes.owner,
+                  timestamp: new Date(crowdsaleDataRes._timestamp * 1000),
+                  maxCap: parseFloat(crowdsaleDataRes._maxCap),
+                },
               },
-            },
-          })
-            .then(async (res: any) => {
-              if (callbackParam) {
-                window.location.href = `${callbackParam}${
-                  callbackParam.includes('?') ? '&' : '?'
-                }_id=${crowdsaleDataRes._contractAddress}`;
-              }
-              if (webHookParam) {
-                await saveWebhookAPI(webHookParam, crowdsaleDataRes._contractAddress, res);
-              }
-              setLoader(false);
-              console.log(res);
-              history.push('/');
-              dispatch(
-                setModalData(
-                  true,
-                  t('new_crowdsale.crowdsale_created'),
-                  t('common.transaction_complete'),
-                  'permission',
-                ),
-              );
             })
-            .catch(async (err: any) => {
-              if (callbackParam) {
-                window.location.href = `${callbackParam}${
-                  callbackParam.includes('?') ? '&' : '?'
-                }_id=error`;
-              }
-              if (webHookParam) {
-                await saveWebhookAPI(webHookParam, 'error', err);
-              }
-              setLoader(false);
-              console.log(err, 'NewCrowdsale');
-              dispatch(
-                setModalData(
-                  true,
-                  t('new_crowdsale.crowdsale_creation_failed'),
-                  err.message.split('\n')[0],
-                  'permission',
-                ),
-              );
-            });
+              .then(async (res: any) => {
+                if (callbackParam) {
+                  window.location.href = `${callbackParam}${
+                    callbackParam.includes('?') ? '&' : '?'
+                  }_id=${crowdsaleDataRes._contractAddress}`;
+                }
+                if (webHookParam) {
+                  await saveWebhookAPI(webHookParam, crowdsaleDataRes._contractAddress, res);
+                }
+                setLoader(false);
+                console.log(res);
+                history.push('/');
+                dispatch(
+                  setModalData(
+                    true,
+                    t('new_crowdsale.crowdsale_created'),
+                    t('common.transaction_complete'),
+                    'permission',
+                  ),
+                );
+              })
+              .catch(async (err: any) => {
+                handleCatch(err)
+                return;
+              });
+          }).catch((err) => {
+            handleCatch(err)
+            return;
+          });
         }
       })
       .catch(async (err: any) => {
-        if (callbackParam) {
-          window.location.href = `${callbackParam}${
-            callbackParam.includes('?') ? '&' : '?'
-          }_id=error`;
-        }
-        if (webHookParam) {
-          await saveWebhookAPI(webHookParam, 'error', err);
-        }
-        setLoader(false);
-        console.log(err, 'NewCrowdsale');
-        dispatch(
-          setModalData(
-            true,
-            t('new_crowdsale.crowdsale_creation_failed'),
-            err.message.split('\n')[0],
-            'permission',
-          ),
-        );
+        handleCatch(err)
       });
   };
 
@@ -294,16 +290,30 @@ const NewCrowdsale: React.FC = () => {
       style={{ overflow: 'hidden' }}
     >
       <Loading loader={loader} />
-      <Flex
-        justifyContent="space-between"
-        alignItems="center"
-        paddingY={4}
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
-      >
-        <IconButton onClick={handlebackStep} sx={{ cursor: 'pointer' }} icon="back" />
-        <Text>{title}</Text>
-        <IconButton onClick={handleClose} sx={{ cursor: 'pointer' }} icon="close" />
-      </Flex>
+      {step === 9 || title.indexOf(t('common.edit')) > -1 ? (
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            paddingY={4}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
+          >
+            <IconButton onClick={handleEditStep} sx={{ cursor: 'pointer' }} icon="close" />
+            <Text>{title}</Text>
+            <Text></Text>
+          </Flex>
+        ) : (
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            paddingY={4}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
+          >
+            <IconButton onClick={handlebackStep} sx={{ cursor: 'pointer' }} icon="back" />
+            <Text>{title}</Text>
+            <IconButton onClick={handleClose} sx={{ cursor: 'pointer' }} icon="close" />
+          </Flex>
+        )
+      }
       <motion.div
         initial="hidden"
         animate="visible"
@@ -386,27 +396,35 @@ const NewCrowdsale: React.FC = () => {
           {step === 5 && (
             <FramerSlide>
               <Flex flexDirection="column" style={{ transform: 'translateY(-10px)' }}>
-                <RadioButtonGroup
-                  value={crowdsale.contractType}
-                  onChange={(e: any) => onChange(e, 'contractType')}
-                  radios={contractsRadio}
-                />
-                {crowdsale.contractType === 'Custom Contract' && (
-                  <Flex flexDirection="column" height="100%" justifyContent="space-between">
-                    <AddImage
-                      label={contractLabel ? contractLabel : 'Upload contract'}
-                      accept="application/pdf"
-                      icon={contractLabel ? 'clouddone' : 'cloud'}
-                      onChange={onChangeContract}
-                      placeholder={''}
-                      padding={6}
-                      marginLeft={20}
-                    />
-                    <div>
-                      {error && <ErrorMsg title={error} type="error" style={{ top: '54.6vh' }} />}
-                    </div>
-                  </Flex>
-                )}
+                <Flex flexDirection="column" marginBottom={8}>
+                  <Label fontSize="16px" color="#3191919">
+                    {t('new_token.custom_contract')}
+                  </Label>
+                  <Text fontSize="13px" color="#8E949E" paddingX={1} marginTop={2}>
+                    {t('new_token.custom_contract_msg')}{' '}
+                    <a
+                      className="contract-link"
+                      href={pdfContract}
+                      download="Token-Legal-Contract_Template.pdf"
+                    >
+                      {t('new_token.here')}
+                    </a>
+                  </Text>
+                </Flex>
+                <Flex flexDirection="column" height="100%" justifyContent="space-between">
+                  <AddImage
+                    label={contractLabel ? contractLabel : 'Upload contract'}
+                    accept="application/pdf"
+                    icon={contractLabel ? 'clouddone' : 'cloud'}
+                    onChange={onChangeContract}
+                    placeholder={''}
+                    padding={6}
+                    marginLeft={20}
+                  />
+                  <div>
+                    {error && <ErrorMsg title={error} type="error" style={{ top: '50vh' }} />}
+                  </div>
+                </Flex>
               </Flex>
             </FramerSlide>
           )}

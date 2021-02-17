@@ -7,13 +7,14 @@ import { toggleModal } from '../redux/actions/Modal';
 
 const ModalContainer = () => {
   const dispatch = useDispatch();
-  const { isOpen, title, body } = useSelector(({ modal }: any) => {
-    const { isOpen, title, body } = modal;
+  const { isOpen, title, body, isClose } = useSelector(({ modal }: any) => {
+    const { isOpen, title, body, isClose } = modal;
 
     return {
       isOpen,
       title,
       body,
+      isClose
     };
   });
 
@@ -21,6 +22,7 @@ const ModalContainer = () => {
     <AnimatePresence>
       {isOpen && (
         <Modal
+          isClose={isClose}
           close={() => {
             dispatch(toggleModal());
           }}

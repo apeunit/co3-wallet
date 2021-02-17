@@ -1,0 +1,4 @@
+# git blame --ignore-revs-file .git-blame-ignore-revs somefile.txt
+# yarn lint:fix
+ed81d119fda6c8822e81716e07418e20328f5157
+

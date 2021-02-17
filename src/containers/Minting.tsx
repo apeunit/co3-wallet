@@ -14,6 +14,7 @@ import { setModalData } from '../redux/actions/Modal';
 import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
 import ErrorMsg from 'src/components/ErrorMsg';
+import { COUPON_PURPOSE } from 'src/config';
 
 const Minting = () => {
   const { t } = useTranslation();
@@ -40,7 +41,7 @@ const Minting = () => {
           dispatch(
             setModalData(
               true,
-              t('minting.token_mint_info'),
+              t(parseInt(token?.decimals, 10) === 0 ? 'minting.coupon_mint_info' : 'minting.token_mint_info'),
               t('common.transaction_complete'),
               'permission',
             ),
@@ -52,7 +53,7 @@ const Minting = () => {
           dispatch(
             setModalData(
               true,
-              t('minting.token_mint_failed'),
+              t(parseInt(token?.decimals, 10) === 0 ? 'minting.coupon_mint_failed' : 'minting.token_mint_failed'),
               err.message.split('\n')[0],
               'permission',
             ),
@@ -63,8 +64,9 @@ const Minting = () => {
 
   const onKeySupply = (e: any) => {
     e.preventDefault();
-    if (e.key === '.' && token?.decimals === 0) {
+    if (e.key === '.' && parseInt(token?.decimals, 10) === 0) {
       setError(t('minting.coupon_mint_decimal_error'))
+
       return false;
     } else {
       setError('');
@@ -79,10 +81,10 @@ const Minting = () => {
           <IconButton
             icon="back"
             onClick={() => {
-              history.push({ pathname: '/token-detail', state: { token } });
+              history.push({ pathname: `${parseInt(token?.decimals, 10) === 0 ?  '/coupon-detail' : '/token-detail'}`, state: { token } });
             }}
           />
-          <ToolBarTitle fontWeight="500">{t('multitoken.label')}</ToolBarTitle>
+          <ToolBarTitle fontWeight="500">{token?.purpose === COUPON_PURPOSE ?  t('minting.mint_coupon') : t('minting.mint_token')}</ToolBarTitle>
         </ToolBar>
         {token && (
           <InfoBar>
@@ -96,17 +98,17 @@ const Minting = () => {
           type="number"
           className="token-mint-input"
           label={t('common.supply')}
-          placeholder={t('minting.supply_placeholder')}
+          placeholder={token?.decimals === 0 ? t('minting.supply_coupon_placeholder') : t('minting.supply_placeholder')}
           value={supply || ''}
           handleKeyChange={onKeySupply}
-          msg={token?.decimals === 0 ? t('minting.coupon_mint_decimal_error') : ''}
+          msg={parseInt(token?.decimals, 10) === 0 ? t('minting.coupon_mint_decimal_error') : ''}
           onChangeValue={setSupply}
         />
       </Flex>
       <Flex justifyContent="center" marginBottom={4} minHeight="70px">
         {error ? (
           <ErrorMsg style={{ top: '87vh' }} title={error} type="warning" />
-        ):
+        ) :
         (
           <IconButton
             icon="next"

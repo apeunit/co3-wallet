@@ -62,7 +62,7 @@ export const Slider: React.FC<IProps> = ({
           }}
         >
           <IconButton
-            onClick={isDev ? onClick : () => console.log("Creating")}
+            onClick={isDev ? onClick : () => console.log('Creating')}
             size="s14"
             icon="next"
             width="56px"

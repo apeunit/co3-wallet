@@ -5,6 +5,7 @@ export interface IToken {
   amount?: number | string;
   decimals: number | string;
   owner?: string;
+  purpose?: number;
   contractAddress?: string;
 }
 export interface ITokens {
@@ -32,7 +33,9 @@ export interface IIconName {
     | 'uploading'
     | 'cloud'
     | 'add'
-    | 'remove';
+    | 'remove'
+    | 'up'
+    | 'arrowUp';
   style?: any;
 }
 

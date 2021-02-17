@@ -41,8 +41,8 @@ export const saveUserPublicKey = async (
 };
 
 // build the URL to get the user profile image
-export const getProfileImageUrl = (userData: any): string => {
+export const getProfileImageUrl = (accessToken: string, userData: any): string => {
   const memberId = userData.id || userData;
 
-  return `${API_URL}/member_image/show/${memberId}.html?image_type=avatar`;
+  return `${API_URL}/api/1/avatar?access_token=${accessToken}&member_id=${memberId}`;
 };

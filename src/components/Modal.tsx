@@ -14,7 +14,7 @@ const modal = {
 };
 
 const Modal = (props: any) => {
-  const { children, close } = props;
+  const { children, close, isClose } = props;
 
   return (
     <motion.div initial="hidden" animate="visible" exit="hidden">
@@ -48,21 +48,23 @@ const Modal = (props: any) => {
               position: 'relative',
             }}
           >
-            <IconButton
-              sx={{
-                position: 'absolute',
-                top: '0',
-                right: '5px',
-                borderRadius: 'full',
-              }}
-              className="modal-close-btn"
-              onClick={close}
-              marginY={2}
-              cursor={'pointer'}
-              size="s8"
-              color={'grey'}
-              icon={'close'}
-            />
+            {isClose && (
+              <IconButton
+                sx={{
+                  position: 'absolute',
+                  top: '0',
+                  right: '5px',
+                  borderRadius: 'full',
+                }}
+                className="modal-close-btn"
+                onClick={close}
+                marginY={2}
+                cursor={'pointer'}
+                size="s8"
+                color={'grey'}
+                icon={'close'}
+              />
+            )}
             {children}
           </Flex>
         </motion.div>

@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Flex, Text } from 'rebass';
-import TokenCard from '../components/Tokens/CreateTokens/TokenCard';
 import IconButton from '../components/IconButton';
-import { useHistory } from 'react-router-dom';
-import ActionButtonGroup from '../components/ActionButtonGroup';
-import { useSelector } from 'react-redux';
-import { isMintableToken } from '../redux/actions/Chain';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { isMintableToken } from 'src/redux/actions/Chain';
+import ActionButtonGroup from 'src/components/ActionButtonGroup';
 import Moment from 'react-moment';
 import axios from 'axios';
 let fileDownload = require('js-file-download');
 const pdfcontract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
-const TokenDetail: React.FC = () => {
+const CouponDetail: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const [isMintable, setIsMintable] = useState(false);
@@ -24,16 +23,16 @@ const TokenDetail: React.FC = () => {
     };
   });
 
-  const handleBackStep = () => {
-    history.push('/');
-  };
-
   useEffect(() => {
     if (!token || token === null) {
       history.push('/');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const handleBackStep = () => {
+    history.push('/');
+  };
 
   useEffect(() => {
     token && isMintableToken(token).then(setIsMintable);
@@ -57,18 +56,53 @@ const TokenDetail: React.FC = () => {
           icon="dirBackArrow"
         />
       </Flex>
-      <Flex flexDirection="column" width="96%" marginX="auto">
-        <TokenCard
-          name={token?.name}
-          amount={token?.decimals === 2 ? token?.amount / 100 : token?.amount}
-          symbol={token?.token_symbol}
-          icon={token?.image || token?.logoURL}
-          amount_msg={t('token_details.card_msg')}
-        />
-        <Flex marginBottom="15px">
+      <Flex flexDirection="column" width="100%" style={{ transform: 'translateY(-30px)' }}>
+        <Flex sx={{ borderRadius: 8, overflow: 'hidden' }} width="94%" marginX="auto" maxHeight="339px">
+          <img style={{ width: '100%', margin: 'auto', maxHeight: '339px', maxWidth: '339px', height: 'auto' }} src={token?.image || token?.logoURL} alt="CouponImage" />
+          <Flex
+            backgroundColor="rgba(0,0,0,.5)"
+            justifyContent="center"
+            alignItems="center"
+            paddingX="5px"
+            style={{
+              position: 'absolute',
+              top: '284px',
+              right: '13px',
+              height: '24px',
+              borderTopLeftRadius: '4px',
+              borderBottomRightRadius: '4px',
+            }}
+            fontSize="13px"
+          >
+            <Text
+              className="margin: auto;"
+              color="white"
+              maxWidth="100%"
+              style={{
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                minWidth: '14px',
+                maxWidth: '50px',
+                width: 'max-content',
+                textAlign: 'center',
+              }}
+            >
+              {token?.amount}
+            </Text>
+          </Flex>
+        </Flex>
+        <Flex marginTop="10px" flexDirection="column" paddingX="15px">
+          <Flex flexDirection="column" paddingBottom="2px">
+            <Text fontWeight="600" fontSize={24}>{token?.name}</Text>
+            <Text fontSize={16} color="#757575">
+              {token?.headline}
+            </Text>
+          </Flex>
+        </Flex>
+        <Flex marginBottom="10px" >
           <ActionButtonGroup
             marginTop={7}
-            marginBottom="auto"
             gap={2}
             buttons={[
               {
@@ -97,17 +131,17 @@ const TokenDetail: React.FC = () => {
             ]}
           />
         </Flex>
-        <Flex padding={5}>
+        <Flex paddingY={2} paddingX="15px">
           <Text color="#75797F" fontSize={16}>{token?.description}</Text>
         </Flex>
-        <Flex padding={5}>
+        <Flex paddingY={2} paddingX="15px">
           <Text color="#75797F" width="210px" fontSize={13}>
             Created on{' '}
             <Moment format="Do MMMM YYYY">{token?.computed_at}</Moment>, <br />
-            with a total supply of {token?.amount / 100} tokens
+            with a total supply of {token?.amount} coupons
           </Text>
         </Flex>
-        <Flex paddingX={5} paddingBottom={10}>
+        <Flex paddingX="15px" paddingBottom={10}>
           <button onClick={() => handleDownload(token?.contractHash || pdfcontract, token?.contractLabel || 'Token-Legal-Contract_Placeholder.pdf')}>
             <Flex
               marginTop="10px"
@@ -129,4 +163,4 @@ const TokenDetail: React.FC = () => {
   );
 };
 
-export default TokenDetail;
+export default CouponDetail;

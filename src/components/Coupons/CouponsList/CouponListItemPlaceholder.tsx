@@ -3,11 +3,11 @@ import { Box, Flex, Image, Text } from 'rebass';
 
 const CouponListItemPlaceholder = (props: any) => {
   return (
-    <Flex flexDirection="column" backgroundColor="#fff" marginRight="6" sx={{ flexShrink: '0' }}>
+    <Flex flexDirection="column" backgroundColor="#fff" sx={{ flexShrink: '0' }}>
       <Box
         backgroundColor="#f0f0f0"
         sx={{ borderRadius: 8, position: 'relative', overflow: 'hidden' }}
-        style={{ width: '144px', height: '144px' }}
+        style={{ width: '163px', height: '163px' }}
       >
         <Image
           sx={{

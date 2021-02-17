@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Flex, Text } from 'rebass';
+import { Box, Button, Flex, Text } from 'rebass';
 import TokenCard from './Tokens/CreateTokens/TokenCard';
 import { Slider } from '../components/Slider';
 import IconButton from './IconButton';
@@ -46,12 +46,49 @@ const ConfirmPayment = () => {
     }
   }, [tokenQueryData]);
 
+  const errorModalMsg = (title: string) => (
+    <Flex width="max-content" margin="auto" className="error-modal">
+      <IconButton height="26px" width="26px" icon="errorOutline" />
+      <Text className="error-message">{t(title)}</Text>
+    </Flex>
+  );
+
+  const handlebackbtn = (_error: string) => {
+    const params = new URLSearchParams(location.search);
+    const callbackParam = params.get('callback');
+    if (callbackParam) {
+      window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'}_id=${t(_error)}`;
+    } else {
+      history.push('/');
+      dispatch(setModalData(false, 'permission'));
+    }
+  }
+
+  const errorModalBody = (title: string, btntitle: string, _error: string) => (
+    <Flex flexDirection="column" width="max-content" margin="auto">
+      <Text margin="10px 0px" width="275px">
+        {t(title)}
+      </Text>
+      <Button
+        className="modal-login-btn"
+        height="30px"
+        margin="20px auto 0px"
+        width="170px"
+        style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
+        onClick={() => handlebackbtn(_error)}
+      >
+        {t(btntitle)}
+      </Button>
+    </Flex>
+  );
+
   useEffect(() => {
     if (location.search) {
       const params = new URLSearchParams(location.search);
       const toParam = params.get('to');
       const tokenParam = params.get('token');
       const amountParam = params.get('amount');
+      const callbackParam = params.get('callback');
       if (tokenParam && tokenList.length > 0) {
         const tokenNew: any = tokenList.find(
           (tkn: any) =>
@@ -65,22 +102,75 @@ const ConfirmPayment = () => {
               contractAddress: tokenNew?.contractAddress,
             },
           });
-          setTokenData(tokenNew);
+          if (tokenNew.logoURL && tokenNew.logoURL.includes('description')) {
+            const newtknData = tokenNew.logoURL && JSON.parse(tokenNew.logoURL);
+            setTokenData({...tokenNew, ...newtknData, logoURL: newtknData.logoURL});
+          } else {
+            setTokenData(tokenNew);
+          }
+          if (amountParam && tokenNew?.decimals === 0 && !Number.isInteger(amountParam)) {
+            dispatch(
+              setModalData(
+                true,
+                errorModalMsg('payment.amount_coupon_error'),
+                errorModalBody('payment.amount_coupon_error_msg', `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`, 'payment.amount_coupon_error'),
+                'permission',
+                false
+              ),
+            );
+
+            return;
+          }
         } else {
           params.delete('token')
-          setError(`${t('payment.token_error')}`);
+          dispatch(
+            setModalData(
+              true,
+              errorModalMsg('payment.token_error'),
+              errorModalBody('', `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`, 'payment.token_error'),
+              'permission',
+              false
+            ),
+          );
         }
       }
       toParam && dispatch(setToAddress(_replace(toParam, /['"]+/g, '')));
+      if (amountParam && (!Number(amountParam) || Number(amountParam) < 0)) {
+        dispatch(
+          setModalData(
+            true,
+            errorModalMsg('payment.amount_error'),
+            errorModalBody('payment.amount_negative_error_msg', `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`, 'payment.amount_error'),
+            'permission',
+            false
+          ),
+        );
+
+        return;
+      }
+      if (amountParam && tokenData?.decimals === 0 && !Number.isInteger(amountParam)) {
+        dispatch(
+          setModalData(
+            true,
+            errorModalMsg('payment.amount_coupon_error'),
+            errorModalBody('payment.amount_coupon_error_msg', `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`, 'payment.amount_coupon_error'),
+            'permission',
+            false
+          ),
+        );
+
+        return;
+      }
       amountParam && dispatch(setTransferAmount(amountParam));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search, token, tokenList]);
+  }, [location.search, tokenList]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tokenParam = params.get('token');
     const amountParam = params.get('amount');
+    const callbackParam = params.get('callback');
     if (tokenParam) {
       const amount = data?.balanceNotificationMany[0]?.amount;
       dispatch(
@@ -90,9 +180,14 @@ const ConfirmPayment = () => {
         }),
       );
       if (amountParam && (tokenData?.decimals === 2 ? amount / 100 : amount) < Number(amountParam)) {
-        setError(`${t('payment.amount_error')}`);
         dispatch(
-          setModalData(true, t('payment.payment_failed'), t('payment.amount_error'), 'permission'),
+          setModalData(
+            true,
+            errorModalMsg('payment.amount_error'),
+            errorModalBody('', `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`, 'payment.amount_error'),
+            'permission',
+            false
+          ),
         );
 
         return;
@@ -101,16 +196,16 @@ const ConfirmPayment = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, tokenData]);
 
-
   const handleSendToken = () => {
     setLoader(true);
     const params = new URLSearchParams(location.search);
     const amountParam = params.get('amount');
-    if(!token) {
+    if (!token) {
       return;
     }
     if (amountParam && (token?.decimals === 2 ? token?.amount / 100 : token?.amount) < Number(amountParam)) {
       setLoader(false);
+      setError(t('payment.amount_error'))
       dispatch(
         setModalData(true, t('payment.payment_failed'), t('payment.amount_error'), 'permission'),
       );

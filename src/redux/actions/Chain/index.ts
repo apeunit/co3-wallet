@@ -2,7 +2,7 @@
 import _get from 'lodash/get';
 import moment from 'moment';
 import { createActions } from 'redux-actions';
-import { getCrowdsaleList, saveCrowdsaleData } from 'src/api/firstlife';
+import { getCrowdsaleList } from 'src/api/firstlife';
 import { CROWDSALE_FACTORY_ADDRESS, NODE_URL, THING_ID, TOKEN_FACTORY_ADDRESS } from 'src/config';
 import { getRandomId } from 'src/utils/helper';
 import { formatAmount } from 'src/utils/misc';
@@ -153,7 +153,6 @@ const fetchTransactionsHistory = (token: ITokenData) => {
 const fetchCrowdsaleList = (accessToken: any, activityID: any) => {
   return async (dispatch: any, state: any) => {
     try {
-      console.log('fetchCrowdsaleList');
       const contract = new web3.eth.Contract(
         CrowdsaleFactoryJSON.abi,
         CROWDSALE_FACTORY_ADDRESS,
@@ -274,6 +273,9 @@ const createNewCrowdsale = (accessToken: string, crowdsale: any) => {
                 icon: crowdsale.icon,
                 itemToSell: crowdsale.itemToSell,
                 token: crowdsale.token,
+                description: crowdsale.description,
+                contract: crowdsale.contract,
+                contractLabel: crowdsale.contractLabel,
                 contractAddress: _get(
                   data,
                   'events.CrowdsaleAdded.returnValues._contractAddress',
@@ -285,10 +287,9 @@ const createNewCrowdsale = (accessToken: string, crowdsale: any) => {
             ],
           },
         };
-        saveCrowdsaleData(accessToken, cddata, state().co3uum.activityID || THING_ID);
         dispatch(createToken(data.events.CrowdsaleAdded));
-        return data;
-      });
+        return {data, cddata};
+      })
   };
 };
 
@@ -330,7 +331,7 @@ const mintNewToken = (token: ITokenData, amount: number) => {
         gas: state().wallet.gas,
       })
       .then((data: any) => {
-        console.log(data);
+        return data;
       });
   };
 };

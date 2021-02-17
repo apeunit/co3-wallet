@@ -16,7 +16,7 @@ import _get from 'lodash/get';
 import { motion } from 'framer-motion';
 import FramerSlide from '../components/FrameMotion/Slide';
 import { useDispatch, useSelector } from 'react-redux';
-import { getPermalink, saveResource } from '../api/firstlife';
+import { getOriginalName, getPermalink, saveResource } from '../api/firstlife';
 import { setModalData } from '../redux/actions/Modal';
 import { createNewToken } from '../redux/actions/Chain';
 import { useLazyQuery } from '@apollo/react-hooks';
@@ -105,6 +105,11 @@ const NewToken: React.FC = () => {
     }
   }, [tokenData]);
 
+  const handleEditStep = () => {
+    setStep(6)
+    setTitle(t('new_token.label'))
+  }
+
   const handleSteps = () => {
     if (step <= 6) {
       if (
@@ -117,7 +122,7 @@ const NewToken: React.FC = () => {
 
         return;
       }
-      step <= 6 && title.indexOf(t('common.edit')) > -1 ? setStep(7) : setStep(step + 1);
+      step <= 6 && title.indexOf(t('common.edit')) > -1 ? handleEditStep() : setStep(step + 1);
     }
   };
 
@@ -171,7 +176,6 @@ const NewToken: React.FC = () => {
     setUploading(true);
     setError('');
     if (e.target.files[0]) {
-      let label = e.target.files[0].name;
       changeContractLabel(e.target.files[0].name);
       if (!accessToken || accessToken === null) {
         setUploading(false);
@@ -184,7 +188,7 @@ const NewToken: React.FC = () => {
         .then(({ data }: any) => {
           setUploading(false);
           const link = getPermalink(data);
-          link ? onchangeToken({ ...token, contract: link, contractLabel: contractLabel || label }) : console.log(data);
+          link ? onchangeToken({ ...token, contract: link, contractLabel: getOriginalName(data) }) : console.log(data);
         })
         .catch((err: any) => {
           console.log(err, 'err');
@@ -218,7 +222,7 @@ const NewToken: React.FC = () => {
         tokenFactory,
         token.name,
         token.symbol,
-        token.icon,
+        JSON.stringify({logoURL: token.icon, description: token.description, contractHash: token.contract, contractLabel: token.contractLabel}),
         web3.utils.keccak256(token.icon),
         web3.utils.keccak256(token.contract),
         2,
@@ -238,25 +242,29 @@ const NewToken: React.FC = () => {
           ),
         );
         const resData = res?.events?.TokenAdded?.returnValues;
-        const token = {
+        const restoken = {
           amount: resData?._hardCap,
           computed_at: resData?._timestamp,
           contractAddress: resData?._contractAddress,
           decimals: resData?._decimals,
-          logoURL: resData?._logoURL,
+          logoURL: token.icon,
+          description: token.description,
+          contractHash: token.contract,
           name: resData?._name,
           owner: resData?._from,
+          contractLabel: token.contractLabel,
           purpose: resData?._purpose,
           symbol: resData?._symbol,
           token_symbol: resData?._symbol,
         }
-        dispatch(setTransferToken(token));
+        dispatch(setTransferToken(restoken));
         setTimeout(() => {
-          dispatch(setModalData(false, '', '', '', ));
+          dispatch(setModalData(false, '', '', '' ));
           history.push('/token-mint');
         }, 1000)
       })
       .catch((err: any) => {
+        setLoader(false);
         dispatch(
           setModalData(
             true,
@@ -277,16 +285,30 @@ const NewToken: React.FC = () => {
       style={{ overflow: 'hidden' }}
     >
       <Loading loader={loader} />
-      <Flex
-        justifyContent="space-between"
-        alignItems="center"
-        paddingY={4}
-        style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
-      >
-        <IconButton onClick={handlebackStep} sx={{ cursor: 'pointer' }} icon="back" />
-        <Text>{title}</Text>
-        <IconButton onClick={handleClose} sx={{ cursor: 'pointer' }} icon="close" />
-      </Flex>
+      {step === 7 || title.indexOf(t('common.edit')) > -1 ? (
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            paddingY={4}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
+          >
+            <IconButton onClick={handleEditStep} sx={{ cursor: 'pointer' }} icon="close" />
+            <Text>{title}</Text>
+            <Text></Text>
+          </Flex>
+        ) : (
+          <Flex
+            justifyContent="space-between"
+            alignItems="center"
+            paddingY={4}
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
+          >
+            <IconButton onClick={handlebackStep} sx={{ cursor: 'pointer' }} icon="back" />
+            <Text>{title}</Text>
+            <IconButton onClick={handleClose} sx={{ cursor: 'pointer' }} icon="close" />
+          </Flex>
+        )
+      }
       <motion.div
         initial="hidden"
         animate="visible"
@@ -388,7 +410,7 @@ const NewToken: React.FC = () => {
                     <a
                       className="contract-link"
                       href={pdfContract}
-                      download="Token-Legal-Contract_Template.pdf"
+                      download="Token-Legal-Contract_Placeholder.pdf"
                     >
                       {t('new_token.here')}
                     </a>

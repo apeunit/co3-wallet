@@ -11,6 +11,7 @@ import { getCrowdsaleList } from 'src/api/firstlife';
 import { ICrowdsaleData } from 'src/interfaces';
 import _get from 'lodash/get';
 
+const LIMIT = 1000;
 const MarketPlace = () => {
   const dispatch = useDispatch();
   const [tokenList, setTokenList] = useState([]);
@@ -38,8 +39,8 @@ const MarketPlace = () => {
     variables: {
       filter: {},
       skip: 0,
-      limit: 20,
-      sort: CrowdsaleSortEnum.ASC,
+      limit: LIMIT,
+      sort: CrowdsaleSortEnum.DESC,
     },
   });
 
@@ -60,7 +61,7 @@ const MarketPlace = () => {
       );
       const idFound =
         cdList.length > 0 && cdList.find((cd: any) => cd?.crowdsaleId === crowdData?.crowdsaleId);
-      (!idFound || idFound === undefined) && cdList.push({ ...crowdAdded, ...crowdData });
+      (!idFound || idFound === undefined) && crowdData?.name && cdList.push({ ...crowdAdded, ...crowdData });
 
       return cdList;
     });
@@ -78,7 +79,7 @@ const MarketPlace = () => {
 
   return (
     <Flex>
-      <CrowdsaleList crowdsaleList={crowdsaleList} tokenList={tokenList} />
+      <CrowdsaleList limit={LIMIT} fetchMore={crowdsaleAddedQuery} crowdsaleList={crowdsaleList} tokenList={tokenList} />
       <STFooter iconActive="sellIcon" />
     </Flex>
   );

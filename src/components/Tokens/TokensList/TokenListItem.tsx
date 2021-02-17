@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setTransferToken } from '../../../redux/actions/Wallet';
 
-const TokenListItem = ({ logoURL, name, symbol, amount, ...rest }: any) => {
+const TokenListItem = ({ logoURL, name, symbol, amount, decimals, ...rest }: any) => {
   const history = useHistory();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -16,6 +16,7 @@ const TokenListItem = ({ logoURL, name, symbol, amount, ...rest }: any) => {
       name,
       symbol,
       amount,
+      decimals,
       ...rest,
     };
     dispatch(setTransferToken(token));
@@ -46,7 +47,7 @@ const TokenListItem = ({ logoURL, name, symbol, amount, ...rest }: any) => {
         {/* <Badge marginY={1}>{symbol}</Badge> */}
       </Flex>
       <Text fontFamily="sans" fontSize={2} fontWeight="bold" marginLeft="auto" marginBottom={5}>
-        {amount / 100}
+        {decimals > 0 ? amount / 100 : amount}
       </Text>
     </Flex>
   );

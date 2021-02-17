@@ -5,7 +5,7 @@ import avatarImg from '../images/placeholder-img.png';
 import Avatar from './Avatar';
 
 const ImageCard = (props: any) => {
-  const { name, symbol, amount, loading, style, getImg, type, uploadIcon, ...rest } = props;
+  const { name, symbol, amount, loading, style, type, uploadIcon, ...rest } = props;
 
   return (
     <Flex

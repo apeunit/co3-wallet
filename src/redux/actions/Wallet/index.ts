@@ -11,8 +11,8 @@ import {
   SET_MNEMONIC,
   SET_NODE_URL,
   SET_PUBLIC_KEY,
-  SET_TOKEN_FACTORY_ADDRESS,
   SET_TO_ADDRESS,
+  SET_TOKEN_FACTORY_ADDRESS,
   SET_TRANSFER_AMOUNT,
   SET_TRANSFER_TOKEN,
   VALIDATE_MNEMONIC_DATA,
@@ -62,7 +62,7 @@ const initWallet = (mnemonic: string): any => {
   return (dispatch: any) => {
     return mnemonicToSeed(mnemonic).then((seed: any) => {
       const hdkeyInstance = hdkey.fromMasterSeed(seed);
-      const node = hdkeyInstance.derivePath("m/44'/60'/0'/0'/0");
+      const node = hdkeyInstance.derivePath('m/44\'/60\'/0\'/0\'/0');
       const child = node.deriveChild(0);
       const wallet = child.getWallet();
       const ethAddress = toChecksumAddress(

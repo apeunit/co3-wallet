@@ -4,6 +4,7 @@ import CreateInputStep from '../../StepsComponents/CreateInputStep';
 import { useTranslation } from 'react-i18next';
 import { SelectInput } from 'src/components/Select';
 import { useSelector } from 'react-redux';
+import { COUPON_PURPOSE } from 'src/config';
 
 interface IProps {
   crowdsale: any;
@@ -30,7 +31,7 @@ const SupplyStep: React.FC<IProps> = ({
     if (tokenList) {
       if (tokenList.length > 0) {
         tokenList.map((token: any) => {
-          return token.decimals === 0
+          return (token.decimals === 0 || token.purpose === COUPON_PURPOSE) && !tokenListOption.find((tk: any) => tk.key === token.contractAddress)
             ? tokenListOption.push({ key: token.contractAddress, title: token.name })
             : tokenListOption;
         });

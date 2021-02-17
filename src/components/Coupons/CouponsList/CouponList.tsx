@@ -13,17 +13,20 @@ const CouponList = (props: any) => {
   });
 
   return (
-    <Box style={{ overflow: 'auto', height: 'max-content', marginBottom: '80px' }}>
-      <Flex alignItems="center" paddingTop="10px">
+    <Box style={{ overflowY: 'auto', height: '55vh', marginBottom: '70px' }}>
+      <Flex alignItems="center" justifyContent="space-between" flexWrap="wrap" margin="0px 10px">
         {props.tokenLoading ? (
           <CouponListPlaceholder counter={3} />
         ) : (
           props.tokens
             .map((token: IToken, index: number) => {
+              const newtknData = token.logoURL && token.logoURL.includes('description') && JSON.parse(token.logoURL);
+              const newObj = newtknData ? {...token, ...newtknData, logoURL: newtknData.logoURL} : {...token}
+
               return (
                 ((token.amount && token.amount > 0) || token.owner === ethAddress) &&
                 parseInt(token.decimals.toString(), 10) === 0 && (
-                  <CouponListItem {...token} key={index} />
+                  <CouponListItem {...newObj} key={index} />
                 )
               );
             })

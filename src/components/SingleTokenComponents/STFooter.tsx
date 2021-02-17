@@ -62,7 +62,7 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
       width="100%"
       paddingX={7}
       paddingTop={5}
-      style={{ zIndex: 0 }}
+      style={{ zIndex: 20 }}
       className="wallet-footer"
     >
       {icons.map(({ icon, label, url }: any, index: number) =>
