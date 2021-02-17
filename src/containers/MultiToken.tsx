@@ -112,7 +112,7 @@ const MultiToken: React.FC = () => {
   const BoundToTop = (val: any) => {
     if (val) {
       setBound({ left: 0, top: 0, right: 0, bottom: 0 });
-      setControlledPosition({ x: 0, y: tokenList.length === 0 ? 45 : 0 });
+      setControlledPosition({ x: 0, y: tokenList.length === 0 ? 100 : 0 });
     } else {
       setBound(recentbound);
       setControlledPosition(recentPos);
@@ -266,7 +266,7 @@ const MultiToken: React.FC = () => {
             flex={data?.balanceNotificationMany?.find((tkn: any) => tkn.purpose === COUPON_PURPOSE) ? 1 : 'auto'}
             maxHeight={data?.balanceNotificationMany?.find((tkn: any) => tkn.purpose === COUPON_PURPOSE) ? 'auto' : 'max-content'}
             margin={`auto 0 75px 0`}
-            className={transition ? 'dragger-wrapper' : ''}
+            className={`${transition ? 'dragger-wrapper' : ''} ${tokenList.length > 0 && tokenList.length <= 3 && couponList.length === 0 ? 'set-height' : ''}`}
           >
             <Draggable
               axis="y"

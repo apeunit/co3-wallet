@@ -20,12 +20,14 @@ code {
 
 .react-draggable {
   z-index: 12 !important;
+}
+
+.set-height .react-draggable {
   min-height: 32em !important;
 }
 
 @media only screen and (max-height: 800px) {
-  .react-draggable {
-    z-index: 12 !important;
+  .set-height .react-draggable {
     min-height: 27em !important;
   }
 }
