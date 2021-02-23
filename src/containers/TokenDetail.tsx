@@ -11,11 +11,14 @@ import Moment from 'react-moment';
 import axios from 'axios';
 let fileDownload = require('js-file-download');
 const pdfcontract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
+const isDev = process.env.NODE_ENV === 'development';
 
 const TokenDetail: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const [isMintable, setIsMintable] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [error, setError] = useState('');
 
   const { ethAddress, token } = useSelector(({ wallet }: any) => {
     return {
@@ -40,11 +43,16 @@ const TokenDetail: React.FC = () => {
   }, [ethAddress, history, isMintable, token]);
 
   const handleDownload = (url: string, filename: string) => {
-    axios.get(url, {
+    setIsDownloading(true);
+    axios.get(isDev ? url : url.replace('http',  'https'), {
       responseType: 'blob',
     })
     .then((res) => {
+      setIsDownloading(false);
       fileDownload(res.data, filename)
+    }).catch(() => {
+      setIsDownloading(false);
+      setError(t('common.download_error'))
     })
   }
 
@@ -124,6 +132,12 @@ const TokenDetail: React.FC = () => {
             </Flex>
           </button>
         </Flex>
+        {isDownloading && <Flex padding='10px 20px' margin='auto' justifyContent="center" width='150px' sx={{ background: 'rgb(47 47 47 / 77%)', borderRadius: '25px', position: 'absolute', bottom: '30px', left: 0, right: 0 }}>
+          <Text color="#ffffff">{t('common.downloading')}</Text>
+        </Flex>}
+        {error && <Flex padding='10px 20px' margin='auto' justifyContent="center" width='150px' sx={{ background: '#DD303D', borderRadius: '25px', position: 'absolute', bottom: '30px', left: 0, right: 0 }}>
+          <Text color="#ffffff">{error}</Text>
+        </Flex>}
       </Flex>
     </Flex>
   );

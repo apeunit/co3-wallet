@@ -40,7 +40,7 @@ const NewPayment = () => {
       const toParam = params.get('to');
       dispatch(fetchTokenByTicker(ScenarioJSON.athens.tokens[0]));
       dispatch(setToAddress(toParam));
-      history.push({ pathname: '/payment', search: location.search, state: { token, ...location.state } });
+      history.push({ pathname: '/payment', search: location.search, state: { token } });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contracts]);

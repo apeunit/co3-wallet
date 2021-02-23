@@ -75,7 +75,9 @@
     "mintable_token" : "Token Mintable",
     "dummy_text": "lorem ipsum dolor sit amet lorem ipsum lorem lorem lorem ipsum dolor sit amet lorem ipsum",
     "token_expire": "Il token è scaduto",
-    "token_expire_msg": "Il token è scaduto o non valido. Per favore esegui l'accesso di nuovo!"
+    "token_expire_msg": "Il token è scaduto o non valido. Per favore esegui l'accesso di nuovo!",
+    "downloading": "Downloading...",
+    "download_error": "Download del file non riuscito"
   },
   "new_crowdsale" : {
     "label": "Nuovo crowdsale",

@@ -2,6 +2,15 @@
 ## [Unreleased]
 
 
+<a name="1.3.8"></a>
+## [1.3.8] - 2021-02-23
+### Fix
+- Issue Resolved
+- File Downloading UI fixes In coupon
+- File Downloading UI fixes
+- Mint Next Button issue resolved
+
+
 <a name="1.3.7"></a>
 ## [1.3.7] - 2021-02-23
 ### Fix
@@ -244,7 +253,8 @@
 <a name="1.0.0"></a>
 ## 1.0.0 - 2020-06-30
 
-[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.7...HEAD
+[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.8...HEAD
+[1.3.8]: https://github.com/apeunit/co3-wallet/compare/1.3.7...1.3.8
 [1.3.7]: https://github.com/apeunit/co3-wallet/compare/1.3.6...1.3.7
 [1.3.6]: https://github.com/apeunit/co3-wallet/compare/1.3.5...1.3.6
 [1.3.5]: https://github.com/apeunit/co3-wallet/compare/1.3.4...1.3.5

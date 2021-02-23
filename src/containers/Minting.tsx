@@ -74,7 +74,7 @@ const Minting = () => {
   }
 
   return (
-    <Flex flexDirection="column" justifyContent="space-between" height="100vh">
+    <Flex flexDirection="column" justifyContent="space-between" height="90vh">
       <Loading loader={loader} />
       <Flex flexDirection="column">
         <ToolBar>
