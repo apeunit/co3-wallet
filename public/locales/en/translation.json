@@ -121,7 +121,8 @@
     "seconds":"seconds",
     "no_details":"Crowdsale details not available.",
     "started_on":"Started on",
-    "buy_now": "BUY NOW"
+    "buy_now": "BUY NOW",
+    "no_crowdsale": "You don't have made any marketplace yet"
   },
   "new_token": {
     "label": "New Token",

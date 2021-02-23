@@ -22,12 +22,9 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { createNewCrowdsale } from 'src/redux/actions/Chain';
 import { setModalData } from 'src/redux/actions/Modal';
-import { getPermalink, saveCrowdsaleData, saveResource } from 'src/api/firstlife';
+import { getPermalink, saveResource } from 'src/api/firstlife';
 import Loading from '../components/Loading';
 import { saveWebhookAPI } from 'src/utils/helper';
-import { useMutation } from '@apollo/react-hooks';
-import { CROWDSALE_ADDED } from '../api/middleware';
-import { THING_ID } from 'src/config';
 const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -58,11 +55,9 @@ const NewCrowdsale: React.FC = () => {
   });
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [crowdsaleAddedNotification] = useMutation(CROWDSALE_ADDED);
-  const { accessToken, activityID } = useSelector(({ co3uum }: any) => {
+  const { accessToken } = useSelector(({ co3uum }: any) => {
     return {
-      accessToken: co3uum.accessToken,
-      activityID: co3uum.activityID
+      accessToken: co3uum.accessToken
     };
   });
 
@@ -188,33 +183,6 @@ const NewCrowdsale: React.FC = () => {
     }
   };
 
-  const handleCatch = async (err: any) => {
-    if (location.search) {
-      const params = new URLSearchParams(location.search);
-      let callbackParam = params.get('callback');
-      let webHookParam = params.get('webhook');
-
-      if (callbackParam) {
-        window.location.href = `${callbackParam}${
-          callbackParam.includes('?') ? '&' : '?'
-        }_id=error`;
-      }
-      if (webHookParam) {
-        await saveWebhookAPI(webHookParam, 'error', err);
-      }
-      setLoader(false);
-      console.log(err, 'NewCrowdsale');
-      dispatch(
-        setModalData(
-          true,
-          t('new_crowdsale.crowdsale_creation_failed'),
-          err.message.split('\n')[0],
-          'permission',
-        ),
-      );
-    }
-  }
-
   const handleCreateCrowdsale = async () => {
     setLoader(true);
     let callbackParam: string | null;
@@ -224,60 +192,51 @@ const NewCrowdsale: React.FC = () => {
       callbackParam = params.get('callback');
       webHookParam = params.get('webhook');
     }
-    const receipt: any = dispatch(createNewCrowdsale(accessToken, crowdsale));
+    const receipt: any = dispatch(createNewCrowdsale(crowdsale));
     receipt
       .then(async (res: any) => {
         if (res) {
-          saveCrowdsaleData(accessToken, res?.cddata, activityID || THING_ID).then((res) => {
-            const crowdsaleDataRes = _get(res, 'events.CrowdsaleAdded.returnValues');
-            crowdsaleAddedNotification({
-              variables: {
-                record: {
-                  contractAddress: crowdsaleDataRes._contractAddress,
-                  identifier: crowdsaleDataRes._id,
-                  start: new Date(crowdsaleDataRes._start * 1000),
-                  end: new Date(crowdsaleDataRes._end * 1000),
-                  acceptRatio: parseFloat(crowdsaleDataRes._acceptRatio),
-                  giveRatio: parseFloat(crowdsaleDataRes._giveRatio),
-                  owner: crowdsaleDataRes.owner,
-                  timestamp: new Date(crowdsaleDataRes._timestamp * 1000),
-                  maxCap: parseFloat(crowdsaleDataRes._maxCap),
-                },
-              },
-            })
-              .then(async (res: any) => {
-                if (callbackParam) {
-                  window.location.href = `${callbackParam}${
-                    callbackParam.includes('?') ? '&' : '?'
-                  }_id=${crowdsaleDataRes._contractAddress}`;
-                }
-                if (webHookParam) {
-                  await saveWebhookAPI(webHookParam, crowdsaleDataRes._contractAddress, res);
-                }
-                setLoader(false);
-                console.log(res);
-                history.push('/');
-                dispatch(
-                  setModalData(
-                    true,
-                    t('new_crowdsale.crowdsale_created'),
-                    t('common.transaction_complete'),
-                    'permission',
-                  ),
-                );
-              })
-              .catch(async (err: any) => {
-                handleCatch(err)
-                return;
-              });
-          }).catch((err) => {
-            handleCatch(err)
-            return;
-          });
+          const crowdsaleDataRes = _get(res, 'events.CrowdsaleAdded.returnValues');
+          if (callbackParam) {
+            window.location.href = `${callbackParam}${
+              callbackParam.includes('?') ? '&' : '?'
+            }_id=${crowdsaleDataRes._contractAddress}`;
+          }
+          if (webHookParam) {
+            await saveWebhookAPI(webHookParam, crowdsaleDataRes._contractAddress, res);
+          }
+          setLoader(false);
+          console.log(res);
+          history.push('/');
+          dispatch(
+            setModalData(
+              true,
+              t('new_crowdsale.crowdsale_created'),
+              t('common.transaction_complete'),
+              'permission',
+            ),
+          );
         }
       })
       .catch(async (err: any) => {
-        handleCatch(err)
+        if (callbackParam) {
+          window.location.href = `${callbackParam}${
+            callbackParam.includes('?') ? '&' : '?'
+          }_id=error`;
+        }
+        if (webHookParam) {
+          await saveWebhookAPI(webHookParam, 'error', err);
+        }
+        setLoader(false);
+        console.log(err, 'NewCrowdsale');
+        dispatch(
+          setModalData(
+            true,
+            t('new_crowdsale.crowdsale_creation_failed'),
+            err.message.split('\n')[0],
+            'permission',
+          ),
+        );
       });
   };
 

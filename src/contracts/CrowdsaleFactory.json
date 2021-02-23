@@ -89,6 +89,12 @@
           "internalType": "address",
           "name": "owner",
           "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "_metadata",
+          "type": "string"
         }
       ],
       "name": "CrowdsaleAdded",
@@ -164,6 +170,11 @@
           "internalType": "address",
           "name": "",
           "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
         }
       ],
       "payable": false,
@@ -212,6 +223,11 @@
           "internalType": "uint256",
           "name": "_maxCap",
           "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "_metadata",
+          "type": "string"
         }
       ],
       "name": "createCrowdsale",

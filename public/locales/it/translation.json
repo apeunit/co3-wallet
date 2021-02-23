@@ -121,7 +121,8 @@
     "seconds":"secondi",
     "no_details":"Dettagli su crowdsale non disponibili.",
     "started_on":"Iniziato il",
-    "buy_now": "ACQUISTA ORA"
+    "buy_now": "ACQUISTA ORA",
+    "no_crowdsale": "Non hai ancora creato alcun mercato"
   },
   "new_token": {
     "label": "Nuova valuta",

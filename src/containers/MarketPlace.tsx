@@ -3,25 +3,19 @@ import { Flex } from 'rebass';
 import CrowdsaleList from 'src/components/Crowdsale/CrowdsaleList/CrowdsaleList';
 import STFooter from 'src/components/SingleTokenComponents/STFooter';
 import { useDispatch, useSelector } from 'react-redux';
-import { THING_ID } from 'src/config';
 import { getAllCrowdsale } from 'src/redux/actions/Chain';
 import { CrowdsaleSortEnum, GET_ALL_TOKENS, GET_CROWDSALE_ADDED } from '../api/middleware';
 import { useLazyQuery, useQuery } from '@apollo/react-hooks';
-import { getCrowdsaleList } from 'src/api/firstlife';
 import { ICrowdsaleData } from 'src/interfaces';
-import _get from 'lodash/get';
 
-const LIMIT = 1000;
+const LIMIT = 20;
 const MarketPlace = () => {
   const dispatch = useDispatch();
   const [tokenList, setTokenList] = useState([]);
-  const { accessToken, activityID, crowdsaleList, ethAddress } = useSelector(
-    ({ co3uum, chain, wallet }: any) => {
+  const { crowdsaleList } = useSelector(
+    ({ chain }: any) => {
       return {
-        accessToken: co3uum.accessToken,
-        activityID: co3uum.activityID || THING_ID,
         crowdsaleList: chain.crowdsaleList,
-        ethAddress: wallet.ethAddress,
       };
     },
   );
@@ -45,30 +39,9 @@ const MarketPlace = () => {
   });
 
   useEffect(() => {
-    if (ethAddress) {
-      crowdsaleAddedQuery();
-    }
+    crowdsaleAddedQuery();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ethAddress]);
-
-  const getCrowdsaleUpdatedList = async () => {
-    const cdList: any = [];
-    const crowdsaleData = await getCrowdsaleList(accessToken, activityID);
-    const crowdsaleListData = _get(crowdsaleData, 'data.properties.crowdsaleList', []);
-    data.crowdsaleAddedNotificationMany.map((crowdAdded: ICrowdsaleData) => {
-      const crowdData = crowdsaleListData.find(
-        (crowdsale: ICrowdsaleData) => crowdAdded.contractAddress === crowdsale.contractAddress,
-      );
-      const idFound =
-        cdList.length > 0 && cdList.find((cd: any) => cd?.crowdsaleId === crowdData?.crowdsaleId);
-      (!idFound || idFound === undefined) && crowdData?.name && cdList.push({ ...crowdAdded, ...crowdData });
-
-      return cdList;
-    });
-    if (cdList.length > 0) {
-      dispatch(getAllCrowdsale(cdList));
-    }
-  };
+  }, []);
 
   useEffect(() => {
     if (data && data.crowdsaleAddedNotificationMany) {
@@ -76,6 +49,21 @@ const MarketPlace = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
+
+  const getCrowdsaleUpdatedList = async () => {
+    const cdList: any = [];
+    data.crowdsaleAddedNotificationMany.map((crowdAdded: ICrowdsaleData) => {
+      const metaData = crowdAdded?.metadata && crowdAdded?.metadata?.includes('name') &&  JSON.parse(crowdAdded?.metadata);
+      const start = crowdAdded?.start && crowdAdded?.start?.includes('1970') ? Math.round(new Date(crowdAdded?.start).getTime() * 1000) : crowdAdded?.start;
+      const end = crowdAdded?.end && crowdAdded?.end?.includes('1970') ? Math.round(new Date(crowdAdded?.end).getTime() * 1000) : crowdAdded?.end;
+      metaData && metaData.token && cdList.push({ ...crowdAdded, start, end, ...metaData });
+
+      return cdList;
+    });
+    if (cdList.length > 0) {
+      dispatch(getAllCrowdsale(cdList));
+    }
+  };
 
   return (
     <Flex>

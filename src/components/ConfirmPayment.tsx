@@ -279,6 +279,7 @@ const ConfirmPayment = () => {
       }, 2000);
     }
   };
+  const { state }: any = history.location;
 
   return (
     <Flex
@@ -291,7 +292,7 @@ const ConfirmPayment = () => {
     >
       <Loading loader={loader} />
       <Box style={{ width: '100vw' }}>
-        <SearchHeader back={'/payment'} to={to} />
+        <SearchHeader back={(state && state.from) || '/payment'} to={to} />
         <InfoBar>
           <Text variant="base">{t('common.from')}</Text>
           <AvatarBadge image={token && token.logoURL} label={token && token.name} />

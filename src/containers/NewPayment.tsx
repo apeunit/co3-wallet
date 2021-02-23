@@ -40,7 +40,7 @@ const NewPayment = () => {
       const toParam = params.get('to');
       dispatch(fetchTokenByTicker(ScenarioJSON.athens.tokens[0]));
       dispatch(setToAddress(toParam));
-      history.push({ pathname: '/payment', search: location.search, state: { token } });
+      history.push({ pathname: '/payment', search: location.search, state: { token, ...location.state } });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contracts]);
@@ -51,18 +51,20 @@ const NewPayment = () => {
       const toParam = params.get('to');
       const tokenParam = params.get('token');
       const amountParam = params.get('amount');
-      if (toParam && tokenParam && amountParam) {
-        dispatch(setToAddress(toParam));
-        history.push({ pathname: '/confirmpayment', search: location.search });
-      } else if (toParam && tokenParam) {
-        dispatch(setToAddress(toParam));
-        history.push({ pathname: '/payment', search: location.search });
-      } else if (toParam && !tokenParam && amountParam) {
-        dispatch(setToAddress(toParam));
-        history.push('/404');
-      } else if (toParam && PILOT === 'turin') {
-        dispatch(setToAddress(toParam));
-        history.push({ pathname: '/select-token', search: location.search });
+      if(PILOT === 'turin') {
+        if (toParam && tokenParam && amountParam) {
+          dispatch(setToAddress(toParam));
+          history.push({ pathname: '/confirmpayment', search: location.search, state: location.state });
+        } else if (toParam && tokenParam) {
+          dispatch(setToAddress(toParam));
+          history.push({ pathname: '/payment', search: location.search, state: location.state });
+        } else if (toParam && !tokenParam && amountParam) {
+          dispatch(setToAddress(toParam));
+          history.push('/404');
+        } else if (toParam) {
+          dispatch(setToAddress(toParam));
+          history.push({ pathname: '/select-token', search: location.search, state: location.state });
+        }
       }
       accessTokenCalls(params);
     }

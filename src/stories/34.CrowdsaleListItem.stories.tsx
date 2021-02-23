@@ -27,7 +27,7 @@ export const Base = () => (
     <CrowdsaleListItem
       crowdsale={{
         crowdsaleId: '_oqqfov1fd',
-        icon: 'https://www.biggerbolderbaking.com/wp-content/uploads/2018/05/1C5A7434.jpg',
+        logoURL: 'https://www.biggerbolderbaking.com/wp-content/uploads/2018/05/1C5A7434.jpg',
         name: 'Strawberry Ice Cream',
         description: 'Greyhound divisively hello coldly wonderfully testing ice cream',
         giveRatio: 5,

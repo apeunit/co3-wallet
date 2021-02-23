@@ -6,11 +6,12 @@ import IconButton from '../components/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import '../assets/styles/NewToken.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Moment from 'react-moment';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { getCrowdsaleData } from 'src/redux/actions/Chain';
 
 const useStyles = makeStyles({
   root: {
@@ -19,10 +20,12 @@ const useStyles = makeStyles({
 });
 
 const CrowdsaleDetail: React.FC = () => {
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const classes = useStyles();
   const history = useHistory();
   const [progress, setProgress] = useState(0);
+  const { state }: any = history.location;
   const [countdown, setCountdown] = useState<any>('');
   const { crowdsaleData } = useSelector(({ chain }: any) => {
     return {
@@ -32,6 +35,14 @@ const CrowdsaleDetail: React.FC = () => {
 
   const then: any = moment(crowdsaleData?.end);
   const now: any = moment();
+
+  useEffect(() => {
+    if(state && state.crowdsaleData) {
+      dispatch(getCrowdsaleData({ ...state?.crowdsaleData }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state])
+
   useEffect(() => {
     setProgress(0);
     setCountdown(moment(then - now));
@@ -42,10 +53,13 @@ const CrowdsaleDetail: React.FC = () => {
   }, []);
 
   const handleBuyNow = () => {
-    history.push(
-      `/tx?to=${crowdsaleData?.contractAddress}&&token=${crowdsaleData?.crowdSymbol}&&amount=${crowdsaleData?.giveRatio}`,
-    );
+    history.push({
+      pathname: `/tx`,
+      search: `to=${crowdsaleData?.contractAddress}&token=${crowdsaleData?.crowdSymbol}&amount=${crowdsaleData?.giveRatio}`,
+      state: { from: '/crowdsale-detail', crowdsaleData }
+    });
   };
+
 
   useEffect(() => {
     let interval: any = null;
@@ -79,7 +93,7 @@ const CrowdsaleDetail: React.FC = () => {
         <IconButton onClick={() => history.push('/')} sx={{ cursor: 'pointer' }} icon="close" />
       </Flex>
       <FramerSlide
-        customStyle={{ height: '80%', position: 'absolute', top: '65px', width: '100%' }}
+        customStyle={{ height: '85%', position: 'absolute', top: '65px', width: '100%' }}
       >
         <Flex flexDirection="column" width="100%" justifyContent="start">
           <Flex width="100%" height="40%">
@@ -87,7 +101,7 @@ const CrowdsaleDetail: React.FC = () => {
               padding="0px"
               name=""
               symbol=""
-              icon={crowdsaleData?.icon}
+              icon={crowdsaleData?.icon || crowdsaleData?.logoURL}
               uploading={false}
               type=""
               uploadIcon="crowdsale"
@@ -159,9 +173,9 @@ const CrowdsaleDetail: React.FC = () => {
             </Flex>
             <Button
               onClick={handleBuyNow}
-              my="25px"
               className="buynow-btn"
               variant="primary"
+              sx={{ position: 'absolute', bottom: 0}}
               mr={2}
             >
               <Flex justifyContent="center">

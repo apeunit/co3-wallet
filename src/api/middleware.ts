@@ -85,28 +85,6 @@ const GET_ALL_TOKENS: any = gql`
 `;
 
 /*
-  Add Crowdsale record in middleware
-*/
-const CROWDSALE_ADDED: any = gql`
-  mutation crowdsaleAddedNotificationCreateOne($record: CreateOneCrowdsaleAddedInput!) {
-    crowdsaleAddedNotificationCreateOne(record: $record) {
-      recordId
-      record {
-        contractAddress
-        identifier
-        start
-        end
-        acceptRatio
-        giveRatio
-        owner
-        timestamp
-        maxCap
-      }
-    }
-  }
-`;
-
-/*
   Get Crowdsale List from middleware
 */
 const GET_CROWDSALE_ADDED: any = gql`
@@ -127,6 +105,7 @@ const GET_CROWDSALE_ADDED: any = gql`
       timestamp
       maxCap
       acceptRatio
+      metadata
       _id
     }
   }
@@ -143,7 +122,6 @@ enum CrowdsaleSortEnum {
 export {
   TRANSFER_NOTIFY_QUERY,
   BALANCE_NOTIFY_QUERY,
-  CROWDSALE_ADDED,
   GET_CROWDSALE_ADDED,
   CrowdsaleSortEnum,
   GET_ALL_TOKENS,

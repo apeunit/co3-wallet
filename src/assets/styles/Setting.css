@@ -17,6 +17,10 @@ button, button:focus, button:hover, button:active {
   padding: 0;
 }
 
+.MuiIconButton-root:hover {
+  padding: 12px;
+}
+
 .token-footer-icon .footer-icon-active {
   width: 16px;
   height: 16px;

@@ -31,7 +31,7 @@ export const Base = () => (
       crowdsaleList={[
         {
           crowdsaleId: '_oqqfov1fd',
-          icon: 'https://www.biggerbolderbaking.com/wp-content/uploads/2018/05/1C5A7434.jpg',
+          logoURL: 'https://www.biggerbolderbaking.com/wp-content/uploads/2018/05/1C5A7434.jpg',
           name: 'Strawberry Ice Cream',
           description: 'Greyhound divisively hello coldly wonderfully testing ice cream',
           giveRatio: 5,
@@ -41,7 +41,7 @@ export const Base = () => (
         },
         {
           crowdsaleId: '_gumvnglh8',
-          icon:
+          logoURL:
             'https://www.budgetbytes.com/wp-content/uploads/2013/07/Creamy-Tomato-Spinach-Pasta-V2-bowl.jpg',
           name: 'Pasta Lunch!',
           description: 'Greyhound divisively hello coldly wonderfully testing ice cream',

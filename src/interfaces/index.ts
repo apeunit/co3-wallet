@@ -68,8 +68,12 @@ export interface IQRCode {
 
 export interface ICrowdsaleData {
   name: string;
-  icon: string;
+  icon?: string;
+  logoURL: string;
+  metadata?: string;
   startDate?: string;
+  start?: string;
+  end?: string;
   endDate?: string;
   description?: string;
   crowdsaleId: string;

@@ -2,6 +2,20 @@
 ## [Unreleased]
 
 
+<a name="1.3.7"></a>
+## [1.3.7] - 2021-02-23
+### Fix
+- list image resolution
+- Crowdsale date issue UI resolve
+- Redirect confirmpayment back to crowdsale detail
+- Crowdsale detail ui
+- middleware Date issue in crowdsale
+- Crowdsale middleware issue duplication and display
+- Display new  crowdsale issue resolved
+- Create Crowdsale Issue Resolved
+- Resolve Extra txn history only display owner history
+
+
 <a name="1.3.6"></a>
 ## [1.3.6] - 2021-02-17
 ### Fix
@@ -230,7 +244,8 @@
 <a name="1.0.0"></a>
 ## 1.0.0 - 2020-06-30
 
-[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.6...HEAD
+[Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.7...HEAD
+[1.3.7]: https://github.com/apeunit/co3-wallet/compare/1.3.6...1.3.7
 [1.3.6]: https://github.com/apeunit/co3-wallet/compare/1.3.5...1.3.6
 [1.3.5]: https://github.com/apeunit/co3-wallet/compare/1.3.4...1.3.5
 [1.3.4]: https://github.com/apeunit/co3-wallet/compare/1.3.3...1.3.4

@@ -1,9 +1,7 @@
 // tslint:disable
-import _get from 'lodash/get';
 import moment from 'moment';
 import { createActions } from 'redux-actions';
-import { getCrowdsaleList } from 'src/api/firstlife';
-import { CROWDSALE_FACTORY_ADDRESS, NODE_URL, THING_ID, TOKEN_FACTORY_ADDRESS } from 'src/config';
+import { CROWDSALE_FACTORY_ADDRESS, NODE_URL, TOKEN_FACTORY_ADDRESS } from 'src/config';
 import { getRandomId } from 'src/utils/helper';
 import { formatAmount } from 'src/utils/misc';
 import Web3 from 'web3';
@@ -26,6 +24,7 @@ import {
   TRANSFER_TOKEN,
   TXN_LOADING,
 } from './ActionTypes';
+import _ from 'lodash';
 
 var Web3WsProvider = require('web3-providers-ws');
 var Web3HttpProvider = require('web3-providers-http');
@@ -152,9 +151,10 @@ const fetchTransactionsHistory = (token: ITokenData) => {
   };
 };
 
-const fetchCrowdsaleList = (accessToken: any, activityID: any) => {
+const fetchCrowdsaleList = () => {
   return async (dispatch: any, state: any) => {
     try {
+      dispatch(txnLoading(true));
       const contract = new web3.eth.Contract(
         CrowdsaleFactoryJSON.abi,
         CROWDSALE_FACTORY_ADDRESS,
@@ -165,27 +165,23 @@ const fetchCrowdsaleList = (accessToken: any, activityID: any) => {
         fromBlock: 0,
         toBlock: 'latest',
       });
-      const crowdsaleData = await getCrowdsaleList(accessToken, activityID);
-      const crowdsaleListData = _get(crowdsaleData, 'data.properties.crowdsaleList', []);
 
       contractEvent.length > 0 &&
         contractEvent.map(async (event: any) => {
-          const crowdData = crowdsaleListData.find(
-            (crowdsale: ICrowdsaleData) =>
-              event.returnValues._contractAddress === crowdsale.contractAddress,
-          );
-          if (event.returnValues._from === state().wallet.ethAddress) {
+          const metaData = event.returnValues._metadata.includes('name') &&  JSON.parse(event.returnValues._metadata);
+          if (metaData && !metaData.name.includes('TKN Sale')) {
             crowdsaleList.push({
-              ...crowdData,
+              ...metaData,
+              metadata: event.returnValues._metadata,
               from: event.returnValues._from,
               timestamp: event.returnValues._timestamp,
               contractAddress: event.returnValues._contractAddress,
-              end: event.returnValues._end,
+              end: new Date(event.returnValues._end * 1000),
               acceptRatio: event.returnValues._acceptRatio,
               giveRatio: event.returnValues._giveRatio,
               id: event.returnValues._id,
               maxCap: event.returnValues._maxCap,
-              start: event.returnValues._start,
+              start: new Date(event.returnValues._start * 1000),
               transactionHash: event.transactionHash,
               blockHash: event.blockHash,
               blockNumber: event.blockNumber,
@@ -194,7 +190,8 @@ const fetchCrowdsaleList = (accessToken: any, activityID: any) => {
             });
           }
         });
-      dispatch(getAllCrowdsale(crowdsaleList));
+      dispatch(getAllCrowdsale(_.reverse(crowdsaleList)));
+      dispatch(txnLoading(false));
     } catch (error) {
       dispatch(txnLoading(false));
       console.error(error.message);
@@ -235,13 +232,8 @@ const createNewToken = (
   };
 };
 
-const createNewCrowdsale = (accessToken: string, crowdsale: any) => {
+const createNewCrowdsale = (crowdsale: any) => {
   return async (dispatch: any, state: any) => {
-    const crowdsaleData = await getCrowdsaleList(
-      accessToken,
-      state().co3uum.activityID || THING_ID,
-    );
-    const crowdsaleList = _get(crowdsaleData, 'data.properties.crowdsaleList', []);
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
 
     const gasPrice = await web3.eth.getGasPrice();
@@ -252,11 +244,12 @@ const createNewCrowdsale = (accessToken: string, crowdsale: any) => {
         crowdsaleId,
         itemToSell,
         token,
-        Math.floor(new Date(startDate).getTime() / 1000),
-        Math.floor(new Date(endDate).getTime() / 1000),
+        Math.floor(new Date(startDate).getTime()),
+        Math.floor(new Date(endDate).getTime()),
         1,
         parseInt(giveRatio, 10),
         parseInt(maxSupply, 10),
+        JSON.stringify({name: crowdsale.name, logoURL: crowdsale.icon, description: crowdsale.description, itemToSell, token, contract: crowdsale.contract, contractLabel: crowdsale.contractLabel}),
       )
       .send({
         from: state().wallet.ethAddress,
@@ -265,32 +258,7 @@ const createNewCrowdsale = (accessToken: string, crowdsale: any) => {
         gas: 94000000,
       })
       .then((data: any) => {
-        const cddata = {
-          type: 'Feature',
-          properties: {
-            crowdsaleList: [
-              ...crowdsaleList,
-              {
-                name: crowdsale.name,
-                icon: crowdsale.icon,
-                itemToSell: crowdsale.itemToSell,
-                token: crowdsale.token,
-                description: crowdsale.description,
-                contract: crowdsale.contract,
-                contractLabel: crowdsale.contractLabel,
-                contractAddress: _get(
-                  data,
-                  'events.CrowdsaleAdded.returnValues._contractAddress',
-                  '',
-                ),
-                entity_type: 'CO3_ACTIVITY',
-                crowdsaleId,
-              },
-            ],
-          },
-        };
-        dispatch(createToken(data.events.CrowdsaleAdded));
-        return {data, cddata};
+        return data
       })
   };
 };
