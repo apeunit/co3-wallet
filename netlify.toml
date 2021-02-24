@@ -8,12 +8,12 @@
   REACT_APP_LISTENER_POLL_INTERVAL  = "2000"
   # FirstLife
   REACT_APP_FIRSTLIFE_STORAGE_URL   = "https://storage.firstlife.org"
-  REACT_APP_FIRSTLIFE_SERVER_ID     = "CO3UUM_PT" 
+  REACT_APP_FIRSTLIFE_SERVER_ID     = "CO3UUM_PT"
   # UniTO node
   REACT_APP_NODE                    = "wss://co3:Co3Blockchain_2019@co3-pantheon.di.unito.it:8545/ws/"
   # Smart contracts
   REACT_APP_TOKEN_FACTORY           = "0x954Ce03F134145151846Ba3980c8F0Bc1370fcce"
-  REACT_APP_CROWDSALE_FACTORY       = "0xB886d5AB6e8672DD017a0bE65afec471DC9Db7f7"
+  REACT_APP_CROWDSALE_FACTORY       = "0x0fFb34C197f17b1671B8DEE6533CDd6D293e9E3d"
   # Sentry configuration
   REACT_APP_SENTRY_DSN              = "https://f33064a828c54222b1a29bbe236b1106@o413394.ingest.sentry.io/5299888"
 
