@@ -3,7 +3,10 @@
 
 
 <a name="1.3.10"></a>
-## [1.3.10] - 2021-05-18
+## [1.3.10] - 2021-05-21
+
+<a name="1.3.11"></a>
+## [1.3.11] - 2021-05-21
 
 <a name="1.3.9"></a>
 ## [1.3.9] - 2021-02-24
@@ -57,7 +60,8 @@
 ## 1.0.0 - 2020-06-30
 
 [Unreleased]: https://github.com/apeunit/co3-wallet/compare/1.3.10...HEAD
-[1.3.10]: https://github.com/apeunit/co3-wallet/compare/1.3.9...1.3.10
+[1.3.10]: https://github.com/apeunit/co3-wallet/compare/1.3.11...1.3.10
+[1.3.11]: https://github.com/apeunit/co3-wallet/compare/1.3.9...1.3.11
 [1.3.9]: https://github.com/apeunit/co3-wallet/compare/1.3.8...1.3.9
 [1.3.8]: https://github.com/apeunit/co3-wallet/compare/1.3.7...1.3.8
 [1.3.7]: https://github.com/apeunit/co3-wallet/compare/1.3.6...1.3.7
