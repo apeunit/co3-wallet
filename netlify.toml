@@ -3,7 +3,7 @@
   # Don't define here, because configuration file overwrites UI
 
   # REACT_APP_PILOT                   = "athens"
-  REACT_APP_CO3UUM_URL              = "https://co3-pt.liquidfeedback.com/"
+  # REACT_APP_CO3UUM_URL              = "https://liquidfeedback.athens.projectco3.eu/"
   # REACT_APP_SSO_LOGIN_URL           = "https://wallet-auth.athens.projectco3.eu/wallet/login"
 
   # Middleware
