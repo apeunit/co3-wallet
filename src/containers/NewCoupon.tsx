@@ -45,7 +45,7 @@ const NewCoupon: React.FC = () => {
     icon: '',
     description: '',
     contract: '',
-    contractLabel: '',
+    contractLabel: ''
   });
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -197,36 +197,41 @@ const NewCoupon: React.FC = () => {
     );
     receipt
       .then((res: any) => {
-        setLoader(false);
-        dispatch(
-          setModalData(
-            true,
-            t('new_coupon.coupon_created'),
-            t('common.transaction_complete'),
-            'permission',
-          ),
-        );
-        const resData = res?.events?.TokenAdded?.returnValues;
-        const token = {
-          amount: resData?._hardCap,
-          computed_at: resData?._timestamp,
-          contractAddress: resData?._contractAddress,
-          decimals: resData?._decimals,
-          logoURL: coupon.icon,
-          description: coupon.description,
-          contractHash: coupon.contract,
-          contractLabel: coupon.contractLabel,
-          name: resData?._name,
-          owner: resData?._from,
-          purpose: resData?._purpose,
-          symbol: resData?._symbol,
-          token_symbol: resData?._symbol,
+        if(res) {
+          setLoader(false);
+          dispatch(
+            setModalData(
+              true,
+              t('new_coupon.coupon_created'),
+              t('common.transaction_complete'),
+              'permission',
+            ),
+          );
+          const resData = res?.events?.TokenAdded?.returnValues;
+          if(resData) {
+            const token = {
+              amount: resData?._hardCap,
+              computed_at: resData?._timestamp,
+              contractAddress: resData?._contractAddress,
+              decimals: resData?._decimals,
+              logoURL: coupon.icon,
+              description: coupon.description,
+              contractHash: coupon.contract,
+              contractLabel: coupon.contractLabel,
+              name: resData?._name,
+              owner: resData?._from,
+              purpose: resData?._purpose,
+              symbol: resData?._symbol,
+              token_symbol: resData?._symbol,
+            }
+            dispatch(setTransferToken(token));
+            setTimeout(() => {
+              dispatch(setModalData(false, '', '', '' ));
+              history.push('/token-mint');
+            }, 1000)
+          }
+
         }
-        dispatch(setTransferToken(token));
-        setTimeout(() => {
-          dispatch(setModalData(false, '', '', '' ));
-          history.push('/token-mint');
-        }, 1000)
       })
       .catch((err: any) => {
         setLoader(false);
@@ -260,7 +265,7 @@ const NewCoupon: React.FC = () => {
           >
             <IconButton onClick={handleEditStep} sx={{ cursor: 'pointer' }} icon="close" />
             <Text>{title}</Text>
-            <Text></Text>
+            <Text/>
           </Flex>
         ) : (
           <Flex

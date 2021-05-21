@@ -37,7 +37,7 @@ const CrowdsaleDetail: React.FC = () => {
   const now: any = moment();
 
   useEffect(() => {
-    if(state && state.crowdsaleData) {
+    if (state && state.crowdsaleData) {
       dispatch(getCrowdsaleData({ ...state?.crowdsaleData }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -59,7 +59,6 @@ const CrowdsaleDetail: React.FC = () => {
       state: { from: '/crowdsale-detail', crowdsaleData }
     });
   };
-
 
   useEffect(() => {
     let interval: any = null;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Text, Image } from 'rebass';
+import { Flex, Image, Text } from 'rebass';
 import '../../../assets/styles/NewToken.css';
 import CrowdsaleListItem from './CrowdsaleListItem';
 import { useTranslation } from 'react-i18next';

@@ -19,8 +19,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getOriginalName, getPermalink, saveResource } from '../api/firstlife';
 import { setModalData } from '../redux/actions/Modal';
 import { createNewToken } from '../redux/actions/Chain';
-import { useLazyQuery } from '@apollo/react-hooks';
-import { BALANCE_NOTIFY_QUERY } from '../api/middleware';
+import { useQuery } from '@apollo/react-hooks';
+import { GET_ALL_TOKENS } from '../api/middleware';
 import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
 import { TOKEN_PURPOSE } from 'src/config';
@@ -42,40 +42,29 @@ const NewToken: React.FC = () => {
     icon: '',
     description: '',
     contract: '',
-    contractLabel: '',
+    contractLabel: ''
   });
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
   const [tokenList, setTokenList] = useState([]);
 
-  const { ethAddress, web3, tokenFactory, accessToken } = useSelector(
-    ({ chain, wallet, co3uum }: any) => {
+  const { web3, tokenFactory, accessToken } = useSelector(
+    ({ chain, co3uum }: any) => {
       return {
         web3: chain.web3,
         tokenFactory: chain.contracts && chain.contracts.tokenFactory,
-        ethAddress: wallet.ethAddress,
         accessToken: co3uum.accessToken,
       };
     },
   );
 
-  const [balanceTokenQuery, { data }] = useLazyQuery(BALANCE_NOTIFY_QUERY, {
-    variables: {
-      accountPk: ethAddress,
-    },
-  });
-
+  const tokenQueryData = useQuery(GET_ALL_TOKENS);
+  
   useEffect(() => {
-    if (ethAddress) {
-      balanceTokenQuery();
+    if (!tokenQueryData.loading && tokenQueryData.data && tokenQueryData.data.tokenAddedMany) {
+      setTokenList(tokenQueryData.data.tokenAddedMany);
     }
-  }, [balanceTokenQuery, ethAddress]);
-
-  useEffect(() => {
-    if (data) {
-      setTokenList(data.balanceNotificationMany);
-    }
-  }, [data]);
+  }, [tokenQueryData]);
 
   const checkError = (_step: number, value: string, text: string) => {
     if (step === _step && value === '') {
@@ -86,7 +75,7 @@ const NewToken: React.FC = () => {
     if (_step === 3 && token.symbol) {
       if (
         tokenList.find(
-          (_token: any) => token.symbol.toLowerCase() === _token.token_symbol.toLowerCase(),
+          (_token: any) => token.symbol.toLowerCase() === _token.symbol.toLowerCase(),
         )
       ) {
         setError(t('new_token.symbol_already'));
@@ -294,7 +283,7 @@ const NewToken: React.FC = () => {
           >
             <IconButton onClick={handleEditStep} sx={{ cursor: 'pointer' }} icon="close" />
             <Text>{title}</Text>
-            <Text></Text>
+            <Text/>
           </Flex>
         ) : (
           <Flex

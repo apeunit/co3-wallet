@@ -33,7 +33,6 @@ const NewPayment = () => {
     }
   };
 
-
   useEffect(() => {
     if (PILOT === 'athens' && contracts?.tokenFactory && location.search) {
       const params = new URLSearchParams(location.search);
@@ -51,7 +50,7 @@ const NewPayment = () => {
       const toParam = params.get('to');
       const tokenParam = params.get('token');
       const amountParam = params.get('amount');
-      if(PILOT === 'turin') {
+      if (PILOT === 'turin') {
         if (toParam && tokenParam && amountParam) {
           dispatch(setToAddress(toParam));
           history.push({ pathname: '/confirmpayment', search: location.search, state: location.state });

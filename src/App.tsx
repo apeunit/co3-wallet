@@ -20,7 +20,6 @@ import { BALANCE_NOTIFY_QUERY } from './api/middleware';
 import { LISTENER_POLL_INTERVAL } from './config';
 import { getAllToken } from './redux/actions/Chain';
 import _isEqual from 'lodash/isEqual';
-import { IToken } from './interfaces';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -64,14 +63,6 @@ const App = () => {
   useEffect(() => {
     if (data) {
       if (!_isEqual(tokenList, data.balanceNotificationMany)) {
-        const newTokenList = data.balanceNotificationMany.filter((tk: IToken) => tk.logoURL && tk.logoURL.includes('description'))
-        newTokenList.map((ntk: IToken) => {
-          const newtknData = ntk.logoURL && JSON.parse(ntk.logoURL);
-          const newtkIndex = data.balanceNotificationMany.findIndex((tk: IToken) => ntk.token_symbol === tk.token_symbol);
-          newtkIndex && (data.balanceNotificationMany[newtkIndex] = {...data.balanceNotificationMany[newtkIndex], ...newtknData, logoURL: newtknData.logoURL})
-
-          return ntk;
-        })
         setTokenList(data.balanceNotificationMany);
         dispatch(getAllToken(data.balanceNotificationMany));
       }

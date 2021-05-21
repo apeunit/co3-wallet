@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Button, Box, Flex, Text } from 'rebass';
+import { Box, Button, Flex, Text } from 'rebass';
 import ActionButtonGroup from '../components/ActionButtonGroup';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +43,6 @@ export const AssetPopup = ({ setCreateToken }: any) => {
     </Flex>
   );
 
-  
   const handleoption = async (path: string) => {
     if (location.search) {
       const params = new URLSearchParams(location.search);

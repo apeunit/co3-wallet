@@ -28,7 +28,7 @@ import { saveWebhookAPI } from 'src/utils/helper';
 const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
 const isDev = process.env.NODE_ENV === 'development';
-const endDateInt = new Date(new Date().setMonth(new Date().getMonth()+1));
+const endDateInt = new Date(new Date().setMonth(new Date().getMonth() + 1));
 
 const NewCrowdsale: React.FC = () => {
   const dispatch = useDispatch();
@@ -258,7 +258,7 @@ const NewCrowdsale: React.FC = () => {
           >
             <IconButton onClick={handleEditStep} sx={{ cursor: 'pointer' }} icon="close" />
             <Text>{title}</Text>
-            <Text></Text>
+            <Text/>
           </Flex>
         ) : (
           <Flex

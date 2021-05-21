@@ -9,7 +9,7 @@ import { isMintableToken } from '../redux/actions/Chain';
 import { useTranslation } from 'react-i18next';
 import Moment from 'react-moment';
 import axios from 'axios';
-let fileDownload = require('js-file-download');
+const fileDownload = require('js-file-download');
 const pdfcontract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 const isDev = process.env.NODE_ENV === 'development';
 

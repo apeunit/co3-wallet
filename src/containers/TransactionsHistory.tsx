@@ -53,7 +53,7 @@ const TransactionsHistory: React.FC = () => {
             (_trns: any) => _trns.token_symbol === trns.token_symbol,
           );
 
-          let newtknData = token[0].logoURL && token[0].logoURL.includes('description') && JSON.parse(token[0].logoURL);
+          const newtknData = token[0].logoURL && token[0].logoURL.includes('description') && JSON.parse(token[0].logoURL);
 
           return token[0].logoURL && token[0].logoURL.includes('description') ?  
             _merge(trns, {

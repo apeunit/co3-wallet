@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Flex, Text, Image } from 'rebass';
+import { Flex, Image, Text } from 'rebass';
 import TransactionHistoryList from '../components/Transactions/TransactionList/TransactionHistoryList';
 import TransactionHistoryListPlaceholder from '../components/Transactions/TransactionList/TransactionHistoryListPlaceholder';
 import { fetchTokenByTicker, fetchTransactionsHistory } from '../redux/actions/Chain';
@@ -26,7 +26,6 @@ const SignleTokenTxnHistory: React.FC = () => {
     };
   });
 
-
   useEffect(() => {
     if (!token && contracts?.tokenFactory) {
       dispatch(fetchTokenByTicker(ScenarioJSON.athens.tokens[0]));
@@ -43,7 +42,6 @@ const SignleTokenTxnHistory: React.FC = () => {
       setTxnHistoy(transactionHistory.filter((txn:any) => (txn.sender_pk === ethAddress || txn.receiver_pk === ethAddress)));
     }
   }, [transactionHistory, ethAddress]);
-
 
   return (
     <Flex flexDirection="column" style={{ height: '100vh' }}>

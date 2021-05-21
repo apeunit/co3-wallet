@@ -17,8 +17,7 @@ const CouponList = (props: any) => {
               const newObj = newtknData ? {...token, ...newtknData, logoURL: newtknData.logoURL} : {...token}
 
               return (
-                (token.amount && token.amount > 0) &&
-                parseInt(token.decimals.toString(), 10) === 0 && (
+                token.decimals === 0 && (
                   <CouponListItem {...newObj} key={index} />
                 )
               );

@@ -7,17 +7,14 @@ import TokenList from '../components/Tokens/TokensList/TokenList';
 import { Box, Button, Flex, Image, Text } from 'rebass';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import _isEqual from 'lodash/isEqual';
 import { motion } from 'framer-motion';
 import STFooter from '../components/SingleTokenComponents/STFooter';
 import { AssetPopup } from '../components/AssetPopup';
 import CouponList from '../components/Coupons/CouponsList/CouponList';
 import Draggable from 'react-draggable';
 import { getBound, getPos } from '../utils/sliderFtns';
-import { BALANCE_NOTIFY_QUERY } from '../api/middleware';
-import { useLazyQuery } from '@apollo/react-hooks';
 import { useTranslation } from 'react-i18next';
-import { COUPON_PURPOSE, LISTENER_POLL_INTERVAL, SSO_LOGIN_URL, TOKEN_PURPOSE } from 'src/config';
+import { COUPON_PURPOSE, SSO_LOGIN_URL, TOKEN_PURPOSE } from 'src/config';
 import { setModalData } from 'src/redux/actions/Modal';
 import { getApolloConnected } from 'src';
 import EmptyImg from '../images/empty.png';
@@ -50,55 +47,29 @@ const MultiToken: React.FC = () => {
   //                           Get data from the store                          */
   // -------------------------------------------------------------------------- */
 
-  const { errorWeb3, ethAddress, features, accessToken, modalOpen } = useSelector(
-    ({ chain, wallet, pilot, co3uum, modal }: any) => {
+  const { tokensDataList, errorWeb3, features, accessToken, modalOpen } = useSelector(
+    ({ chain, pilot, co3uum, modal }: any) => {
       return {
         errorWeb3: chain.errorWeb3,
-        ethAddress: wallet.ethAddress,
         features: pilot.features,
         accessToken: co3uum.accessToken,
         modalOpen: modal.isOpen,
+        tokensDataList: chain.tokenList,
       };
     },
     shallowEqual,
   );
-
-  const [balanceTokenQuery, { called, data }] = useLazyQuery(BALANCE_NOTIFY_QUERY, {
-    fetchPolicy: 'no-cache',
-    variables: {
-      accountPk: ethAddress,
-    },
-  });
-
+  
   useEffect(() => {
-    if (ethAddress) {
-      balanceTokenQuery();
-      if (data) {
-        const TokenInterval = setInterval(() => {
-          !called && balanceTokenQuery();
-        }, LISTENER_POLL_INTERVAL);
-
-        return () => {
-          clearInterval(TokenInterval);
-        };
-      }
+    if (tokensDataList.length > 0) {
+        setTokenLoading(false);
+        setTokenList(tokensDataList.filter((tk: any) => tk.purpose === TOKEN_PURPOSE));
+        setCouponList(tokensDataList.filter((tk: any) => tk.purpose === COUPON_PURPOSE));
+    } else if ((tokenLoading && tokensDataList.length === 0) || (errorWeb3 && !errorWeb3?.connected)) {
+      setTokenLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [balanceTokenQuery, ethAddress]);
-
-  useEffect(() => {
-    if (data) {
-      if (!_isEqual(tokenList, data.balanceNotificationMany)) {
-        setTokenList(data.balanceNotificationMany.filter((tk: any) => tk.purpose === TOKEN_PURPOSE));
-        setCouponList(data.balanceNotificationMany.filter((tk: any) => tk.purpose === COUPON_PURPOSE));
-        setTokenLoading(false);
-      }
-      if (data.balanceNotificationMany.length === 0 && errorWeb3) {
-        setTokenLoading(false);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, tokenLoading, errorWeb3]);
+  }, [tokensDataList, tokenLoading, errorWeb3]);
 
   const onControlledDrag = (e: any, pos: any) => {
     if (tokenLoading === false && couponList.length === 0) {
@@ -213,9 +184,7 @@ const MultiToken: React.FC = () => {
         </ToolBarTitle>
       </ToolBar>
 
-      <Flex className="pending-token">
-
-      </Flex>
+      <Flex className="pending-token"/>
 
       <Flex flexDirection="column" style={{ overflow: 'hidden' }}>
         <Flex flexDirection="column" flex="1">
@@ -223,7 +192,7 @@ const MultiToken: React.FC = () => {
             alignItems="flex-start"
             marginBottom={6}
             color="background"
-            sx={{ top: '135px', position: "absolute" }}
+            sx={{ top: '135px', position: 'absolute' }}
             loading={tokenList === undefined || tokenLoading}
             buttons={[
               {
@@ -267,8 +236,8 @@ const MultiToken: React.FC = () => {
           <Flex
             flexDirection="column"
             style={{ overflow: 'hidden' }}
-            flex={data?.balanceNotificationMany?.find((tkn: any) => tkn.purpose === COUPON_PURPOSE) ? 1 : 'auto'}
-            maxHeight={data?.balanceNotificationMany?.find((tkn: any) => tkn.purpose === COUPON_PURPOSE) ? 'auto' : 'max-content'}
+            flex={couponList.length > 0 ? 1 : 'auto'}
+            maxHeight={couponList.length > 0 ? 'auto' : 'max-content'}
             margin={`auto 0 75px 0`}
             className={`${transition ? 'dragger-wrapper' : ''} ${tokenList.length > 0 && tokenList.length <= 3 && couponList.length === 0 ? 'set-height' : ''}`}
           >
@@ -310,7 +279,7 @@ const MultiToken: React.FC = () => {
                       <Box
                         padding="10px"
                         className="handle"
-                        style={{ pointerEvents: data?.balanceNotificationMany.length === 0 ? 'none' : 'auto' }}
+                        style={{ pointerEvents: tokensDataList.length === 0 ? 'none' : 'auto' }}
                       >
                         <Box
                           backgroundColor="gray200"
@@ -339,7 +308,7 @@ const MultiToken: React.FC = () => {
                           />
                         )}
                       </Flex>
-                      {!tokenLoading && (tokenList.length === 0 && couponList.length === 0) ? (
+                      {!tokenLoading && tokensDataList.length === 0 && (tokenList.length === 0 && couponList.length === 0) ? (
                         <>
                           <Flex height="55vh" width="212px" margin="auto"  flexDirection="column">
                             <Text width="195px" marginBottom="25px" textAlign="center">{t('multitoken.no_assets')}</Text>
@@ -360,7 +329,7 @@ const MultiToken: React.FC = () => {
                           )}
                           {(tokenLoading || couponList.length > 0) && (
                             <>
-                              <Box style={{ margin: '10px 10px',  }}>
+                              <Box style={{ margin: '10px 10px'  }}>
                                 <Text
                                   fontFamily="sans"
                                   fontSize="18px"

@@ -1,23 +1,31 @@
 [build.environment]
   # default location
   # Don't define here, because configuration file overwrites UI
-  # REACT_APP_PILOT                   = "turin"
+
+  # REACT_APP_PILOT                   = "athens"
   REACT_APP_CO3UUM_URL              = "https://co3-pt.liquidfeedback.com/"
-  # REACT_APP_SSO_LOGIN_URL           = "https://auth.stage.co3.apeunit.com/wallet/login"
+  # REACT_APP_SSO_LOGIN_URL           = "https://wallet-auth.athens.projectco3.eu/wallet/login"
+
   # Middleware
-  REACT_APP_LISTENER_URL            = "https://co3-pantheon.di.unito.it:4040/graphql"
+  # REACT_APP_LISTENER_URL            = "http://n2.bc.projectco3.eu:18545/graphql"
+  # "https://co3-pantheon.di.unito.it:4040/graphql"
+
   REACT_APP_LISTENER_POLL_INTERVAL  = "2000"
   # FirstLife
   REACT_APP_FIRSTLIFE_STORAGE_URL   = "https://storage.firstlife.org"
   REACT_APP_FIRSTLIFE_SERVER_ID     = "CO3UUM_PT"
   # UniTO node
-  REACT_APP_NODE                    = "wss://co3:Co3Blockchain_2019@co3-pantheon.di.unito.it:8545/ws/"
+  # REACT_APP_NODE                    = "wss://co3:Co3Blockchain_2019@co3-pantheon.di.unito.it:8545/ws/"
+
   # Smart contracts
-  REACT_APP_TOKEN_FACTORY           = "0x954Ce03F134145151846Ba3980c8F0Bc1370fcce"
-  REACT_APP_CROWDSALE_FACTORY       = "0x0fFb34C197f17b1671B8DEE6533CDd6D293e9E3d"
+  # REACT_APP_TOKEN_FACTORY           = "0x57E24EBA1394db04D27AB5EEb47ABFF326F87B5A"
+  # REACT_APP_CROWDSALE_FACTORY       = "0x1ce77C80a4B85160B8Cb7b516Bf3ec49228a3baD"
+
   # Sentry configuration
   REACT_APP_SENTRY_DSN              = "https://f33064a828c54222b1a29bbe236b1106@o413394.ingest.sentry.io/5299888"
 
+  # DAOFactory 	"0x5e0b1f5F4313A301c0E4Cdd9d050b3dc744cb3aa"
+  # VendingMachineFactory 	"0xddB7Dbc203c5DAE20B4B831de053CC24ef0bE88C"
 
 [[headers]]
   for = "/*"
