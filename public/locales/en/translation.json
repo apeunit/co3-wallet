@@ -184,6 +184,7 @@
     "terms_conditions": "Terms and conditions"
   },
   "transaction": {
+    "transaction_csv": "Transaction",
     "transaction_details": "Transactions Details",
     "transaction_history": "Transactions History",
     "no_transaction": "You don't have made any transaction yet",
@@ -203,6 +204,14 @@
     "task": "Task",
     "history": "History",
     "crowdsale": "Crowdsale"
+  },
+  "pay_popup": {
+    "pay": "Pay",
+    "search": "Search",
+    "qr_code": "Scan QR Code"
+  },
+  "search-user" : {
+    "label": "Search Username" 
   },
   "settings": {
     "label": "Settings",

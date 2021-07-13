@@ -338,3 +338,7 @@ button, button:focus, button:hover, button:active {
 .error-message {
   color: var(--red)
 }
+
+.name-list-item:hover {
+  color: #3752F5;
+}

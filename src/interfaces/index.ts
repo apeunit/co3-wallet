@@ -138,3 +138,21 @@ export interface IModalState {
 export interface IPilotState {
   features: [];
 }
+
+export interface IMember {
+  admin: string, //"false",
+  created: string, //"2019-09-30 12:34:58",
+  id: string, //"35",
+  identification: string, //"alberto guffanti",
+  last_activity: string, //"2021-03-10",
+  location: string, //null,
+  name: string, //"alberto guffanti"
+}
+
+export interface IMemberSearchResult {
+  result: Array<IMember>
+}
+
+export interface IProfile {
+  blockchain_public_key: string
+}

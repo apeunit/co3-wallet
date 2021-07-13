@@ -10,6 +10,7 @@ import { useHistory } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import STFooter from '../components/SingleTokenComponents/STFooter';
 import { AssetPopup } from '../components/AssetPopup';
+import { PayPopup } from '../components/PayPopup';
 import CouponList from '../components/Coupons/CouponsList/CouponList';
 import Draggable from 'react-draggable';
 import { getBound, getPos } from '../utils/sliderFtns';
@@ -38,6 +39,7 @@ const MultiToken: React.FC = () => {
   const [couponList, setCouponList] = useState([]);
   const [tokenLoading, setTokenLoading] = useState(true);
   const [createToken, setCreateToken] = useState(false);
+  const [createPayment, setCreatePayment] = useState(false);
   const [transition, setTransition] = useState(false);
   const [bound, setBound] = useState(getBound());
   const dragger = useRef(null);
@@ -59,7 +61,7 @@ const MultiToken: React.FC = () => {
     },
     shallowEqual,
   );
-  
+
   useEffect(() => {
     if (tokensDataList.length > 0) {
         setTokenLoading(false);
@@ -204,7 +206,7 @@ const MultiToken: React.FC = () => {
                 color: 'primary',
                 className: 'pay-btn',
                 onClick: () => {
-                  history.replace('/scan');
+                  accessToken ? setCreatePayment(!createPayment) : displayLoginPopup()
                 },
               },
               {
@@ -355,6 +357,7 @@ const MultiToken: React.FC = () => {
       </Flex>
       <STFooter iconActive="walletIcon" />
       {createToken && <AssetPopup setCreateToken={setCreateToken} />}
+      {createPayment && <PayPopup setCreatePayment={setCreatePayment} />}
     </Flex>
   );
 };

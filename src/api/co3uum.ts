@@ -1,6 +1,10 @@
 import axios from 'axios';
 import qs from 'qs';
 import { API_URL } from 'src/config';
+import {
+  IMemberSearchResult,
+  IProfile,
+} from '../interfaces';
 
 export const getUserIDName = async (accessToken: string): Promise<Object> => {
   return (await axios.get(`${API_URL}/api/1/info?access_token=${accessToken}&include_member=1`))
@@ -45,4 +49,13 @@ export const getProfileImageUrl = (accessToken: string, userData: any): string =
   const memberId = userData.id || userData;
 
   return `${API_URL}/api/1/avatar?access_token=${accessToken}&member_id=${memberId}`;
+};
+
+// search for members by userame
+export const getMemberBySearchString = async (accessToken: string, query: string): Promise<IMemberSearchResult> => {
+  return (await axios.get(`${API_URL}/api/1/member?access_token=${accessToken}&q=${query}`)).data;
+};
+
+export const getProfileById = async (accessToken: string, id: string): Promise<IProfile> => {
+  return (await axios.get(`${API_URL}/api/1/profile?access_token=${accessToken}&member_id=${id}`)).data;
 };

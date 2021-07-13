@@ -10,6 +10,9 @@ import { BALANCE_NOTIFY_QUERY, CrowdsaleSortEnum, TRANSFER_NOTIFY_QUERY } from '
 import _merge from 'lodash/merge';
 import { useTranslation } from 'react-i18next';
 import EmptyImg from '../images/empty.png';
+import $ from 'jquery';
+import _upperFirst from 'lodash/upperFirst';
+import _ from 'lodash';
 
 const TransactionsHistory: React.FC = () => {
   const { t } = useTranslation();
@@ -72,6 +75,58 @@ const TransactionsHistory: React.FC = () => {
     }
   }, [data, balanceData]);
 
+  const ConvertToCSV = () => {
+    var str = '';
+    var row = "";
+
+    //This loop will extract the label from 1st index of on array
+    for (var label in transactionHistory[0]) {
+        //Now convert each value to string and comma-seprated
+        row +=  (_.startsWith(label, '_') ? label : _upperFirst(label.replace('_', ' '))) + ',';
+    }
+    row = row.slice(0, -1);
+    
+    //append Label row with line break
+    str += row + '\r\n';
+    
+    for (var i = 0; i < transactionHistory.length; i++) {
+        var line = '';
+        for (var index in transactionHistory[i]) {
+            if (line !== '') line += ','
+
+            line += transactionHistory[i][index];
+        }
+
+        str += line + '\r\n';
+    }
+
+    return str;
+}
+
+  const handleCSV = () => {
+    if(transactionHistory.length > 0) {
+      const CSV = ConvertToCSV();
+      var link = document.createElement("a");
+      link.id = "lnkDwnldLnk";
+  
+      //this part will append the anchor tag and remove it after automatic click
+      document.body.appendChild(link);
+  
+      var csv = CSV;
+      var blob = new Blob([csv], { type: 'text/csv' });
+      var csvUrl = window.webkitURL.createObjectURL(blob);
+      var filename =  t('transaction.transaction_csv') + '_' + new Date().toISOString().split('T')[0] + '.csv';
+      $("#lnkDwnldLnk")
+          .attr({
+              'download': filename,
+              'href': csvUrl
+          });
+  
+      $('#lnkDwnldLnk')[0].click();
+      document.body.removeChild(link);
+    }
+  }
+
   return (
     <Flex flexDirection="column" style={{ height: '100vh' }}>
       <Text fontSize={3} paddingX={7} paddingTop={9} paddingBottom={4} variant="headingXl">
@@ -104,6 +159,16 @@ const TransactionsHistory: React.FC = () => {
             color="white"
             backgroundColor="black"
           />
+          {!txnsLoading && transactionHistory.length > 0 && (
+            <IconButton
+              onClick={handleCSV}
+              marginX={3}
+              size="s14"
+              icon="dowload"
+              color="white"
+              backgroundColor="black"
+            />
+          )}
         </Flex>
       </div>
     </Flex>

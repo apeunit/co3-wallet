@@ -27,8 +27,13 @@ import ScanQR from '../containers/ScanQR';
 import TokenDetail from '../containers/TokenDetail';
 import TransactionDetails from '../containers/TransactionDetails';
 import TransactionsHistory from '../containers/TransactionsHistory';
+import SearchUser from '../containers/SearchUser';
 
 export const routes = [
+  {
+    path: '/search-user',
+    component: SearchUser,
+  },
   {
     path: '/tx',
     component: NewPayment,

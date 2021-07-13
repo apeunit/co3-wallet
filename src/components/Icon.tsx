@@ -51,6 +51,7 @@ import {
   Subject,
   Toll,
   Warning,
+  CloudDownload,
 } from '@material-ui/icons';
 import { IIconName } from '../interfaces';
 
@@ -107,6 +108,7 @@ const Icons = {
   shoppingCart: ShoppingCart,
   calendarToday: CalendarToday,
   hourglassEmpty: HourglassEmpty,
+  dowload: CloudDownload,
 };
 
 const Icon = (props: IIconName) => {
