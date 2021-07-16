@@ -154,6 +154,17 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                         handleoption(`/new-crowdsale`);
                       },
                     },
+                    {
+                      icon: 'tag',
+                      label: t('asset_popup.pickupbasket'),
+                      key: 'pickupbox',
+                      iconColor: 'white',
+                      className: 'add-crowdsale-btn',
+                      iconBg: 'blue600',
+                      onClick: () => {
+                        handleoption(`/new-pickupbasket`);
+                      },
+                    },
                   ]}
                 />
               </Flex>

@@ -115,6 +115,29 @@ const createCrowdsaleSteps = [
   },
 ];
 
+const createPickupbasketSteps = [
+  {
+    stepId: 1,
+    title: 'common.name',
+  },
+  {
+    stepId: 2,
+    title: 'common.icon',
+  },
+  {
+    stepId: 3,
+    title: 'common.short_description',
+  },
+  {
+    stepId: 4,
+    title: 'new_pickupbox.product_available',
+  },
+  {
+    stepId: 4,
+    title: 'new_pickupbox.coupon_to_give',
+  },
+];
+
 const languages = [
   {
     title: 'italian',
@@ -138,4 +161,4 @@ const languages = [
   },
 ];
 
-export { contractsRadio, createTokenSteps, languages, createCouponSteps, createCrowdsaleSteps };
+export { contractsRadio, createTokenSteps, languages, createCouponSteps, createCrowdsaleSteps, createPickupbasketSteps };

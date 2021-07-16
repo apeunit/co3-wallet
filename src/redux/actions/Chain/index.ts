@@ -1,11 +1,17 @@
 // tslint:disable
 import moment from 'moment';
 import { createActions } from 'redux-actions';
-import { CROWDSALE_FACTORY_ADDRESS, NODE_URL, TOKEN_FACTORY_ADDRESS } from 'src/config';
+import {
+  CROWDSALE_FACTORY_ADDRESS,
+  NODE_URL,
+  TOKEN_FACTORY_ADDRESS,
+  PICKUPBASKET_FACTORY_ADDRESS
+} from 'src/config';
 import { getRandomId } from 'src/utils/helper';
 import { formatAmount } from 'src/utils/misc';
 import Web3 from 'web3';
 import CrowdsaleFactoryJSON from '../../../contracts/CrowdsaleFactory.json';
+import PickupBasketFactoryJSON from '../../../contracts/PickUpBasketFactory.json';
 import TokenFactoryJSON from '../../../contracts/TokenFactory.json';
 import TokenTemplateJSON from '../../../contracts/TokenTemplate.json';
 import { ICrowdsaleData, ITokenAction, ITokenData } from '../../../interfaces';
@@ -33,6 +39,7 @@ let web3: any = null;
 let opts: any = null;
 let tokenFactory: any = null;
 let crowdsaleFactory: any = null;
+let pickUpBasketFactory: any = null;
 
 var options = {
   timeout: 30000, // ms
@@ -220,7 +227,7 @@ const createNewToken = (
         from: state().wallet.ethAddress,
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
         nonce: web3.utils.toHex(parseInt(nonce, 10)),
-        gas: 94000000,
+        gas: 10485760,
       })
       .then((data: any) => {
         dispatch(createToken(data.events.TokenAdded));
@@ -255,7 +262,40 @@ const createNewCrowdsale = (crowdsale: any) => {
         from: state().wallet.ethAddress,
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
         nonce: web3.utils.toHex(parseInt(nonce, 10)),
-        gas: 94000000,
+        gas: 10485760,
+      })
+      .then((data: any) => {
+        return data
+      })
+  };
+};
+
+const createNewPickUpBasket = (pickUpBox: any) => {
+  return async (dispatch: any, state: any) => {
+    const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
+
+    const gasPrice = await web3.eth.getGasPrice();
+    const {
+      couponToGive,
+      productsAvailable
+    } = pickUpBox;
+    const pickUpBasketId = getRandomId();
+    return pickUpBasketFactory.methods
+      .createPickUpBasket(
+        pickUpBasketId,
+        couponToGive,
+        parseInt(productsAvailable, 10),
+        JSON.stringify({
+          name: pickUpBox.name,
+          logoURL: pickUpBox.icon,
+          description: pickUpBox.description
+        }),
+      )
+      .send({
+        from: state().wallet.ethAddress,
+        gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
+        nonce: web3.utils.toHex(parseInt(nonce, 10)),
+        gas: 10485760,
       })
       .then((data: any) => {
         return data
@@ -365,6 +405,11 @@ const initialSetup = (privateKey: string) => {
           CROWDSALE_FACTORY_ADDRESS,
           opts,
         );
+        pickUpBasketFactory = new web3.eth.Contract(
+          PickupBasketFactoryJSON.abi as any,
+          PICKUPBASKET_FACTORY_ADDRESS,
+          opts,
+        );
         dispatch(initWeb3({ web3, contracts: { tokenFactory, crowdsaleFactory }, gas }));
       });
     } catch (err) {
@@ -403,6 +448,7 @@ export {
   fetchTokenByTicker,
   fetchTransactionsHistory,
   createNewCrowdsale,
+  createNewPickUpBasket,
   fetchCrowdsaleList,
   getAllCrowdsale,
   getCrowdsaleData,

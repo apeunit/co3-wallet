@@ -113,6 +113,22 @@
     "crowdsale_created": "Creazione di Crowdsale",
     "crowdsale_creation_failed":"Creazione di crowdsale non riuscita"
   },
+  "new_pickupbox" : {
+    "label": "Nuovo cestello di raccolta",
+    "campaign_msg":"Il nome del tuo carrello di ritiro",
+    "sell_question":"Qual è il massimo che puoi dare?",
+    "product_available": "Fornitura prodotti disponibili",
+    "coupon_to_give": "Buono da regalare",
+    "location": "Posizione",
+    "name_placeholder":"Inserisci nome",
+    "description":"Descrizione",
+    "description_msg":"Una breve descrizione di ciò che offrirai",
+    "location_msg":"La tua campagna ha una posizione",
+    "sell_msg":"Quanto devi almeno vendere",
+    "loading":"Caricamento...",
+    "pickup_created": "Cestino di raccolta creato",
+    "pickup_creation_failed":"Creazione del carrello di raccolta non riuscita"
+  },
   "marketplace": {
     "label":"Mercata",
     "goal":"Obbiettivo",

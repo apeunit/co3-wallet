@@ -76,9 +76,21 @@ const CreateDetailStep: React.FC<IProps> = ({ data, handleEdit, uploading, handl
           )}
           <DetailItems handleEdit={handleEdit} title={t('common.name')} value={data.name} />
           <Divider />
-          {!data.maxSupply && (
+          {!data.maxSupply && data.symbol && (
             <>
               <DetailItems handleEdit={handleEdit} title={t('common.symbol')} value={data.symbol} />
+              <Divider />
+            </>
+          )}
+          {!data.maxSupply && data.productsAvailable && (
+            <>
+              <DetailItems handleEdit={handleEdit} title={t('new_pickupbox.product_available')} value={data.productsAvailable} />
+              <Divider />
+            </>
+          )}
+          {!data.maxSupply && data.couponToGive && (
+            <>
+              <DetailItems handleEdit={handleEdit} title={t('new_pickupbox.coupon_to_give')} value={data.couponToGive} />
               <Divider />
             </>
           )}

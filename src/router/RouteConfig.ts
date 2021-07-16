@@ -19,6 +19,7 @@ import MarketPlace from '../containers/MarketPlace';
 import Minting from '../containers/Minting';
 import NewCoupon from '../containers/NewCoupon';
 import NewCrowdsale from '../containers/NewCrowdsale';
+import NewPickUpBasket from '../containers/NewPickUpBasket';
 import NewToken from '../containers/NewToken';
 import Pay from '../containers/Pay';
 import Payment from '../containers/payment';
@@ -141,6 +142,10 @@ export const routes = [
   {
     path: '/new-crowdsale',
     component: NewCrowdsale,
+  },
+  {
+    path: '/new-pickupbasket',
+    component: NewPickUpBasket,
   },
   {
     path: '/',

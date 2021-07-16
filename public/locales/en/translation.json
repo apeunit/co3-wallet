@@ -113,6 +113,22 @@
     "crowdsale_created": "Crowdsale Created",
     "crowdsale_creation_failed":"Crowdsale Creation Failed"
   },
+  "new_pickupbox" : {
+    "label": "New Pickup Basket",
+    "campaign_msg":"The name of your Pickup Basket",
+    "sell_question":"what's the most you can give?",
+    "product_available": "Products Available Supply",
+    "coupon_to_give": "Coupon To Give",
+    "location": "Location",
+    "name_placeholder":"Enter name",
+    "description":"Description",
+    "description_msg":"A short description of what you will be offering",
+    "location_msg":"Does your campaign have a location",
+    "sell_msg":"How much will you, at least, need to sell",
+    "loading":"Loading...",
+    "pickup_created": "Pickup Basket Created",
+    "pickup_creation_failed":"Pickup Basket Creation Failed"
+  },
   "marketplace": {
     "label":"Marketplace",
     "goal":"Goal",
@@ -203,7 +219,8 @@
     "coupon": "Coupon",
     "task": "Task",
     "history": "History",
-    "crowdsale": "Crowdsale"
+    "crowdsale": "Crowdsale",
+    "pickupbasket": "Pickup Basket"
   },
   "pay_popup": {
     "pay": "Pay",
