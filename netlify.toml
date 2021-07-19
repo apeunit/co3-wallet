@@ -12,8 +12,8 @@
 
   REACT_APP_LISTENER_POLL_INTERVAL  = "2000"
   # FirstLife
-  REACT_APP_FIRSTLIFE_STORAGE_URL   = "https://storage.firstlife.org"
-  REACT_APP_FIRSTLIFE_SERVER_ID     = "CO3UUM_PT"
+  # REACT_APP_FIRSTLIFE_STORAGE_URL   = "https://storage.firstlife.org"
+  # REACT_APP_FIRSTLIFE_SERVER_ID     = "CO3UUM_PT"
   # UniTO node
   # REACT_APP_NODE                    = "wss://co3:Co3Blockchain_2019@co3-pantheon.di.unito.it:8545/ws/"
 
