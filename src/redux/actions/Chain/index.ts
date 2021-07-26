@@ -227,7 +227,7 @@ const createNewToken = (
         from: state().wallet.ethAddress,
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
         nonce: web3.utils.toHex(parseInt(nonce, 10)),
-        gas: 10485760,
+        gas: 10_485_760,
       })
       .then((data: any) => {
         dispatch(createToken(data.events.TokenAdded));
@@ -262,7 +262,7 @@ const createNewCrowdsale = (crowdsale: any) => {
         from: state().wallet.ethAddress,
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
         nonce: web3.utils.toHex(parseInt(nonce, 10)),
-        gas: 10485760,
+        gas: 10_485_760,
       })
       .then((data: any) => {
         return data
@@ -295,7 +295,7 @@ const createNewPickUpBasket = (pickUpBox: any) => {
         from: state().wallet.ethAddress,
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
         nonce: web3.utils.toHex(parseInt(nonce, 10)),
-        gas: 10485760,
+        gas: 10_485_760,
       })
       .then((data: any) => {
         return data

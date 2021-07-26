@@ -255,7 +255,7 @@ const ConfirmPayment = () => {
             await saveWebhookAPI(webHookParam, 'error', err);
           }
           setLoader(false);
-          console.log(err, 'NewToken');
+          console.log(err, 'confirm payment');
           dispatch(
             setModalData(
               true,

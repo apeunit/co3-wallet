@@ -67,8 +67,7 @@ const SearchUser = () => {
 
   const _handleClick = async (userId: string) => {
     const profile: IProfile = await getProfileById(accessToken, userId)
-    console.log(profile)
-    dispatch(setToAddress(profile.blockchain_public_key));
+    dispatch(setToAddress(profile?.result?.blockchain_public_key));
     history.push({
       pathname: '/select-token',
       search: location.search,

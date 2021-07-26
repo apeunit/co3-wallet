@@ -154,5 +154,7 @@ export interface IMemberSearchResult {
 }
 
 export interface IProfile {
-  blockchain_public_key: string
+  result: {
+    blockchain_public_key: string
+  }
 }

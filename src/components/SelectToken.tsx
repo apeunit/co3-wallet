@@ -77,7 +77,7 @@ export const SelectToken: React.FC = (props: any) => {
       const callbackParam = params.get('callback');
       if (toParam && isValidChecksumAddress(toParam)) {
         dispatch(setToAddress(_replace(toParam, /['"]+/g, '')))
-      } else {
+      } else if (toParam) {
         dispatch(
           setModalData(
             true,

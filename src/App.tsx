@@ -72,9 +72,23 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getMnemonic());
+    if(localStorage.getItem('access_token')) {
+      dispatch(saveAccessToken(localStorage.getItem('access_token')));
+      const res = getPublicKey(localStorage.getItem('access_token') as string);
+      res
+        .then((data) => console.log("data"))
+        .catch((e) => {
+          localStorage.removeItem('access_token')
+          dispatch(saveAccessToken(''));
+          params.delete('access_token')
+          params.delete('role')
+          return;
+        })
+    } 
     const _accessToken = params.get('access_token');
     const aid = params.get('aid');
     if (_accessToken) {
+      localStorage.setItem('access_token', _accessToken);
       dispatch(saveAccessToken(_accessToken));
     }
     if (aid) {
@@ -86,6 +100,7 @@ const App = () => {
   const getUserPublicKey = async () => {
     const _accessToken = accessToken || params.get('access_token');
     if (_accessToken) {
+      localStorage.setItem('access_token', _accessToken);
       const pbkey = await getPublicKey(_accessToken);
       if (_get(pbkey, 'result.blockchain_public_key')) {
         dispatch(setPublicKey(_get(pbkey, 'result.blockchain_public_key')));
