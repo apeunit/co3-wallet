@@ -16,7 +16,7 @@ import _get from 'lodash/get';
 import { motion } from 'framer-motion';
 import FramerSlide from '../components/FrameMotion/Slide';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOriginalName, getPermalink, saveResource } from '../api/firstlife';
+import { getACAList, getOriginalName, getPermalink, saveResource } from '../api/firstlife';
 import { setModalData } from '../redux/actions/Modal';
 import { createNewToken } from '../redux/actions/Chain';
 import { useQuery } from '@apollo/react-hooks';
@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
 import { TOKEN_PURPOSE } from 'src/config';
 import { setTransferToken } from 'src/redux/actions/Wallet';
+import { SelectAca } from 'src/components/SelectAca';
 const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
 const NewToken: React.FC = () => {
@@ -42,11 +43,13 @@ const NewToken: React.FC = () => {
     icon: '',
     description: '',
     contract: '',
-    contractLabel: ''
+    contractLabel: '',
+    aca: '',
   });
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
   const [tokenList, setTokenList] = useState([]);
+  const [acaList, setAcaList] = useState([]);
 
   const { web3, tokenFactory, accessToken } = useSelector(
     ({ chain, co3uum }: any) => {
@@ -103,6 +106,7 @@ const NewToken: React.FC = () => {
     if (step <= 6) {
       if (
         checkError(1, token.name, t('common.name')) ||
+        checkError(1, token.aca, t('common.aca_to_attach')) ||
         checkError(2, token.symbol, t('common.symbol')) ||
         checkError(3, token.icon, t('common.icon')) ||
         checkError(5, token.contract, t('common.contract'))
@@ -114,6 +118,13 @@ const NewToken: React.FC = () => {
       step <= 6 && title.indexOf(t('common.edit')) > -1 ? handleEditStep() : setStep(step + 1);
     }
   };
+
+  useEffect(() => {
+    getACAList(accessToken).then((res : any) => {
+      setAcaList(res.data.things.features)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handlebackStep = () => {
     setError('');
@@ -211,7 +222,7 @@ const NewToken: React.FC = () => {
         tokenFactory,
         token.name,
         token.symbol,
-        JSON.stringify({logoURL: token.icon, description: token.description, contractHash: token.contract, contractLabel: token.contractLabel}),
+        JSON.stringify({logoURL: token.icon, description: token.description, contractHash: token.contract, contractLabel: token.contractLabel, aca: token.aca}),
         web3.utils.keccak256(token.icon),
         web3.utils.keccak256(token.contract),
         2,
@@ -242,6 +253,7 @@ const NewToken: React.FC = () => {
           name: resData?._name,
           owner: resData?._from,
           contractLabel: token.contractLabel,
+          aca: token.aca,
           purpose: resData?._purpose,
           symbol: resData?._symbol,
           token_symbol: resData?._symbol,
@@ -311,18 +323,31 @@ const NewToken: React.FC = () => {
           style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
         >
           {step === 1 && (
-            <CreateInputStep
-              type="text"
-              value={token.name}
-              onChangeValue={(e: any) => handleChangeToken(e, 'name')}
-              label={t('common.name')}
-              placeholder={t('new_token.name_placeholder')}
-              maxLength="20"
-              msg=""
-              className="token-name-input"
-              error={error}
-              handleKeyChange={_handleKeyDown}
-            />
+            <div>
+              <CreateInputStep
+                type="text"
+                value={token.name}
+                onChangeValue={(e: any) => handleChangeToken(e, 'name')}
+                label={t('common.name')}
+                placeholder={t('new_token.name_placeholder')}
+                maxLength="20"
+                msg=""
+                className="token-name-input"
+                error={error}
+                handleKeyChange={_handleKeyDown}
+              />
+              <SelectAca
+                value={token.aca}
+                onChangeValue={(e: any) => {
+                    handleChangeToken(e, 'aca')
+                  }
+                }
+                label=""
+                className="crowdsale-aca"
+                error={error}
+                data={acaList}
+              />
+            </div>
           )}
           {step === 2 && (
             <CreateInputStep

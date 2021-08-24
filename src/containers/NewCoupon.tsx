@@ -16,13 +16,14 @@ import { motion } from 'framer-motion';
 import FramerSlide from '../components/FrameMotion/Slide';
 import CouponImageCard from '../components/Coupons/CreateCoupon/CouponImageCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { getOriginalName, getPermalink, saveResource } from '../api/firstlife';
+import { getACAList, getOriginalName, getPermalink, saveResource } from '../api/firstlife';
 import { createNewToken } from '../redux/actions/Chain';
 import { setModalData } from '../redux/actions/Modal';
 import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
 import { COUPON_PURPOSE } from 'src/config';
 import { setTransferToken } from 'src/redux/actions/Wallet';
+import { SelectAca } from 'src/components/SelectAca';
 const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
 const NewCoupon: React.FC = () => {
@@ -45,10 +46,12 @@ const NewCoupon: React.FC = () => {
     icon: '',
     description: '',
     contract: '',
-    contractLabel: ''
+    contractLabel: '',
+    aca: '',
   });
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [acaList, setAcaList] = useState([]);
 
   const { web3, tokenFactory, accessToken } = useSelector(({ chain, co3uum }: any) => {
     return {
@@ -80,11 +83,19 @@ const NewCoupon: React.FC = () => {
     setTitle(t('new_coupon.label'))
   }
 
+  useEffect(() => {
+    getACAList(accessToken).then((res : any) => {
+      setAcaList(res.data.things.features)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  
   const handleSteps = () => {
     setError('');
     if (step <= 7) {
       if (
         checkError(1, coupon.name, t('common.name')) ||
+        checkError(1, coupon.aca, t('common.aca_to_attach')) ||
         checkError(2, coupon.headline, t('new_coupon.headline')) ||
         checkError(5, coupon.icon, t('common.icon')) ||
         checkError(6, coupon.contract, t('common.contract'))
@@ -187,7 +198,7 @@ const NewCoupon: React.FC = () => {
         tokenFactory,
         coupon.name,
         coupon.symbol,
-        JSON.stringify({logoURL: coupon.icon, headline: coupon.headline, description: coupon.description, contractHash: coupon.contract, contractLabel: coupon.contractLabel}),
+        JSON.stringify({logoURL: coupon.icon, headline: coupon.headline, description: coupon.description, contractHash: coupon.contract, contractLabel: coupon.contractLabel, aca: coupon.aca}),
         web3.utils.keccak256(coupon.icon),
         web3.utils.keccak256(coupon.contract),
         0,
@@ -218,6 +229,7 @@ const NewCoupon: React.FC = () => {
               description: coupon.description,
               contractHash: coupon.contract,
               contractLabel: coupon.contractLabel,
+              aca: coupon.aca,
               name: resData?._name,
               owner: resData?._from,
               purpose: resData?._purpose,
@@ -297,18 +309,31 @@ const NewCoupon: React.FC = () => {
           }}
         >
           {step === 1 && (
-            <CreateInputStep
-              type="text"
-              value={coupon.name}
-              onChangeValue={(e: any) => handleChangeToken(e, 'name')}
-              label={t('common.name')}
-              placeholder={t('new_coupon.name_placeholder')}
-              maxLength="30"
-              msg=""
-              className="coupon-name-input"
-              error={error}
-              handleKeyChange={_handleKeyDown}
-            />
+            <div>
+              <CreateInputStep
+                type="text"
+                value={coupon.name}
+                onChangeValue={(e: any) => handleChangeToken(e, 'name')}
+                label={t('common.name')}
+                placeholder={t('new_coupon.name_placeholder')}
+                maxLength="30"
+                msg=""
+                className="coupon-name-input"
+                error={error}
+                handleKeyChange={_handleKeyDown}
+              />
+              <SelectAca
+                value={coupon.aca}
+                onChangeValue={(e: any) => {
+                    handleChangeToken(e, 'aca')
+                  }
+                }
+                label=""
+                className="crowdsale-aca"
+                error={error}
+                data={acaList}
+              />
+            </div>
           )}
           {step === 2 && (
             <CreateInputStep

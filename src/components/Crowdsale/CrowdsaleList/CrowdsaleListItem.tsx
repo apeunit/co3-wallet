@@ -35,7 +35,7 @@ const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
       onClick={handleCrowdsaleItem}
     >
       <Flex marginRight="5px" justifyContent="start" width="90px">
-        <Image height="fit-content" src={crowdsale?.logoURL} />
+        <Image maxHeight="89px" margin="0px auto" height="fit-content" src={crowdsale?.logoURL} />
       </Flex>
       <Flex flexDirection="column" width="70%">
         <Flex marginBottom="15px" justifyContent="space-between" width="100%">

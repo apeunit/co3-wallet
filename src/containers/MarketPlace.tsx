@@ -53,7 +53,8 @@ const MarketPlace = () => {
   const getCrowdsaleUpdatedList = async () => {
     const cdList: any = [];
     data.crowdsaleAddedNotificationMany.map((crowdAdded: ICrowdsaleData) => {
-      const metaData = crowdAdded?.metadata && crowdAdded?.metadata?.includes('name') &&  JSON.parse(crowdAdded?.metadata);
+
+      const metaData = crowdAdded?.metadata && crowdAdded?.metadata?.includes('name') && JSON.parse(crowdAdded?.metadata.replace(/(\r\n|\n|\r)/gm, ""));
       const start = crowdAdded?.start && crowdAdded?.start?.includes('1970') ? Math.round(new Date(crowdAdded?.start).getTime() * 1000) : crowdAdded?.start;
       const end = crowdAdded?.end && crowdAdded?.end?.includes('1970') ? Math.round(new Date(crowdAdded?.end).getTime() * 1000) : crowdAdded?.end;
       metaData && metaData.token && cdList.push({ ...crowdAdded, start, end, ...metaData });

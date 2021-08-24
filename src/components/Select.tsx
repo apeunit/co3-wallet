@@ -40,7 +40,7 @@ export const SelectInput = (props: any) => {
             <em>Select option</em>
           </MenuItem>
           {data.map((val: any) => (
-            <MenuItem value={val.key} key={val.key}>
+            <MenuItem value={val.key} key={val.title}>
               {val.title}
             </MenuItem>
           ))}

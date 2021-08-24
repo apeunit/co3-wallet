@@ -77,7 +77,9 @@
     "token_expire": "Token is Expired",
     "token_expire_msg": "Token is Expired or Invalid. Please login again!",
     "downloading": "Downloading...",
-    "download_error": "File download failed"
+    "download_error": "File download failed",
+    "aca_to_attach": "Attach ACA",
+    "aca_to_attach_message": "Which ACA do you want to attach?"
   },
   "new_crowdsale" : {
     "label": "New Crowdsale",

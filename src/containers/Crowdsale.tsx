@@ -6,7 +6,7 @@ import { getUserProfileData, saveAid } from 'src/redux/actions/CO3UUM';
 import _get from 'lodash/get';
 import { setPublicKey } from 'src/redux/actions/Wallet';
 import { getPublicKey } from 'src/api/co3uum';
-import { CROWDSALE_TYPE_DP, VENDING_TYPE_DP } from 'src/config';
+import { CROWDSALE_TYPE_DP, VENDING_TYPE_DP, PICKUP_BOX_DP } from 'src/config';
 
 const CrowdsaleCS = () => {
   const location = useLocation();
@@ -36,10 +36,12 @@ const CrowdsaleCS = () => {
           history.push({
             pathname: `${
               parseInt(typeParam, 10) === CROWDSALE_TYPE_DP
-                ? '/new-crowdsale'
-                : parseInt(typeParam, 10) === VENDING_TYPE_DP
-                ? '/vm'
-                : ''
+              ? '/new-crowdsale'
+              : parseInt(typeParam, 10) === VENDING_TYPE_DP
+              ? '/vm'
+              : parseInt(typeParam, 10) === PICKUP_BOX_DP
+              ? '/new-pickupbasket'
+              : ''
             }`,
             search: location.search,
           });
@@ -56,6 +58,7 @@ const CrowdsaleCS = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, location.search]);
+
 
   return <Flex />;
 };

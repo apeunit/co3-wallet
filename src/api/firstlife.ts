@@ -35,13 +35,13 @@ export const saveResource = async (accessToken: string | null, resource: any): P
   });
 };
 
-/* 
+/*
   Save Crowdsale Data in FirstLife
 */
 export const saveCrowdsaleData = async (
   accessToken: string | null,
   data: any,
-  activityId: string,
+  //activityId: string,
 ): Promise<Object> => {
   // headers
   const headers = {
@@ -51,12 +51,12 @@ export const saveCrowdsaleData = async (
     status: 'Public',
   };
 
-  return axios.put(`${API_FIRSTLIFE_URL}/v6/fl/Things/${activityId}`, JSON.stringify(data), {
+  return axios.post(`${API_FIRSTLIFE_URL}/v6/fl/Things`, JSON.stringify(data), {
     headers: headers,
   });
 };
 
-/* 
+/*
   Get Crowdsale List From FirstLife
 */
 export const getCrowdsaleList = async (
@@ -72,6 +72,25 @@ export const getCrowdsaleList = async (
   };
 
   return axios.get(`${API_FIRSTLIFE_URL}/v6/fl/Things/${activityId}`, {
+    headers: headers,
+  });
+};
+
+/*
+  Get ACA List From FirstLife
+*/
+export const getACAList = async (
+  accessToken: string | null,
+): Promise<Object> => {
+  // headers
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${accessToken}`,
+    authentication_server: API_SERVER,
+    status: 'Public',
+  };
+
+  return axios.get(`${API_FIRSTLIFE_URL}/v6/fl/Things/search?types=CO3_ACA`, {
     headers: headers,
   });
 };

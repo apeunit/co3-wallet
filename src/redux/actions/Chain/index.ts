@@ -221,15 +221,19 @@ const createNewToken = (
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
 
     const gasPrice = await web3.eth.getGasPrice();
+    const blockNo = await web3.eth.getBlockNumber();
+    const gas = blockNo.gasLimit - 100000;
+    console.log(gas);
     return tokenFactory.methods
       .createToken(name, symbol, decimals, purpose, logoUrl, logoHash, hardCap, contractHash)
       .send({
-        from: state().wallet.ethAddress,
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
+        from: state().wallet.ethAddress,
         nonce: web3.utils.toHex(parseInt(nonce, 10)),
-        gas: 10_485_760,
+        gas: gas,
       })
       .then((data: any) => {
+        console.log(data)
         dispatch(createToken(data.events.TokenAdded));
         return data;
         /**
@@ -246,6 +250,9 @@ const createNewCrowdsale = (crowdsale: any) => {
     const gasPrice = await web3.eth.getGasPrice();
     const { itemToSell, token, startDate, endDate, giveRatio, maxSupply } = crowdsale;
     const crowdsaleId = getRandomId();
+    const blockNo = await web3.eth.getBlockNumber();
+    const gas = blockNo.gasLimit - 100000;
+    console.log('crowdsale', crowdsale)
     return crowdsaleFactory.methods
       .createCrowdsale(
         crowdsaleId,
@@ -256,13 +263,27 @@ const createNewCrowdsale = (crowdsale: any) => {
         1,
         parseInt(giveRatio, 10),
         parseInt(maxSupply, 10),
-        JSON.stringify({name: crowdsale.name, logoURL: crowdsale.icon, description: crowdsale.description, itemToSell, token, contract: crowdsale.contract, contractLabel: crowdsale.contractLabel}),
+        JSON.stringify({
+          name: crowdsale.name,
+          logoURL: crowdsale.icon,
+          description: crowdsale.description,
+          itemToSell,
+          token,
+          contract: crowdsale.contract,
+          contractLabel: crowdsale.contractLabel,
+          aca: crowdsale.aca,
+          FLID: crowdsale.FLID,  //"string", FirstLife ID
+          TTA:  crowdsale.TTA,    //"string", Ticker (Symbol) of the token to accept
+          TTG:  crowdsale.TTG,    //"string", Ticker (Symbol) of the token to give
+          AU:   crowdsale.AU,      //"string", Admin URL
+          RU:   crowdsale.RU,      //"string", Redeem URL
+        }),
       )
       .send({
         from: state().wallet.ethAddress,
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
         nonce: web3.utils.toHex(parseInt(nonce, 10)),
-        gas: 10_485_760,
+        gas: gas,
       })
       .then((data: any) => {
         return data

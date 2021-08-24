@@ -51,7 +51,7 @@ const App = () => {
       balanceTokenQuery();
       const TokenInterval = setInterval(() => {
         !called && balanceTokenQuery();
-      }, LISTENER_POLL_INTERVAL);
+      }, parseInt(LISTENER_POLL_INTERVAL));
 
       return () => {
         clearInterval(TokenInterval);

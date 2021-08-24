@@ -18,14 +18,21 @@ import CrowdsaleImageCard from '../components/Crowdsale/NewCrowdsale/CrowdsaleIm
 import SupplyStep from '../components/Crowdsale/NewCrowdsale/SupplyStep';
 import PriceTokenStep from '../components/Crowdsale/NewCrowdsale/PriceTokenStep';
 import DateInput from '../components/DateInput';
+import { SelectAca } from 'src/components/SelectAca';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { createNewCrowdsale } from 'src/redux/actions/Chain';
+import { createNewCrowdsale, getAllCrowdsale } from 'src/redux/actions/Chain';
 import { setModalData } from 'src/redux/actions/Modal';
-import { getPermalink, saveResource } from 'src/api/firstlife';
+import { getPermalink,getACAList, saveCrowdsaleData, saveResource } from 'src/api/firstlife';
 import Loading from '../components/Loading';
+// import { LIMIT, THING_ID } from 'src/config'; // probably not needed anymore
+import { LIMIT } from 'src/config'; 
 import { saveWebhookAPI } from 'src/utils/helper';
+import { useLazyQuery } from '@apollo/react-hooks';
+import { CrowdsaleSortEnum, GET_CROWDSALE_ADDED } from 'src/api/middleware';
+import { ICrowdsaleData } from 'src/interfaces';
 const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
+
 
 const isDev = process.env.NODE_ENV === 'development';
 const endDateInt = new Date(new Date().setMonth(new Date().getMonth() + 1));
@@ -52,12 +59,28 @@ const NewCrowdsale: React.FC = () => {
     itemToSell: isDev ? '0xbD2Dc75534022E2bc79A49798115F9303734dA66' : '',
     giveRatio: '',
     token: isDev ? '0x26BF83F78805f107740a0DafC02167e4d4d7349c' : '',
+    FLID: '',
+    TTA: '',
+    TTG: '',
+    AU:  '',
+    RU:  '',
+    aca: {
+      id:'',
+      geolocation: {
+        long:0,
+        lang:0
+      }
+    },
   });
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
-  const { accessToken } = useSelector(({ co3uum }: any) => {
+  const [acaList, setAcaList] = useState([]);
+
+  const { accessToken } = useSelector(({ co3uum, chain }: any) => {
     return {
-      accessToken: co3uum.accessToken
+      accessToken: co3uum.accessToken,
+      // activityID: co3uum.activityID,
+      // crowdsaleList: chain.crowdsaleList,
     };
   });
 
@@ -78,6 +101,13 @@ const NewCrowdsale: React.FC = () => {
     }
   }, [crowdsaleData]);
 
+  useEffect(() => {
+    getACAList(accessToken).then((res : any) => {
+      setAcaList(res.data.things.features)
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleEditStep = () => {
     setStep(8)
     setTitle(t('new_crowdsale.label'))
@@ -88,6 +118,7 @@ const NewCrowdsale: React.FC = () => {
     if (step <= 9) {
       if (
         checkError(1, crowdsale.name, t('common.name')) ||
+        checkError(1, crowdsale.aca, t('common.aca_to_attach')) ||
         checkError(2, crowdsale.icon, t('common.icon')) ||
         checkError(3, crowdsale.startDate, t('new_crowdsale.start_date')) ||
         checkError(3, crowdsale.endDate, t('new_crowdsale.end_date')) ||
@@ -183,6 +214,43 @@ const NewCrowdsale: React.FC = () => {
     }
   };
 
+  const [crowdsaleAddedQuery, { data }] = useLazyQuery(GET_CROWDSALE_ADDED, {
+    fetchPolicy: 'no-cache',
+    variables: {
+      filter: {},
+      skip: 0,
+      limit: LIMIT,
+      sort: CrowdsaleSortEnum.DESC,
+    },
+  });
+
+  useEffect(() => {
+    crowdsaleAddedQuery();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (data && data.crowdsaleAddedNotificationMany) {
+      getCrowdsaleUpdatedList();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  const getCrowdsaleUpdatedList = async () => {
+    const cdList: any = [];
+    data.crowdsaleAddedNotificationMany.map((crowdAdded: ICrowdsaleData) => {
+      const metaData = crowdAdded?.metadata && crowdAdded?.metadata?.includes('name') && JSON.parse(crowdAdded?.metadata.replace(/(\r\n|\n|\r)/gm, ""));
+      const start = crowdAdded?.start && crowdAdded?.start?.includes('1970') ? Math.round(new Date(crowdAdded?.start).getTime() * 1000) : crowdAdded?.start;
+      const end = crowdAdded?.end && crowdAdded?.end?.includes('1970') ? Math.round(new Date(crowdAdded?.end).getTime() * 1000) : crowdAdded?.end;
+      metaData && metaData.token && cdList.push({ ...crowdAdded, start, end, ...metaData });
+
+      return cdList;
+    });
+    if (cdList.length > 0) {
+      dispatch(getAllCrowdsale(cdList));
+    }
+  };
+
   const handleCreateCrowdsale = async () => {
     setLoader(true);
     let callbackParam: string | null;
@@ -192,51 +260,109 @@ const NewCrowdsale: React.FC = () => {
       callbackParam = params.get('callback');
       webHookParam = params.get('webhook');
     }
-    const receipt: any = dispatch(createNewCrowdsale(crowdsale));
-    receipt
-      .then(async (res: any) => {
-        if (res) {
-          const crowdsaleDataRes = _get(res, 'events.CrowdsaleAdded.returnValues');
+
+    const cddata = {
+      type: 'Feature',
+      properties: {
+        name: crowdsale.name,
+        address: '', //TODO: where does this come from?
+        tags: [],
+        icon: crowdsale.icon,
+        itemToSell: crowdsale.itemToSell,
+        token: crowdsale.token,
+        description: crowdsale.description,
+        contract: crowdsale.contract,
+        contractLabel: crowdsale.contractLabel,
+        logoURL: crowdsale.icon,
+        aca: `https://api.co3-torino.firstlife.org/v6/fl/Things/${crowdsale.aca.id}`,
+        categories: [],
+        zoom_level: 18,
+        entity_type: 'CO3_ACTIVITY', // this has to be called CO3_CROWDSALE (not CO3_ACTIVITY)
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          crowdsale.aca.geolocation.long,
+          crowdsale.aca.geolocation.lang,
+        ]
+      },
+    };
+
+    saveCrowdsaleData(accessToken, cddata).then(async (res:any) => {
+      const firstlifeId = res.data.id
+      console.log('firstlifeId', firstlifeId)
+      crowdsale.FLID = firstlifeId
+      crowdsale.TTA = ''
+      crowdsale.TTG = ''
+      crowdsale.AU =  ''
+      crowdsale.RU =  ''
+      console.log('crowdsaledata', crowdsale)
+      const receipt: any = dispatch(createNewCrowdsale(crowdsale));
+      receipt
+        .then(async (res: any) => {
+          if (res) {
+            const crowdsaleDataRes = _get(res, 'events.CrowdsaleAdded.returnValues');
+            if (callbackParam) {
+              window.location.href = `${callbackParam}${
+                callbackParam.includes('?') ? '&' : '?'
+              }_id=${crowdsaleDataRes._contractAddress}`;
+            }
+            if (webHookParam) {
+              await saveWebhookAPI(webHookParam, crowdsaleDataRes._contractAddress, res);
+            }
+            setLoader(false);
+            console.log(res);
+            history.push('/');
+            dispatch(
+              setModalData(
+                true,
+                t('new_crowdsale.crowdsale_created'),
+                t('common.transaction_complete'),
+                'permission',
+              ),
+            );
+          }
+        })
+        .catch(async (err: any) => {
           if (callbackParam) {
             window.location.href = `${callbackParam}${
               callbackParam.includes('?') ? '&' : '?'
-            }_id=${crowdsaleDataRes._contractAddress}`;
+            }_id=error`;
           }
           if (webHookParam) {
-            await saveWebhookAPI(webHookParam, crowdsaleDataRes._contractAddress, res);
+            await saveWebhookAPI(webHookParam, 'error', err);
           }
           setLoader(false);
-          console.log(res);
-          history.push('/');
+          console.log(err, 'NewCrowdsale');
           dispatch(
             setModalData(
               true,
-              t('new_crowdsale.crowdsale_created'),
-              t('common.transaction_complete'),
+              t('new_crowdsale.crowdsale_creation_failed'),
+              err.message.split('\n')[0],
               'permission',
             ),
           );
-        }
-      })
-      .catch(async (err: any) => {
+        });
+      }).catch(async (err: any) => {
+        const errMsg = err.response ? err.response?.data?.error?.message : err.message.split('\n')[0]
         if (callbackParam) {
           window.location.href = `${callbackParam}${
             callbackParam.includes('?') ? '&' : '?'
           }_id=error`;
         }
         if (webHookParam) {
-          await saveWebhookAPI(webHookParam, 'error', err);
+          await saveWebhookAPI(webHookParam, 'error', errMsg);
         }
         setLoader(false);
-        console.log(err, 'NewCrowdsale');
         dispatch(
           setModalData(
             true,
             t('new_crowdsale.crowdsale_creation_failed'),
-            err.message.split('\n')[0],
+            errMsg,
             'permission',
           ),
         );
+        return;
       });
   };
 
@@ -291,6 +417,7 @@ const NewCrowdsale: React.FC = () => {
           }}
         >
           {step === 1 && (
+            <div>
             <CreateInputStep
               type="text"
               value={crowdsale.name}
@@ -303,6 +430,18 @@ const NewCrowdsale: React.FC = () => {
               error={error}
               handleKeyChange={_handleKeyDown}
             />
+            <SelectAca
+              value={crowdsale.aca}
+              onChangeValue={(e: any) => {
+                  handleChangeCrowdsale(e, 'aca')
+                }
+              }
+              label=""
+              className="crowdsale-aca"
+              error={error}
+              data={acaList}
+            />
+            </div>
           )}
           {step === 2 && (
             <CrowdsaleImageCard
