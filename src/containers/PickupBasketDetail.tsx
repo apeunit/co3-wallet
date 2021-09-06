@@ -11,12 +11,10 @@ import { useHistory } from 'react-router-dom';
 import Moment from 'react-moment';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { getCrowdsaleData } from 'src/redux/actions/Chain';
+import { getPickupBasketData } from 'src/redux/actions/Chain';
 import axios from 'axios';
-// import CouponList from '../components/Coupons/CouponsList/CouponList';
+import CouponList from '../components/Coupons/CouponsList/CouponList';
 import { COUPON_PURPOSE } from 'src/config';
-// import { GET_TOKEN } from '../api/middleware';
-
 
 const fileDownload = require('js-file-download');
 const isDev = process.env.NODE_ENV === 'development';
@@ -28,7 +26,7 @@ const useStyles = makeStyles({
   },
 });
 
-const CrowdsaleDetail: React.FC = (props) => {
+const PickupBasketDetail: React.FC = (props) => {
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
@@ -38,80 +36,27 @@ const CrowdsaleDetail: React.FC = (props) => {
 
   const [progress, setProgress] = useState(0);
   const [couponList, setCouponList] = useState([]);
-  // const [tokenListOption, setTokenListOption]: any = useState([]);
   const [tokenLoading, setTokenLoading] = useState(true);
   const [countdown, setCountdown] = useState<any>('');
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState('');
-  const [crowdsaleOpen, setCrowdsaleOpen] = useState(false)
-  const [isDisabled, setIsDisabled] = useState(false)
-
-
 
   // ---------------------------------------------------
   //               Get data from the store                          
   // ---------------------------------------------------
 
-  const { tokensDataList, errorWeb3, crowdsaleData, token } = useSelector(({ chain, wallet }: any) => {
+  const { tokensDataList, errorWeb3, pickupBasketData, token } = useSelector(({ chain, wallet }: any) => {
     return {
-      crowdsaleData: chain.crowdsaleData,
+      pickupBasketData: chain.pickupBasketData,
       token: wallet.transfer.token,
       tokensDataList: chain.tokenList,
       errorWeb3: chain.errorWeb3,
     };
   });
-  console.log("crowdsaledata", crowdsaleData)
+  console.log("pickupBasketData", pickupBasketData)
 
-  const then: any = moment(crowdsaleData?.end);
-  console.log("then", then._d)
+  const then: any = moment(pickupBasketData?.end);
   const now: any = moment();
-  const crowdsaleTime: number = then._d - now._d;
-  console.log("now", now._d)
-  // console.log("then minus now", then._d - now._d)
-  // console.log("now minus then", now - then)
-
-
-//-------------------------------------------------------------------------------
-//        crowdsale is still open if starting time minus current time is > 0
-//-------------------------------------------------------------------------------
-
- useEffect(() => {
-    if (crowdsaleTime > 0) {
-      setCrowdsaleOpen(true)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [crowdsaleTime]);
-
-//-------------------------------------------------------------------------------
-//        if crowdsale is not open button to participate will get disabled
-//-------------------------------------------------------------------------------
-
-  useEffect(() => {
-    if (!crowdsaleOpen) {
-      setIsDisabled(true)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [crowdsaleOpen]);
-
-//-------------------------------------------------------------------------------
-//        
-//-------------------------------------------------------------------------------
-
-
-  // const [getCoupon, { called, data }] = useLazyQuery(GET_TOKEN, {
-  //   fetchPolicy: 'no-cache',
-  //   variables: {
-  //     contractAddress: crowdsaleData.itemToSell,
-  //   },
-  // });
-
-  // useEffect(() => {
-  //   if (crowdsaleData) {
-  //     getCoupon()
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [crowdsaleData]);
-
 
 //---------------------------------------------------------
 //        show list of coupons
@@ -129,33 +74,32 @@ const CrowdsaleDetail: React.FC = (props) => {
 
   console.log("couponlist", couponList)
 
-
 //---------------------------------------------------------
-//          get crowdsale data
+//          get pickupbasket data
 //---------------------------------------------------------
 
   useEffect(() => {
-    if (state && state.crowdsaleData) {
-      dispatch(getCrowdsaleData({ ...state?.crowdsaleData }));
+    if (state && state.pickupBasketData) {
+      dispatch(getPickupBasketData({ ...state?.pickupBasketData }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state])
 
 //---------------------------------------------------------
-//        ???
+//          
 //---------------------------------------------------------
 
   useEffect(() => {
     setProgress(0);
     setCountdown(moment(then - now));
-    if (!crowdsaleData || crowdsaleData === null) {
+    if (!pickupBasketData || pickupBasketData === null) {
       history.push('/marketplace');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 //---------------------------------------------------------
-//       ???           
+//                  
 //---------------------------------------------------------
 
   useEffect(() => {
@@ -165,8 +109,7 @@ const CrowdsaleDetail: React.FC = (props) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [crowdsaleData, countdown, then, now]);
-
+  }, [pickupBasketData, countdown, then, now]);
 
 //---------------------------------------------------------
 //       partticipate in the crowdsale handler
@@ -180,8 +123,8 @@ const CrowdsaleDetail: React.FC = (props) => {
   const handleBuyNow = () => {
     history.push({
       pathname: `/tx`,
-      search: `to=${crowdsaleData?.contractAddress}&token=${crowdsaleData?.crowdSymbol}&amount=${crowdsaleData?.giveRatio}`,
-      state: { from: `/crowdsale-detail/${kebabCase(crowdsaleData.name)}`, crowdsaleData }
+      search: `to=${pickupBasketData?.contractAddress}&token=${pickupBasketData?.crowdSymbol}&amount=${pickupBasketData?.giveRatio}`,
+      state: { from: `/pickup-basket-detail/${kebabCase(pickupBasketData.name)}`, pickupBasketData }
     });
   };
 
@@ -218,11 +161,11 @@ const CrowdsaleDetail: React.FC = (props) => {
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
       >
         <IconButton
-          onClick={() => history.push('/marketplace')}
+          onClick={() => history.push('/pickupbasketplace')}
           sx={{ cursor: 'pointer' }}
           icon="back"
         />
-        <Text>{t('marketplace.label')}</Text>
+        <Text>{t('pickupbasketplace.label')}</Text>
         <IconButton onClick={() => history.push('/')} sx={{ cursor: 'pointer' }} icon="close" />
       </Flex>
       <FramerSlide
@@ -234,7 +177,7 @@ const CrowdsaleDetail: React.FC = (props) => {
               padding="0px"
               name=""
               symbol=""
-              icon={crowdsaleData?.icon || crowdsaleData?.logoURL}
+              icon={pickupBasketData?.icon || pickupBasketData?.logoURL}
               uploading={false}
               type=""
               uploadIcon="crowdsale"
@@ -255,11 +198,11 @@ const CrowdsaleDetail: React.FC = (props) => {
             justifyContent="start"
           >
             <Flex justifyContent="space-between">
-              <Text fontSize="24px">{crowdsaleData?.name}</Text>
+              <Text fontSize="24px">{pickupBasketData?.name}</Text>
               <Flex>
                 <Text fontSize="18px" fontWeight="bold" color="#3048D9">
-                  {crowdsaleData?.giveRatio}{' '}
-                  <span className="crowdsale-detail-font">{crowdsaleData?.crowdSymbol}</span>
+                  {pickupBasketData?.giveRatio}{' '}
+                  <span className="crowdsale-detail-font">{pickupBasketData?.crowdSymbol}</span>
                 </Text>
               </Flex>
             </Flex>
@@ -269,7 +212,7 @@ const CrowdsaleDetail: React.FC = (props) => {
               </div>
               <Text marginTop="5px" fontSize="14px" color="#757575">
                 {/* <span className="token-goal-font">10</span> of  */}
-                {t('marketplace.goal')}: {crowdsaleData?.maxCap}
+                {t('marketplace.goal')}: {pickupBasketData?.maxCap}
               </Text>
             </Flex>
             <Flex marginTop="15px" flexDirection="row" fontSize="14px" color="#949494">
@@ -282,8 +225,8 @@ const CrowdsaleDetail: React.FC = (props) => {
                   marginRight="12px"
                 />
                 <Text>
-                  {t('marketplace.closes')} <Moment fromNow={true}>{crowdsaleData?.end}</Moment>{' '}
-                  {moment().isBefore(crowdsaleData?.end) && countdown && (
+                  {t('marketplace.closes')} <Moment fromNow={true}>{pickupBasketData?.end}</Moment>{' '}
+                  {moment().isBefore(pickupBasketData?.end) && countdown && (
                     <>
                       {countdown.format('D')} {t('marketplace.days')} {countdown.format('HH')}{' '}
                       {t('marketplace.hours')} {countdown.format('mm')} {t('marketplace.minutes')}{' '}
@@ -295,7 +238,7 @@ const CrowdsaleDetail: React.FC = (props) => {
             </Flex>
             <Flex color="#757575" padding="25px 0px 30px">
               <Text fontSize="16px" color="#757575">
-                {crowdsaleData?.description}
+                {pickupBasketData?.description}
               </Text>
             </Flex>
             {(tokenLoading || couponList.length > 0) &&
@@ -309,16 +252,12 @@ const CrowdsaleDetail: React.FC = (props) => {
                   > 
                     {t('crowdsaledetail.coupons_received')}
                   </Text>
-                  {/* {couponList.map((coupon: any) => 
-                  coupon.contractAddress === crowdsaleData?.itemToSell 
-                  && <CouponList tokens={coupon} tokenLoading={tokenLoading} />)}  */}
-                  {/* <CouponList tokens={couponList} tokenLoading={tokenLoading} /> */}
-                  {/* {data} */}
+                  {couponList.map((i: any) => i.contractAddress === pickupBasketData?.itemToSell && <CouponList tokens={i} tokenLoading={tokenLoading} />)} 
               </Box>)}
               <Flex>
               <Text fontSize="12px" color="#757575">
                 {t('marketplace.started_on')}{' '}
-                <Moment format="DD/MM/YYYY">{crowdsaleData?.start}</Moment>
+                <Moment format="DD/MM/YYYY">{pickupBasketData?.start}</Moment>
               </Text>
             </Flex>
             <Flex>
@@ -367,7 +306,6 @@ const CrowdsaleDetail: React.FC = (props) => {
               variant="primary"
               sx={{ position: 'relative', bottom: 1}}
               mr={2}
-              disabled={isDisabled}
             >
               <Flex justifyContent="center">
                 <IconButton
@@ -389,5 +327,4 @@ const CrowdsaleDetail: React.FC = (props) => {
   );
 };
 
-export default CrowdsaleDetail;
-
+export default PickupBasketDetail;

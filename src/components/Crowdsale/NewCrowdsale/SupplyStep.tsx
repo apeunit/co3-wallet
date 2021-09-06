@@ -37,6 +37,7 @@ const SupplyStep: React.FC<IProps> = ({
         });
       }
       setTokenListOption(tokenListOption);
+      console.log("tokenlistoption", tokenListOption)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenList]);

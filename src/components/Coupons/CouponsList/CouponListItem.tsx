@@ -18,6 +18,7 @@ const CouponListItem = ({ logoURL, symbol, name, description, amount, ...rest }:
       ...rest,
     };
     dispatch(setTransferToken(token));
+    console.log("token from couponlistitem", token)
     if (history.location.pathname === '/') {
       history.push({ pathname: '/coupon-detail', state: { token } });
     } else {

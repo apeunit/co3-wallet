@@ -115,7 +115,6 @@ const Icon = (props: IIconName) => {
   const IconTag = Icons[props.name];
   const style = props.style;
 
-  return <IconTag style={style} />;
-};
+  return <IconTag style={style} />;};
 
 export default Icon;

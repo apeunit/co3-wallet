@@ -4,6 +4,7 @@ import {
   CREATE_TOKEN,
   ERROR_WEB3,
   GET_ALL_CROWDSALE,
+  GET_ALL_PICKUP_BASKET,
   GET_ALL_TOKEN,
   GET_CROWDSALE_DATA,
   GET_TOKEN_BALANCE,
@@ -28,7 +29,8 @@ const defaultState: IChainState = {
   errorWeb3: null,
   tokenLoading: false,
   txnLoading: true,
-  crowdsaleList: [],
+  crowdsaleList: [],  
+  pickupBasketList: [],
   crowdsaleData: null,
 };
 
@@ -42,6 +44,7 @@ const combinedActions: any = combineActions(
   TOKEN_LOADING,
   TXN_LOADING,
   GET_ALL_CROWDSALE,
+  GET_ALL_PICKUP_BASKET,
   GET_CROWDSALE_DATA,
 );
 

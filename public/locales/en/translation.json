@@ -141,8 +141,21 @@
     "seconds":"seconds",
     "no_details":"Crowdsale details not available.",
     "started_on":"Started on",
-    "buy_now": "BUY NOW",
+    "buy_now": "ACCESS NOW",
     "no_crowdsale": "You don't have made any marketplace yet"
+  },
+  "pickupbasketplace": {
+    "label":"Pickupbasketplace",
+    "goal":"Goal",
+    "closes":"Closes",
+    "days":"days",
+    "hours":"hours",
+    "minutes":"minutes",
+    "seconds":"seconds",
+    "no_details":"Pickupbasketplace details not available.",
+    "started_on":"Started on",
+    "buy_now": "ACCESS NOW",
+    "no_pickupbasket": "You don't have made any Pickupbasketplace yet"
   },
   "new_token": {
     "label": "New Token",
@@ -199,7 +212,9 @@
     "send": "Send",
     "sell": "Sell",
     "mint": "Mint",
-    "terms_conditions": "Terms and conditions"
+    "terms_conditions": "Terms and conditions",
+    "firstlife": "firstlife"
+
   },
   "transaction": {
     "transaction_csv": "Transaction",
@@ -284,5 +299,8 @@
     "import_wallet_s3": "Please fill in the words of your recovery phrase in the correct order!",
     "import_wallet_s4": "Great! Everything worked and your wallet is being created right now. As soon as its ready you will be forwarded to your wallet.",
     "import_wallet_error": "Invalid Recovery Phrase!"
+  },
+  "crowdsaledetail": {
+    "coupons_received": "COUPONS RECEIVED"
   }
 }

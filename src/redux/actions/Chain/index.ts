@@ -15,14 +15,16 @@ import PickupBasketFactoryJSON from '../../../contracts/PickUpBasketFactory.json
 import TokenCrowdsaleJSON from '../../../contracts/TokenCrowdsale.json';
 import TokenFactoryJSON from '../../../contracts/TokenFactory.json';
 import TokenTemplateJSON from '../../../contracts/TokenTemplate.json';
-import { ICrowdsaleData, ITokenAction, ITokenData } from '../../../interfaces';
+import { ICrowdsaleData, IPickupBasketData, ITokenAction, ITokenData } from '../../../interfaces';
 import { setTransferToken } from '../Wallet';
 import {
   CREATE_TOKEN,
   ERROR_WEB3,
   GET_ALL_CROWDSALE,
+  GET_ALL_PICKUP_BASKET,
   GET_ALL_TOKEN,
   GET_CROWDSALE_DATA,
+  GET_PICKUP_BASKET_DATA,
   GET_TOKEN_BALANCE,
   GET_TOKEN_DETAIL,
   GET_TRANSACTION_HISTORY,
@@ -72,7 +74,9 @@ const {
   getTokenBalance,
   getTokenDetail,
   getAllCrowdsale,
+  getAllPickupBasket,
   getCrowdsaleData,
+  getPickupBasketData
 } = createActions({
   [INIT_WEB3]: (data: object): object => ({ ...data }),
   [ERROR_WEB3]: (data: object): object => ({ ...data }),
@@ -80,12 +84,14 @@ const {
   [TXN_LOADING]: (txnLoading: object): object => ({ txnLoading }),
   [GET_ALL_TOKEN]: (tokenList: []): object => ({ tokenList }),
   [GET_ALL_CROWDSALE]: (crowdsaleList: []): object => ({ crowdsaleList }),
+  [GET_ALL_PICKUP_BASKET]: (pickupBasketList: any): object => ({ pickupBasketList }),
   [GET_TRANSACTION_HISTORY]: (transactionHistory: []): object => ({ transactionHistory }),
   [CREATE_TOKEN]: (tokenCreated: object) => ({ tokenCreated }),
   [TRANSFER_TOKEN]: (tokenTransferred: object) => ({ tokenTransferred }),
   [GET_TOKEN_BALANCE]: (balance: object) => ({ balance }),
   [GET_TOKEN_DETAIL]: (tokenInfo: ITokenData) => ({ tokenInfo }),
   [GET_CROWDSALE_DATA]: (crowdsaleData: ICrowdsaleData) => ({ crowdsaleData }),
+  [GET_PICKUP_BASKET_DATA]: (pickupBasketData: IPickupBasketData) => ({ pickupBasketData }),
 });
 
 const fetchTokenByTicker = (ticker: string) => {
@@ -157,7 +163,7 @@ const fetchTransactionsHistory = (token: ITokenData) => {
         });
     } catch (error) {
       dispatch(txnLoading(false));
-      console.error(error.message);
+      console.error(error);
     }
   };
 };
@@ -207,7 +213,55 @@ const fetchCrowdsaleList = () => {
       dispatch(txnLoading(false));
     } catch (error) {
       dispatch(txnLoading(false));
-      console.error(error.message);
+      console.error(error);
+    }
+  };
+};
+
+const fetchPickupBasketList = () => {
+  return async (dispatch: any, state: any) => {
+    try {
+      dispatch(txnLoading(true));
+      const contract = new web3.eth.Contract(
+        PickupBasketFactoryJSON.abi,
+        PICKUPBASKET_FACTORY_ADDRESS,
+        opts,
+      );
+      let pickupBasketList: any = [];
+      const contractEvent = await contract.getPastEvents('PickupBasket Added', {
+        fromBlock: 0,
+        toBlock: 'latest',
+      });
+
+      contractEvent.length > 0 &&
+        contractEvent.map(async (event: any) => {
+          const metaData = event.returnValues._metadata.includes('name') &&  JSON.parse(event.returnValues._metadata);
+          if (metaData && !metaData.name.includes('TKN Sale')) {
+            pickupBasketList.push({
+              ...metaData,
+              metadata: event.returnValues._metadata,
+              from: event.returnValues._from,
+              timestamp: event.returnValues._timestamp,
+              contractAddress: event.returnValues._contractAddress,
+              end: new Date(event.returnValues._end * 1000),
+              acceptRatio: event.returnValues._acceptRatio,
+              giveRatio: event.returnValues._giveRatio,
+              id: event.returnValues._id,
+              maxCap: event.returnValues._maxCap,
+              start: new Date(event.returnValues._start * 1000),
+              transactionHash: event.transactionHash,
+              blockHash: event.blockHash,
+              blockNumber: event.blockNumber,
+              address: event.address,
+              raw: event.raw,
+            });
+          }
+        });
+      dispatch(getAllPickupBasket(_.reverse(pickupBasketList)));
+      dispatch(txnLoading(false));
+    } catch (error) {
+      dispatch(txnLoading(false));
+      console.error(error);
     }
   };
 };
@@ -252,12 +306,13 @@ const createNewToken = (
 const createNewCrowdsale = (crowdsale: any) => {
   return async (dispatch: any, state: any) => {
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
-
+    console.log("create new crowdsale 1 ")
     const gasPrice = await web3.eth.getGasPrice();
     const { itemToSell, token, startDate, endDate, giveRatio, maxSupply } = crowdsale;
     const crowdsaleId = getRandomId();
     const blockNo = await web3.eth.getBlockNumber();
     const gas = blockNo.gasLimit - 100000;
+    console.log('crowdsale from store 1', crowdsale)
     return crowdsaleFactory.methods
       .createCrowdsale(
         crowdsaleId,
@@ -289,10 +344,14 @@ const createNewCrowdsale = (crowdsale: any) => {
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
         nonce: web3.utils.toHex(parseInt(nonce, 10)),
         gas: gas,
-      })
+      },
+      console.log("create new crowdsale 2")
+      )
       .then((data: any) => {
-        return data;
-      });
+        console.log('crowdsale from store 2', crowdsale)
+        console.log("create new crowdsale 3")
+        return data
+      })
   };
 };
 
@@ -312,6 +371,9 @@ const createNewPickUpBasket = (pickUpBox: any) => {
           name: pickUpBox.name,
           logoURL: pickUpBox.icon,
           description: pickUpBox.description,
+          FLID: pickUpBox.FLID, // FirstLife ID
+          AU: pickUpBox.AU,   // Admin URL
+          RU: pickUpBox.RU,   // Redeem URL
         }),
       )
       .send({
@@ -498,7 +560,11 @@ export {
   createNewCrowdsale,
   createNewPickUpBasket,
   fetchCrowdsaleList,
+  fetchPickupBasketList,
   getAllCrowdsale,
+  getAllPickupBasket,
   getCrowdsaleData,
   unlockCrowdsale,
+  getPickupBasketData
 };
+

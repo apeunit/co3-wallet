@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Flex } from 'rebass';
 import { Divider } from '@material-ui/core';
 
-const CrowdsaleListItemPlaceholder = (props: any) => {
+const PickupBasketItemPlaceholder = (props: any) => {
   return (
     <Flex marginTop="10px" width="100%" paddingX={5} flexDirection="row">
       <Flex marginRight="15px" justifyContent="start">
@@ -22,4 +22,4 @@ const CrowdsaleListItemPlaceholder = (props: any) => {
   );
 };
 
-export default CrowdsaleListItemPlaceholder;
+export default PickupBasketItemPlaceholder;

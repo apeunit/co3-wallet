@@ -14,8 +14,10 @@ import ConfirmPayment from '../components/ConfirmPayment';
 import { SelectToken } from '../components/SelectToken';
 import AppSettings from '../containers/AppSettings';
 import CrowdsaleDetail from '../containers/CrowdsaleDetail';
+import PickupBasketDetail from '../containers/PickupBasketDetail';
 import MainPage from '../containers/MainPage';
 import MarketPlace from '../containers/MarketPlace';
+import PickupBasketPlace from '../containers/PickupBasketPlace';
 import Minting from '../containers/Minting';
 import NewCoupon from '../containers/NewCoupon';
 import NewCrowdsale from '../containers/NewCrowdsale';
@@ -132,12 +134,20 @@ export const routes = [
     component: TransactionDetails,
   },
   {
-    path: '/crowdsale-detail',
+    path: `/crowdsale-detail/:crowdsaleName`,
     component: CrowdsaleDetail,
+  },
+  {
+    path: `/pickup-basket-detail/:pickupBasketName`,
+    component: PickupBasketDetail,
   },
   {
     path: '/marketplace',
     component: MarketPlace,
+  },
+  {
+    path: '/pickupbasketplace',
+    component: PickupBasketPlace,
   },
   {
     path: '/new-crowdsale',

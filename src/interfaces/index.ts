@@ -18,6 +18,24 @@ export interface IName {
 
 export interface IIconName {
   name:
+    // | 'pay'
+    // | 'receive'
+    // | 'history'
+    // | 'notifications'
+    // | 'ranking'
+    // | 'menu'
+    // | 'close'
+    // | 'flash'
+    // | 'flip'
+    // | 'back'
+    // | 'check'
+    // | 'upload'
+    // | 'uploading'
+    // | 'cloud'
+    // | 'add'
+    // | 'remove'
+    // | 'up'
+    // | 'arrowUp'
     | 'pay'
     | 'receive'
     | 'history'
@@ -28,15 +46,50 @@ export interface IIconName {
     | 'flash'
     | 'flip'
     | 'back'
+    | 'next'
     | 'check'
+    | 'backspace'
+    | 'add'
+    | 'up'
+    | 'dialpad'
+    | 'token'
+    | 'coupen'
+    | 'tag'
     | 'upload'
     | 'uploading'
     | 'cloud'
-    | 'add'
+    | 'clouddone'
+    | 'fileCopy'
+    | 'editIcon'
+    | 'mapIcon'
+    | 'walletIcon'
+    | 'compareIcon'
+    | 'totalSupply'
+    | 'errorIcon'
+    | 'dirBackArrow'
+    | 'sellIcon'
+    | 'sendIcon'
+    | 'mintIcon'
+    | 'arrowDown'
+    | 'arrowUp'
     | 'remove'
-    | 'up'
-    | 'arrowUp';
-  style?: any;
+    | 'cameraAlt'
+    | 'settings'
+    | 'arrowForward'
+    | 'warning'
+    | 'checkCircleRounded'
+    | 'errorOutline'
+    | 'defaultImage'
+    | 'locationOn'
+    | 'myLocation'
+    | 'arrowBackIos'
+    | 'insertDriveFile'
+    | 'dateRange'
+    | 'shoppingCart'
+    | 'calendarToday'
+    | 'hourglassEmpty'
+    | 'dowload';
+    style?: any;
 }
 
 export interface IWalletState {
@@ -86,6 +139,26 @@ export interface ICrowdsaleData {
   entity_type?: string;
 }
 
+export interface IPickupBasketData {
+  name: string;
+  icon?: string;
+  logoURL: string;
+  metadata?: string;
+  startDate?: string;
+  start?: string;
+  end?: string;
+  endDate?: string;
+  description?: string;
+  pickupsaleId: string;
+  maxSupply?: string;
+  itemToSell: string;
+  giveRatio?: number;
+  acceptRatio?: number;
+  token: string;
+  contractAddress: string;
+  entity_type?: string;
+}
+
 export interface IChainState {
   web3: object | null;
   contracts: object | null;
@@ -98,6 +171,7 @@ export interface IChainState {
   errorWeb3: object | null;
   tokenLoading: boolean | false;
   txnLoading: boolean | true;
+  pickupBasketList: IPickupBasketData[];
   crowdsaleList: ICrowdsaleData[];
   crowdsaleData: any;
 }

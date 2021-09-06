@@ -18,15 +18,21 @@ import { setModalData } from 'src/redux/actions/Modal';
 import { getPermalink, saveResource } from 'src/api/firstlife';
 import { saveWebhookAPI } from 'src/utils/helper';
 
-import { createNewPickUpBasket } from 'src/redux/actions/Chain';
+import { createNewPickUpBasket, getAllPickupBasket } from 'src/redux/actions/Chain';
 import { createPickupbasketSteps } from './commonData';
+// import PickupBasketImageCard from '../components/PickUpBasket/NewPickUpBasket/PickupBasketImageCard';
 import CrowdsaleImageCard from '../components/Crowdsale/NewCrowdsale/CrowdsaleImageCard';
 import BuyStep from '../components/PickUpBasket/NewPickUpBasket/BuyStep';
 import SupplyStep from '../components/PickUpBasket/NewPickUpBasket/SupplyStep';
 
+import { LIMIT } from 'src/config'; 
+import { useLazyQuery } from '@apollo/react-hooks';
+import { CrowdsaleSortEnum, GET_PICKUP_BASKET_ADDED } from 'src/api/middleware';
+import { IPickupBasketData } from 'src/interfaces';
+
 const isDev = process.env.NODE_ENV === 'development';
 
-const NewPickUpBox: React.FC = () => {
+const NewPickUpBasket: React.FC = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
@@ -40,14 +46,28 @@ const NewPickUpBox: React.FC = () => {
     description: '',
     productsAvailable: '',
     couponToGive: isDev ? '0xbD2Dc75534022E2bc79A49798115F9303734dA66' : '',
+    FLID: '',
+    AU:  '',
+    RU:  '',
   });
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
+  
+// -------------------------------------------------------------------------- */
+//                         Get data from the store                          */
+// -------------------------------------------------------------------------- */
+
   const { accessToken } = useSelector(({ co3uum }: any) => {
     return {
       accessToken: co3uum.accessToken
     };
   });
+
+  console.log('accesstoken', accessToken)
+
+  // -------------------------------------------------------------------------- */
+  //                                                   
+  // -------------------------------------------------------------------------- */
 
   const checkError = (_step: number, value: any, text: string) => {
     if (step === _step && value === '') {
@@ -57,6 +77,10 @@ const NewPickUpBox: React.FC = () => {
     }
   };
 
+  // -------------------------------------------------------------------------- */
+  //                                                   
+  // -------------------------------------------------------------------------- */
+
   const pickupbasketData = _get(history, 'location.state.pickupbasket', undefined);
 
   useEffect(() => {
@@ -65,6 +89,11 @@ const NewPickUpBox: React.FC = () => {
       onchangePickupbasket(pickupbasketData);
     }
   }, [pickupbasketData]);
+
+    // -------------------------------------------------------------------------- */
+  //                                                   
+  // -------------------------------------------------------------------------- */
+
 
   const handleEditStep = () => {
     setStep(5)
@@ -138,6 +167,55 @@ const NewPickUpBox: React.FC = () => {
     }
   };
 
+  // -------------------------------------------------------------------------- */
+  //                                                   
+  // -------------------------------------------------------------------------- */
+
+  const [pickupBasketAddedQuery, { data }] = useLazyQuery(GET_PICKUP_BASKET_ADDED, {
+    fetchPolicy: 'no-cache',
+    variables: {
+      filter: {},
+      skip: 0,
+      limit: LIMIT,
+      sort: CrowdsaleSortEnum.DESC,
+    },
+  });
+
+  useEffect(() => {
+    pickupBasketAddedQuery();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+    // -------------------------------------------------------------------------- */
+  //                                                   
+  // -------------------------------------------------------------------------- */
+
+  useEffect(() => {
+    if (data && data.pickupBasketAddedNotificationMany) {
+      getPickupBasketUpdatedList();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  const getPickupBasketUpdatedList = async () => {
+    const cdList: any = [];
+    data.pickupBasketAddedNotificationMany.map((pickupAdded: IPickupBasketData) => {
+      const metaData = pickupAdded?.metadata && pickupAdded?.metadata?.includes('name') && JSON.parse(pickupAdded?.metadata.replace(/(\r\n|\n|\r)/gm, ""));
+      const start = pickupAdded?.start && pickupAdded?.start?.includes('1970') ? Math.round(new Date(pickupAdded?.start).getTime() * 1000) : pickupAdded?.start;
+      const end = pickupAdded?.end && pickupAdded?.end?.includes('1970') ? Math.round(new Date(pickupAdded?.end).getTime() * 1000) : pickupAdded?.end;
+      metaData && metaData.token && cdList.push({ ...pickupAdded, start, end, ...metaData });
+
+      return cdList;
+    });
+    if (cdList.length > 0) {
+      dispatch(getAllPickupBasket(cdList));
+    }
+  };
+
+   // -------------------------------------------------------------------------- */
+  //                                                   
+  // -------------------------------------------------------------------------- */
+
   const handleCreatePickUpBasket = async () => {
     setLoader(true);
     let callbackParam: string | null;
@@ -152,17 +230,17 @@ const NewPickUpBox: React.FC = () => {
     receipt
       .then(async (res: any) => {
         if (res) {
-          const crowdsaleDataRes = _get(res, 'events.PickupbasketAdded.returnValues');
+          const pickupBasketDataRes = _get(res, 'events.PickupbasketAdded.returnValues');
           if (callbackParam) {
             window.location.href = `${callbackParam}${
               callbackParam.includes('?') ? '&' : '?'
-            }_id=${crowdsaleDataRes._contractAddress}`;
+            }_id=${pickupBasketDataRes._contractAddress}`;
           }
           if (webHookParam) {
-            await saveWebhookAPI(webHookParam, crowdsaleDataRes._contractAddress, res);
+            await saveWebhookAPI(webHookParam, pickupBasketDataRes._contractAddress, res);
           }
           setLoader(false);
-          console.log(res);
+          console.log("res from pickup box", res);
           history.push('/');
           dispatch(
             setModalData(
@@ -261,13 +339,20 @@ const NewPickUpBox: React.FC = () => {
             />
           )}
           {step === 2 && (
+            // <PickupBasketImageCard
+            //   pickupBasket={pickupbasket}
+            //   handleChangeIcon={handleChangeIcon}
+            //   uploading={uploading}
+            //   error={error}
+            //   icon={pickupbasket.icon}
+            // />
             <CrowdsaleImageCard
-              crowdsale={pickupbasket}
-              handleChangeIcon={handleChangeIcon}
-              uploading={uploading}
-              error={error}
-              icon={pickupbasket.icon}
-            />
+            crowdsale={pickupbasket}
+            handleChangeIcon={handleChangeIcon}
+            uploading={uploading}
+            error={error}
+            icon={pickupbasket.icon}
+          />
           )}
           {step === 3 && (
             <FramerSlide>
@@ -277,8 +362,8 @@ const NewPickUpBox: React.FC = () => {
                   value={pickupbasket.description}
                   onChangeValue={(e: any) =>  handleChangePickupbasket(e, 'description')}
                   label={t('common.short_description')}
-                  placeholder={t('new_crowdsale.description')}
-                  msg={t('new_crowdsale.description_msg')}
+                  placeholder={t('new_pickupbox.description')}
+                  msg={t('new_pickupbox.description_msg')}
                   maxLength="200"
                   defaultRows={5}
                 />
@@ -315,4 +400,4 @@ const NewPickUpBox: React.FC = () => {
   );
 };
 
-export default NewPickUpBox;
+export default NewPickUpBasket;

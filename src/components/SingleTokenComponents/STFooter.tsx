@@ -26,6 +26,11 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
       icon: 'settings',
       url: '/settings',
     },
+    {
+      label: t('pickupbasketplace.label'),
+      icon: 'clouddone',
+      url: '/pickupbasketplace',
+    },
   ]);
 
   const { _pilot } = useSelector(({ pilot }: any) => {
@@ -52,6 +57,8 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_pilot]);
+
+  console.log("pilot", _pilot)
 
   return (
     <Flex

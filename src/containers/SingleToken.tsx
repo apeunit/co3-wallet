@@ -17,6 +17,7 @@ const SingleToken: React.FC = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
+  
   // -------------------------------------------------------------------------- */
   //                           Get data from the store                          */
   // -------------------------------------------------------------------------- */

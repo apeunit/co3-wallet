@@ -21,24 +21,28 @@ import DateInput from '../components/DateInput';
 import { SelectAca } from 'src/components/SelectAca';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { createNewCrowdsale, getAllCrowdsale, unlockCrowdsale, transferTokens } from 'src/redux/actions/Chain';
-import { COUPON_PURPOSE } from 'src/config';
+import { createNewCrowdsale, fetchTokenByTicker, getAllCrowdsale, transferTokens, unlockCrowdsale } from 'src/redux/actions/Chain';
+import { COUPON_PURPOSE, LIMIT } from 'src/config';
+import ScenarioJSON from '../config/scenario.config.json';
 import { setModalData } from 'src/redux/actions/Modal';
-import { getPermalink, getACAList, saveCrowdsaleData, saveResource } from 'src/api/firstlife';
+import { getACAList, getPermalink, saveCrowdsaleData, saveResource } from 'src/api/firstlife';
 import Loading from '../components/Loading';
-// import { LIMIT, THING_ID } from 'src/config'; // probably not needed anymore
-import { LIMIT } from 'src/config';
-import { saveWebhookAPI } from 'src/utils/helper';
-import { useLazyQuery } from '@apollo/react-hooks';
-import { CrowdsaleSortEnum, GET_CROWDSALE_ADDED } from 'src/api/middleware';
+import { getTokenSymbol, saveWebhookAPI } from 'src/utils/helper';
+import { useLazyQuery, useQuery } from '@apollo/react-hooks';
+import { CrowdsaleSortEnum, GET_CROWDSALE_ADDED, GET_ALL_TOKENS } from 'src/api/middleware';
 import { ICrowdsaleData } from 'src/interfaces';
+
 const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
+interface IProps {
+  crowdsale: ICrowdsaleData;
+  tokenList: any;
+}
 
 const isDev = process.env.NODE_ENV === 'development';
 const endDateInt = new Date(new Date().setMonth(new Date().getMonth() + 1));
 
-const NewCrowdsale: React.FC = () => {
+const NewCrowdsale: React.FC<IProps> = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const location = useLocation();
@@ -47,7 +51,6 @@ const NewCrowdsale: React.FC = () => {
   const [title, setTitle] = useState<string>(t('new_crowdsale.label'));
   const [contractLabel, changeContractLabel] = useState('');
   const [loader, setLoader] = useState(false);
-
   const [crowdsale, onchangeCrowdsale] = useState({
     name: '',
     icon: '',
@@ -57,7 +60,8 @@ const NewCrowdsale: React.FC = () => {
     contract: '',
     contractLabel: '',
     maxSupply: '',
-    itemToSell: isDev ? '0xbD2Dc75534022E2bc79A49798115F9303734dA66' : '',
+    // itemToSell: isDev ? '0xbD2Dc75534022E2bc79A49798115F9303734dA66' : '',
+    itemToSell: '',
     giveRatio: '',
     token: isDev ? '0x26BF83F78805f107740a0DafC02167e4d4d7349c' : '',
     FLID: '',
@@ -76,14 +80,37 @@ const NewCrowdsale: React.FC = () => {
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
   const [acaList, setAcaList] = useState([]);
+  const [tokenList, setTokenList] = useState([]);
+  console.log("tokenlist", tokenList)
 
-  const { accessToken } = useSelector(({ co3uum, chain }: any) => {
+// -------------------------------------------------------------------------- */
+//                         Get data from the store                          */
+// -------------------------------------------------------------------------- */
+
+  const { accessToken, contracts } = useSelector(({ co3uum, chain }: any) => {
     return {
       accessToken: co3uum.accessToken,
-      // activityID: co3uum.activityID,
-      // crowdsaleList: chain.crowdsaleList,
+      contracts: chain.contracts,
     };
   });
+  console.log('accesstoken', accessToken)
+
+
+//-------------------------------------------------------------------- */
+//                              get all tokens
+//-------------------------------------------------------------------- */
+
+  const tokenQueryData = useQuery(GET_ALL_TOKENS);
+
+  useEffect(() => {
+    if (!tokenQueryData.loading && tokenQueryData.data && tokenQueryData.data.tokenAddedMany) {
+      setTokenList(tokenQueryData.data.tokenAddedMany);
+    }
+  }, [tokenQueryData]);
+
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
 
   const checkError = (_step: number, value: any, text: string) => {
     if (step === _step && value === '') {
@@ -92,6 +119,10 @@ const NewCrowdsale: React.FC = () => {
       return true;
     }
   };
+
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
 
   const crowdsaleData = _get(history, 'location.state.crowdsale', undefined);
 
@@ -102,12 +133,21 @@ const NewCrowdsale: React.FC = () => {
     }
   }, [crowdsaleData]);
 
+  // -------------------------------------------------------------------------- */
+  //                     ACA List
+  // -------------------------------------------------------------------------- */
+
+
   useEffect(() => {
     getACAList(accessToken).then((res: any) => {
       setAcaList(res.data.things.features)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+   // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
 
   const handleEditStep = () => {
     setStep(8)
@@ -169,6 +209,7 @@ const NewCrowdsale: React.FC = () => {
 
   const handleChangeCrowdsale = (e: any, key: string) => {
     onchangeCrowdsale({ ...crowdsale, [key]: e });
+    console.log("crowdsale in new_crowdsale_1", crowdsale)
     setError('');
   };
 
@@ -215,6 +256,10 @@ const NewCrowdsale: React.FC = () => {
     }
   };
 
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
+
   const [crowdsaleAddedQuery, { data }] = useLazyQuery(GET_CROWDSALE_ADDED, {
     fetchPolicy: 'no-cache',
     variables: {
@@ -230,6 +275,11 @@ const NewCrowdsale: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
+
   useEffect(() => {
     if (data && data.crowdsaleAddedNotificationMany) {
       getCrowdsaleUpdatedList();
@@ -240,7 +290,7 @@ const NewCrowdsale: React.FC = () => {
   const getCrowdsaleUpdatedList = async () => {
     const cdList: any = [];
     data.crowdsaleAddedNotificationMany.map((crowdAdded: ICrowdsaleData) => {
-      const metaData = crowdAdded?.metadata && crowdAdded?.metadata?.includes('name') && JSON.parse(crowdAdded?.metadata.replace(/(\r\n|\n|\r)/gm, ""));
+      const metaData = crowdAdded?.metadata as any || null
       const start = crowdAdded?.start && crowdAdded?.start?.includes('1970') ? Math.round(new Date(crowdAdded?.start).getTime() * 1000) : crowdAdded?.start;
       const end = crowdAdded?.end && crowdAdded?.end?.includes('1970') ? Math.round(new Date(crowdAdded?.end).getTime() * 1000) : crowdAdded?.end;
       metaData && metaData.token && cdList.push({ ...crowdAdded, start, end, ...metaData });
@@ -252,6 +302,19 @@ const NewCrowdsale: React.FC = () => {
     }
   };
 
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
+
+
+  useEffect(() => {
+    if (contracts?.tokenFactory) {
+      dispatch(fetchTokenByTicker(ScenarioJSON.athens.tokens[0]));
+      setLoader(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contracts]);
+
   const handleCreateCrowdsale = async () => {
     setLoader(true);
     let callbackParam: string | null;
@@ -260,6 +323,7 @@ const NewCrowdsale: React.FC = () => {
       const params = new URLSearchParams(location.search);
       callbackParam = params.get('callback');
       webHookParam = params.get('webhook');
+      console.log('params', params)
     }
 
     const cddata = {
@@ -278,7 +342,7 @@ const NewCrowdsale: React.FC = () => {
         aca: `https://api.co3-torino.firstlife.org/v6/fl/Things/${crowdsale.aca.id}`,
         categories: [],
         zoom_level: 18,
-        entity_type: 'CO3_ACTIVITY', // this has to be called CO3_CROWDSALE (not CO3_ACTIVITY)
+        entity_type: 'CO3_ACTIVITY',
       },
       geometry: {
         type: 'Point',
@@ -291,19 +355,26 @@ const NewCrowdsale: React.FC = () => {
 
     saveCrowdsaleData(accessToken, cddata).then(async (res: any) => {
       const firstlifeId = res.data.id
+      const datatest = res.data
+      const resTest = res
       console.log('firstlifeId', firstlifeId)
-      crowdsale.FLID = firstlifeId
-      crowdsale.TTA = ''
-      crowdsale.TTG = ''
-      crowdsale.AU = ''
-      crowdsale.RU = ''
+      console.log('data', datatest)
+      console.log('res', resTest)
+      console.log('crowdsale from new crowd sale 2', crowdsale)
       console.log('crowdsaledata', crowdsale)
+      crowdsale.FLID = firstlifeId
+      crowdsale.TTA = getTokenSymbol(tokenList, crowdsale.token) // symbol (ticker) of the token used to participate to the crowdsale
+      crowdsale.TTG = getTokenSymbol(tokenList, crowdsale.token) //  symbol (ticker) of the Coupon that users receive when the crowdsale ends
+      crowdsale.AU = `${window.location.host}?access_token=${accessToken}`
+      crowdsale.RU = `${window.location.host}?access_token=${accessToken}&redeem=${crowdsale.token}` // crowdsale token is place holder i have to look for the redeem code
       const receipt: any = dispatch(createNewCrowdsale(crowdsale));
       receipt
         .then(async (res: any) => {
+          console.log('receipt', receipt)
+          console.log('tokenlist', tokenList)
           if (res) {
             const crowdsaleDataRes = _get(res, 'events.CrowdsaleAdded.returnValues');
-            const contractAddress = crowdsaleDataRes._contractAddress; 
+            const contractAddress = crowdsaleDataRes._contractAddress;
             console.log(res);
             await dispatch(transferTokens({
               contractAddress: crowdsale.itemToSell,
@@ -320,7 +391,7 @@ const NewCrowdsale: React.FC = () => {
             ));
 
             // await dispatch(unlockCrowdsale(contractAddress))
-          
+
             if (callbackParam) {
               window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
                 }_id=${crowdsaleDataRes._contractAddress}`;
@@ -329,7 +400,8 @@ const NewCrowdsale: React.FC = () => {
               await saveWebhookAPI(webHookParam, crowdsaleDataRes._contractAddress, res);
             }
             setLoader(false);
-            console.log(res);
+            // console.log(res);
+            // console.log(crowdsale)
             history.push('/');
             dispatch(
               setModalData(
@@ -378,6 +450,7 @@ const NewCrowdsale: React.FC = () => {
           'permission',
         ),
       );
+
       return;
     });
   };

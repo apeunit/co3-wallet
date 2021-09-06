@@ -44,6 +44,26 @@ const BALANCE_NOTIFY_QUERY: any = gql`
 `;
 
 /*
+  Get Tokens List of specific ethAddress (wallet owner)
+*/
+const GET_TOKEN: any = gql`
+  query getCoupon($contractAddress: String!) {
+    balanceNotificationMany(filter: { contractAddress: $contractAddress }) {
+      _id
+      name
+      token_symbol
+      computed_at
+      amount
+      logoURL
+      purpose
+      decimals
+      contractAddress
+      owner
+    }
+  }
+`;
+
+/*
   Get Token of specific ethAddress (wallet owner) and Token with their contract Address
 */
 const BALANCE_NOTIFY_QUERY_TOKEN: any = gql`
@@ -112,6 +132,28 @@ const GET_CROWDSALE_ADDED: any = gql`
 `;
 
 /*
+  Get pickupBasket List from middleware
+*/
+const GET_PICKUP_BASKET_ADDED: any = gql`
+  query pickupBasketAddedNotificationMany(
+    $filter: FilterFindManyPickUpBasketAddedInput
+    $skip: Int
+    $sort: SortFindManyPickUpBasketAddedInput
+  ) {
+    pickUpBasketAddedNotificationMany(filter: $filter, skip: $skip, sort: $sort) {
+      identifier
+      timestamp
+      contractAddress
+      giveRatio
+      productsAvailable
+      owner
+      metadata
+      _id
+    }
+  }
+`;
+
+/*
   Crowdsale List Sort ENUM
 */
 enum CrowdsaleSortEnum {
@@ -123,7 +165,9 @@ export {
   TRANSFER_NOTIFY_QUERY,
   BALANCE_NOTIFY_QUERY,
   GET_CROWDSALE_ADDED,
+  GET_PICKUP_BASKET_ADDED,
   CrowdsaleSortEnum,
   GET_ALL_TOKENS,
   BALANCE_NOTIFY_QUERY_TOKEN,
+  GET_TOKEN
 };

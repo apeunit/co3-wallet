@@ -9,7 +9,7 @@ const AppRouter = () => {
         {routes.map((route: any, i: number) => (
           <RouteWithSubRoutes key={i} {...route} />
         ))}
-      </Switch>
+      </Switch> 
     </Router>
   );
 };

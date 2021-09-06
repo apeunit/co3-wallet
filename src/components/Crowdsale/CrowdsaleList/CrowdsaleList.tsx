@@ -19,6 +19,8 @@ interface IProps {
 const CrowdsaleList: React.FC<IProps> = ({ crowdsaleList, tokenList, fetchMore, limit }) => {
   const { t } = useTranslation();
 
+   console.log("crowdsale list", crowdsaleList)
+
   const { txnLoading } = useSelector(
     ({ chain }: any) => {
       return {
@@ -64,7 +66,6 @@ const CrowdsaleList: React.FC<IProps> = ({ crowdsaleList, tokenList, fetchMore, 
               <Image marginBottom="35px" src={EmptyImg} />
               <Text width="195px" textAlign="center">{t('marketplace.no_crowdsale')}</Text>
             </Flex>
-
           ) : (
             crowdsaleList && crowdsaleList.length > 0 && crowdsaleList.map((crowdsale: ICrowdsaleData, index: number) => (
               <CrowdsaleListItem key={index} crowdsale={crowdsale} tokenList={tokenList} />

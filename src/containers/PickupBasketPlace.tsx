@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Flex } from 'rebass';
-import CrowdsaleList from 'src/components/Crowdsale/CrowdsaleList/CrowdsaleList';
+import PickupBasketList from 'src/components/PickUpBasket/PickUpBasketList/PickupBasketList';
 import STFooter from 'src/components/SingleTokenComponents/STFooter';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllCrowdsale } from 'src/redux/actions/Chain';
-import { CrowdsaleSortEnum, GET_ALL_TOKENS, GET_CROWDSALE_ADDED } from '../api/middleware';
+import { getAllPickupBasket } from 'src/redux/actions/Chain';
+import { CrowdsaleSortEnum, GET_ALL_TOKENS, GET_PICKUP_BASKET_ADDED } from '../api/middleware';
 import { useLazyQuery, useQuery } from '@apollo/react-hooks';
-import { ICrowdsaleData } from 'src/interfaces';
+import { IPickupBasketData } from 'src/interfaces';
 
-const LIMIT = 50;
-const MarketPlace = () => {
+const LIMIT = 20;
+const PickupBasketPlace = () => {
   const dispatch = useDispatch();
   const [tokenList, setTokenList] = useState([]);
-  const { crowdsaleList } = useSelector(
+  const { pickupBasketList } = useSelector(
     ({ chain }: any) => {
       return {
-        crowdsaleList: chain.crowdsaleList,
+        pickupBasketList: chain.pickupBasketList,
       };
     },
   );
@@ -23,7 +23,7 @@ const MarketPlace = () => {
   const tokenQueryData = useQuery(GET_ALL_TOKENS);
 
   // -------------------------------------------------------------------------- */
-  //                                     
+  //
   // -------------------------------------------------------------------------- */
 
   useEffect(() => {
@@ -31,63 +31,63 @@ const MarketPlace = () => {
       setTokenList(tokenQueryData.data.tokenAddedMany);
     }
   }, [tokenQueryData]);
-  
+
   // -------------------------------------------------------------------------- */
-  //                                     
+  //
   // -------------------------------------------------------------------------- */
 
-  const [crowdsaleAddedQuery, { data }] = useLazyQuery(GET_CROWDSALE_ADDED, {
+  const [pickupBasketAddedQuery, { data }] = useLazyQuery(GET_PICKUP_BASKET_ADDED, {
     fetchPolicy: 'no-cache',
     variables: {
       filter: {},
       skip: 0,
-      limit: LIMIT,
+      //limit: LIMIT,
       sort: CrowdsaleSortEnum.DESC,
     },
   });
 
   useEffect(() => {
-    crowdsaleAddedQuery();
+    pickupBasketAddedQuery();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // -------------------------------------------------------------------------- */
-  //                                     
+  //
   // -------------------------------------------------------------------------- */
 
   useEffect(() => {
-    if (data && data.crowdsaleAddedNotificationMany) {
-      getCrowdsaleUpdatedList();
+    if (data && data.pickupBasketAddedNotificationMany) {
+      getPickupBasketUpdatedList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
-  const getCrowdsaleUpdatedList = async () => {
+  const getPickupBasketUpdatedList = async () => {
     const cdList: any = [];
-    data.crowdsaleAddedNotificationMany.map((crowdAdded: ICrowdsaleData) => {
+    data.pickupBasketAddedNotificationMany.map((pickupAdded: IPickupBasketData) => {
 
-      const metaData = crowdAdded?.metadata as any || null
-      const start = crowdAdded?.start && crowdAdded?.start?.includes('1970') ? Math.round(new Date(crowdAdded?.start).getTime() * 1000) : crowdAdded?.start;
-      const end = crowdAdded?.end && crowdAdded?.end?.includes('1970') ? Math.round(new Date(crowdAdded?.end).getTime() * 1000) : crowdAdded?.end;
-      metaData && metaData.token && cdList.push({ ...crowdAdded, start, end, ...metaData });
+      const metaData = pickupAdded?.metadata && pickupAdded?.metadata?.includes('name') && JSON.parse(pickupAdded?.metadata.replace(/(\r\n|\n|\r)/gm, ""));
+      const start = pickupAdded?.start && pickupAdded?.start?.includes('1970') ? Math.round(new Date(pickupAdded?.start).getTime() * 1000) : pickupAdded?.start;
+      const end = pickupAdded?.end && pickupAdded?.end?.includes('1970') ? Math.round(new Date(pickupAdded?.end).getTime() * 1000) : pickupAdded?.end;
+      metaData && metaData.token && cdList.push({ ...pickupAdded, start, end, ...metaData });
 
       return cdList;
     });
     if (cdList.length > 0) {
-      dispatch(getAllCrowdsale(cdList));
+      dispatch(getAllPickupBasket(cdList));
     }
   };
 
   // -------------------------------------------------------------------------- */
-  //                                     
+  //
   // -------------------------------------------------------------------------- */
 
   return (
     <Flex>
-      <CrowdsaleList limit={LIMIT} fetchMore={crowdsaleAddedQuery} crowdsaleList={crowdsaleList} tokenList={tokenList} />
+      <PickupBasketList limit={LIMIT} fetchMore={pickupBasketAddedQuery} pickupBasketList={pickupBasketList} tokenList={tokenList} />
       <STFooter iconActive="sellIcon" />
     </Flex>
   );
 };
 
-export default MarketPlace;
+export default PickupBasketPlace;

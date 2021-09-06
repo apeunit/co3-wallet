@@ -1,29 +1,35 @@
 import React from 'react';
 import { Flex, Image, Text } from 'rebass';
 import { Divider } from '@material-ui/core';
-import { ICrowdsaleData } from 'src/interfaces';
+import { IPickupBasketData } from 'src/interfaces';
 import { getTokenSymbol } from 'src/utils/helper';
-import { getCrowdsaleData } from 'src/redux/actions/Chain';
+import { getPickupBasketData } from 'src/redux/actions/Chain';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 interface IProps {
-  crowdsale: ICrowdsaleData;
+  pickupBasket: IPickupBasketData;
   tokenList: any;
 }
 
-const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
+const PickupBasketListItem: React.FC<IProps> = ({ pickupBasket, tokenList }) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const kebabCase = ( string : string ) => string
+  .replace(/([a-z])([A-Z])/g, "$1-$2")
+  .replace(/[\s_]+/g, '-')
+  .toLowerCase();
 
   const handleCrowdsaleItem = () => {
     dispatch(
-      getCrowdsaleData({
-        ...crowdsale,
-        crowdSymbol: getTokenSymbol(tokenList, crowdsale.token),
+      getPickupBasketData({
+        ...pickupBasket,
+        crowdSymbol: getTokenSymbol(tokenList, pickupBasket.token),
       }),
     );
-    history.push('/crowdsale-detail');
+    history.push(`/pickup-basket-detail/${kebabCase(pickupBasket.name)}-${(pickupBasket.itemToSell).slice(-3)}`);
+    console.log("token symbol", pickupBasket)
+
   };
 
   return (
@@ -35,18 +41,18 @@ const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
       onClick={handleCrowdsaleItem}
     >
       <Flex marginRight="5px" justifyContent="start" width="90px">
-        <Image height="fit-content" src={crowdsale?.logoURL} />
+        <Image height="fit-content" src={pickupBasket?.logoURL} />
       </Flex>
       <Flex flexDirection="column" width="70%">
         <Flex marginBottom="15px" justifyContent="space-between" width="100%">
           <Text marginRight="10px" width="180px" fontSize="16px">
-            {crowdsale.name}
+            {pickupBasket.name}
             <Text color="#00000099" height="45px" className="ellipsi-2">
-              {crowdsale.description}
+              {pickupBasket.description}
             </Text>
           </Text>
           <Text marginLeft="auto" marginTop="5px" fontSize="13px" fontWeight="bold" color="#3048D9">
-            {crowdsale.giveRatio} <span>{getTokenSymbol(tokenList, crowdsale.token)}</span>
+            {pickupBasket.giveRatio} <span>{getTokenSymbol(tokenList, pickupBasket.token)}</span>
           </Text>
         </Flex>
         <Divider />
@@ -55,4 +61,4 @@ const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
   );
 };
 
-export default CrowdsaleListItem;
+export default PickupBasketListItem;

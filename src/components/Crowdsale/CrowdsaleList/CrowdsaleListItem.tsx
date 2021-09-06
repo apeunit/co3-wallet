@@ -15,6 +15,10 @@ interface IProps {
 const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
   const dispatch = useDispatch();
   const history = useHistory();
+  const kebabCase = ( string : string ) => string
+  .replace(/([a-z])([A-Z])/g, "$1-$2")
+  .replace(/[\s_]+/g, '-')
+  .toLowerCase();
 
   const handleCrowdsaleItem = () => {
     dispatch(
@@ -23,8 +27,10 @@ const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
         crowdSymbol: getTokenSymbol(tokenList, crowdsale.token),
       }),
     );
-    history.push('/crowdsale-detail');
+    history.push(`/crowdsale-detail/${kebabCase(crowdsale.name)}-${(crowdsale.itemToSell).slice(-3)}`);
   };
+
+  // console.log('tokenlist', tokenList)
 
   return (
     <Flex

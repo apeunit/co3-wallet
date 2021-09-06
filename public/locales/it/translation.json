@@ -88,7 +88,7 @@
     "item_to_sell": "Articolo da vendere",
     "item_sold": "Articolo in vendita",
     "item_sell_msg": "Quale coupon vuoi vendere?",
-    "max_supply": "Fornitura maxima",
+    "max_supply": "Fornitura massima",
     "name_placeholder": "Inserisci il nome",
     "campaign_msg": "Il nome della tua campagna",
     "campaign_duration":"Durata Campagne",
@@ -101,7 +101,7 @@
     "location_msg":"La tua campagna ha una posizione?",
     "sell_msg":"Quanto dovrai almeno vendere",
     "sell_question":"qual è il massimo che puoi vendere?",
-    "give_ratio":"Price",
+    "give_ratio":"Prezzo",
     "give_ratio_msg":"Quanto gettone vuoi dare",
     "payment_token":"Token di pagamento",
     "instance_cost":"Quanto costerà un'istanza?",
@@ -139,7 +139,7 @@
     "seconds":"secondi",
     "no_details":"Dettagli su crowdsale non disponibili.",
     "started_on":"Iniziato il",
-    "buy_now": "ACQUISTA ORA",
+    "buy_now": "PARTECIPA ORA",
     "no_crowdsale": "Non hai ancora creato alcun mercato"
   },
   "new_token": {

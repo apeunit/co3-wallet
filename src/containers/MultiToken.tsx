@@ -31,10 +31,12 @@ const modalOptions = {
  */
 const MultiToken: React.FC = () => {
   const dispatch = useDispatch();
-  const { t } = useTranslation();
+  const dragger = useRef(null);
   const history = useHistory();
+  const { t } = useTranslation();
   const recentbound = getBound();
   const recentPos = getPos();
+
   const [tokenList, setTokenList] = useState([]);
   const [couponList, setCouponList] = useState([]);
   const [tokenLoading, setTokenLoading] = useState(true);
@@ -42,11 +44,10 @@ const MultiToken: React.FC = () => {
   const [createPayment, setCreatePayment] = useState(false);
   const [transition, setTransition] = useState(false);
   const [bound, setBound] = useState(getBound());
-  const dragger = useRef(null);
   const [controlledPosition, setControlledPosition] = useState(getPos());
 
   // -------------------------------------------------------------------------- */
-  //                           Get data from the store                          */
+  //               Get data from the store                          */
   // -------------------------------------------------------------------------- */
 
   const { tokensDataList, errorWeb3, features, accessToken, modalOpen } = useSelector(
@@ -62,6 +63,10 @@ const MultiToken: React.FC = () => {
     shallowEqual,
   );
 
+  // -------------------------------------------------------------------------- */
+  //               filter tokens and coupons from tokendatalist                       
+  // -------------------------------------------------------------------------- */
+
   useEffect(() => {
     if (tokensDataList.length > 0) {
         setTokenLoading(false);
@@ -73,6 +78,10 @@ const MultiToken: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensDataList, tokenLoading, errorWeb3]);
 
+// -------------------------------------------------------------------------- */
+//
+// -------------------------------------------------------------------------- */
+
   const onControlledDrag = (e: any, pos: any) => {
     if (tokenLoading === false && couponList.length === 0) {
       return;
@@ -81,6 +90,10 @@ const MultiToken: React.FC = () => {
       setControlledPosition({ x, y });
     }
   };
+
+// -------------------------------------------------------------------------- */
+//
+// -------------------------------------------------------------------------- */
 
   const BoundToTop = (val: any) => {
     if (val) {
@@ -94,6 +107,10 @@ const MultiToken: React.FC = () => {
       setTransition(true);
     }, 1000);
   };
+
+// -------------------------------------------------------------------------- */
+//
+// -------------------------------------------------------------------------- */
 
   useEffect(() => {
     setBound(recentbound);
@@ -110,6 +127,10 @@ const MultiToken: React.FC = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenLoading, couponList, tokenList]);
+
+// -------------------------------------------------------------------------- */
+//
+// -------------------------------------------------------------------------- */
 
   useEffect(() => {
     if (!getApolloConnected() && !modalOpen) {
@@ -132,6 +153,10 @@ const MultiToken: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getApolloConnected(), modalOpen]);
+
+// -------------------------------------------------------------------------- */
+//
+// -------------------------------------------------------------------------- */
 
   const errorModalMsg = (title: string) => (
     <Flex width="max-content" margin="auto" className="error-modal">
@@ -157,6 +182,10 @@ const MultiToken: React.FC = () => {
       </Button>
     </Flex>
   );
+
+// -------------------------------------------------------------------------- */
+//
+// -------------------------------------------------------------------------- */
 
   const displayLoginPopup = () => {
     try {
