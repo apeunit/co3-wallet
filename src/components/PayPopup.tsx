@@ -19,7 +19,7 @@ const modal = {
   visible: { opacity: 1, y: 0, transition: { delay: 0.15 } },
 };
 
-export const PayPopup = ({ setCreatePayment }: any) => {
+export const PayPopup = ({ setCreatePayment, state, title }: any) => {
   const { t } = useTranslation();
   const history = useHistory();
   const location = useLocation();
@@ -53,6 +53,7 @@ export const PayPopup = ({ setCreatePayment }: any) => {
           history.push({
             pathname: path,
             search: location.search,
+            state,
           })
       } catch (err) {
         dispatch(
@@ -68,6 +69,7 @@ export const PayPopup = ({ setCreatePayment }: any) => {
       history.push({
         pathname: path,
         search: location.search,
+        state,
       })
     }
   };
@@ -115,7 +117,7 @@ export const PayPopup = ({ setCreatePayment }: any) => {
                 }}
               >
                 <Text paddingLeft={4} paddingY={9}>
-                  {t('pay_popup.pay')}
+                  {t(title || 'pay_popup.pay')}
                 </Text>
                 <ActionButtonGroup
                   paddingBottom={10}

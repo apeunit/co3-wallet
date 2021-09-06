@@ -40,7 +40,7 @@ const SearchUser = () => {
   });
 
   const history = useHistory();
-  const location = useLocation();
+  const location = useLocation<{token?: any}>();
   const dispatch = useDispatch();
 
   const [search, setSearch] = useState('');
@@ -69,7 +69,7 @@ const SearchUser = () => {
     const profile: IProfile = await getProfileById(accessToken, userId)
     dispatch(setToAddress(profile?.result?.blockchain_public_key));
     history.push({
-      pathname: '/select-token',
+      pathname: location?.state?.token ? '/payment' : '/select-token',
       search: location.search,
       state: location.state
     });

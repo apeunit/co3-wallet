@@ -21,12 +21,13 @@ import DateInput from '../components/DateInput';
 import { SelectAca } from 'src/components/SelectAca';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { createNewCrowdsale, getAllCrowdsale } from 'src/redux/actions/Chain';
+import { createNewCrowdsale, getAllCrowdsale, unlockCrowdsale, transferTokens } from 'src/redux/actions/Chain';
+import { COUPON_PURPOSE } from 'src/config';
 import { setModalData } from 'src/redux/actions/Modal';
-import { getPermalink,getACAList, saveCrowdsaleData, saveResource } from 'src/api/firstlife';
+import { getPermalink, getACAList, saveCrowdsaleData, saveResource } from 'src/api/firstlife';
 import Loading from '../components/Loading';
 // import { LIMIT, THING_ID } from 'src/config'; // probably not needed anymore
-import { LIMIT } from 'src/config'; 
+import { LIMIT } from 'src/config';
 import { saveWebhookAPI } from 'src/utils/helper';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { CrowdsaleSortEnum, GET_CROWDSALE_ADDED } from 'src/api/middleware';
@@ -62,13 +63,13 @@ const NewCrowdsale: React.FC = () => {
     FLID: '',
     TTA: '',
     TTG: '',
-    AU:  '',
-    RU:  '',
+    AU: '',
+    RU: '',
     aca: {
-      id:'',
+      id: '',
       geolocation: {
-        long:0,
-        lang:0
+        long: 0,
+        lang: 0
       }
     },
   });
@@ -102,7 +103,7 @@ const NewCrowdsale: React.FC = () => {
   }, [crowdsaleData]);
 
   useEffect(() => {
-    getACAList(accessToken).then((res : any) => {
+    getACAList(accessToken).then((res: any) => {
       setAcaList(res.data.things.features)
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -288,24 +289,41 @@ const NewCrowdsale: React.FC = () => {
       },
     };
 
-    saveCrowdsaleData(accessToken, cddata).then(async (res:any) => {
+    saveCrowdsaleData(accessToken, cddata).then(async (res: any) => {
       const firstlifeId = res.data.id
       console.log('firstlifeId', firstlifeId)
       crowdsale.FLID = firstlifeId
       crowdsale.TTA = ''
       crowdsale.TTG = ''
-      crowdsale.AU =  ''
-      crowdsale.RU =  ''
+      crowdsale.AU = ''
+      crowdsale.RU = ''
       console.log('crowdsaledata', crowdsale)
       const receipt: any = dispatch(createNewCrowdsale(crowdsale));
       receipt
         .then(async (res: any) => {
           if (res) {
             const crowdsaleDataRes = _get(res, 'events.CrowdsaleAdded.returnValues');
+            const contractAddress = crowdsaleDataRes._contractAddress; 
+            console.log(res);
+            await dispatch(transferTokens({
+              contractAddress: crowdsale.itemToSell,
+              purpose: COUPON_PURPOSE,
+              decimals: 0,
+              name: '',
+              symbol: '',
+              logoURL: '',
+              owner: '',
+              mintable: true
+            },
+              contractAddress,
+              Number(crowdsale.maxSupply)
+            ));
+
+            // await dispatch(unlockCrowdsale(contractAddress))
+          
             if (callbackParam) {
-              window.location.href = `${callbackParam}${
-                callbackParam.includes('?') ? '&' : '?'
-              }_id=${crowdsaleDataRes._contractAddress}`;
+              window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
+                }_id=${crowdsaleDataRes._contractAddress}`;
             }
             if (webHookParam) {
               await saveWebhookAPI(webHookParam, crowdsaleDataRes._contractAddress, res);
@@ -325,9 +343,8 @@ const NewCrowdsale: React.FC = () => {
         })
         .catch(async (err: any) => {
           if (callbackParam) {
-            window.location.href = `${callbackParam}${
-              callbackParam.includes('?') ? '&' : '?'
-            }_id=error`;
+            window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
+              }_id=error`;
           }
           if (webHookParam) {
             await saveWebhookAPI(webHookParam, 'error', err);
@@ -343,27 +360,26 @@ const NewCrowdsale: React.FC = () => {
             ),
           );
         });
-      }).catch(async (err: any) => {
-        const errMsg = err.response ? err.response?.data?.error?.message : err.message.split('\n')[0]
-        if (callbackParam) {
-          window.location.href = `${callbackParam}${
-            callbackParam.includes('?') ? '&' : '?'
+    }).catch(async (err: any) => {
+      const errMsg = err.response ? err.response?.data?.error?.message : err.message.split('\n')[0]
+      if (callbackParam) {
+        window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
           }_id=error`;
-        }
-        if (webHookParam) {
-          await saveWebhookAPI(webHookParam, 'error', errMsg);
-        }
-        setLoader(false);
-        dispatch(
-          setModalData(
-            true,
-            t('new_crowdsale.crowdsale_creation_failed'),
-            errMsg,
-            'permission',
-          ),
-        );
-        return;
-      });
+      }
+      if (webHookParam) {
+        await saveWebhookAPI(webHookParam, 'error', errMsg);
+      }
+      setLoader(false);
+      dispatch(
+        setModalData(
+          true,
+          t('new_crowdsale.crowdsale_creation_failed'),
+          errMsg,
+          'permission',
+        ),
+      );
+      return;
+    });
   };
 
   return (
@@ -376,28 +392,28 @@ const NewCrowdsale: React.FC = () => {
     >
       <Loading loader={loader} />
       {step === 9 || title.indexOf(t('common.edit')) > -1 ? (
-          <Flex
-            justifyContent="space-between"
-            alignItems="center"
-            paddingY={4}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
-          >
-            <IconButton onClick={handleEditStep} sx={{ cursor: 'pointer' }} icon="close" />
-            <Text>{title}</Text>
-            <Text/>
-          </Flex>
-        ) : (
-          <Flex
-            justifyContent="space-between"
-            alignItems="center"
-            paddingY={4}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
-          >
-            <IconButton onClick={handlebackStep} sx={{ cursor: 'pointer' }} icon="back" />
-            <Text>{title}</Text>
-            <IconButton onClick={handleClose} sx={{ cursor: 'pointer' }} icon="close" />
-          </Flex>
-        )
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          paddingY={4}
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
+        >
+          <IconButton onClick={handleEditStep} sx={{ cursor: 'pointer' }} icon="close" />
+          <Text>{title}</Text>
+          <Text />
+        </Flex>
+      ) : (
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          paddingY={4}
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
+        >
+          <IconButton onClick={handlebackStep} sx={{ cursor: 'pointer' }} icon="back" />
+          <Text>{title}</Text>
+          <IconButton onClick={handleClose} sx={{ cursor: 'pointer' }} icon="close" />
+        </Flex>
+      )
       }
       <motion.div
         initial="hidden"
@@ -418,29 +434,29 @@ const NewCrowdsale: React.FC = () => {
         >
           {step === 1 && (
             <div>
-            <CreateInputStep
-              type="text"
-              value={crowdsale.name}
-              onChangeValue={(e: any) => handleChangeCrowdsale(e, 'name')}
-              label={t('common.name')}
-              placeholder={t('new_crowdsale.name_placeholder')}
-              maxLength="20"
-              msg={t('new_crowdsale.campaign_msg')}
-              className="crowdsale-name-input"
-              error={error}
-              handleKeyChange={_handleKeyDown}
-            />
-            <SelectAca
-              value={crowdsale.aca}
-              onChangeValue={(e: any) => {
+              <CreateInputStep
+                type="text"
+                value={crowdsale.name}
+                onChangeValue={(e: any) => handleChangeCrowdsale(e, 'name')}
+                label={t('common.name')}
+                placeholder={t('new_crowdsale.name_placeholder')}
+                maxLength="20"
+                msg={t('new_crowdsale.campaign_msg')}
+                className="crowdsale-name-input"
+                error={error}
+                handleKeyChange={_handleKeyDown}
+              />
+              <SelectAca
+                value={crowdsale.aca}
+                onChangeValue={(e: any) => {
                   handleChangeCrowdsale(e, 'aca')
                 }
-              }
-              label=""
-              className="crowdsale-aca"
-              error={error}
-              data={acaList}
-            />
+                }
+                label=""
+                className="crowdsale-aca"
+                error={error}
+                data={acaList}
+              />
             </div>
           )}
           {step === 2 && (

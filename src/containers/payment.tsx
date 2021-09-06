@@ -169,7 +169,7 @@ const Payment: React.FC = () => {
 
   return (
     <Flex flexDirection="column" height="100vh">
-      <SearchHeader back={'/scan'} to={to} />
+      <SearchHeader to={to} />
       <InfoBar style={{ width: '100vw' }}>
         <Text variant="base">{t('common.from')}</Text>
         <AvatarBadge image={token && token.logoURL} label={token && token.name} />

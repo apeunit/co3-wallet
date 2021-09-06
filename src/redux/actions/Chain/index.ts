@@ -5,13 +5,14 @@ import {
   CROWDSALE_FACTORY_ADDRESS,
   NODE_URL,
   TOKEN_FACTORY_ADDRESS,
-  PICKUPBASKET_FACTORY_ADDRESS
+  PICKUPBASKET_FACTORY_ADDRESS,
 } from 'src/config';
 import { getRandomId } from 'src/utils/helper';
 import { formatAmount } from 'src/utils/misc';
 import Web3 from 'web3';
 import CrowdsaleFactoryJSON from '../../../contracts/CrowdsaleFactory.json';
 import PickupBasketFactoryJSON from '../../../contracts/PickUpBasketFactory.json';
+import TokenCrowdsaleJSON from '../../../contracts/TokenCrowdsale.json';
 import TokenFactoryJSON from '../../../contracts/TokenFactory.json';
 import TokenTemplateJSON from '../../../contracts/TokenTemplate.json';
 import { ICrowdsaleData, ITokenAction, ITokenData } from '../../../interfaces';
@@ -100,9 +101,12 @@ const fetchTokenByTicker = (ticker: string) => {
             .call()
             .then((amount: any) => {
               const token = formatTokenData(data);
-              const newtknData = token.logoURL && token.logoURL.includes('description') && JSON.parse(token.logoURL);
-              const newObj = newtknData ? {...token, ...newtknData, logoURL: newtknData.logoURL} : {...token}
-              dispatch(setTransferToken({ ...newObj,  amount }));
+              const newtknData =
+                token.logoURL && token.logoURL.includes('description') && JSON.parse(token.logoURL);
+              const newObj = newtknData
+                ? { ...token, ...newtknData, logoURL: newtknData.logoURL }
+                : { ...token };
+              dispatch(setTransferToken({ ...newObj, amount }));
             });
         } else {
           console.log('Not found');
@@ -175,7 +179,9 @@ const fetchCrowdsaleList = () => {
 
       contractEvent.length > 0 &&
         contractEvent.map(async (event: any) => {
-          const metaData = event.returnValues._metadata.includes('name') &&  JSON.parse(event.returnValues._metadata);
+          const metaData =
+            event.returnValues._metadata.includes('name') &&
+            JSON.parse(event.returnValues._metadata);
           if (metaData && !metaData.name.includes('TKN Sale')) {
             crowdsaleList.push({
               ...metaData,
@@ -233,7 +239,7 @@ const createNewToken = (
         gas: gas,
       })
       .then((data: any) => {
-        console.log(data)
+        console.log(data);
         dispatch(createToken(data.events.TokenAdded));
         return data;
         /**
@@ -252,7 +258,6 @@ const createNewCrowdsale = (crowdsale: any) => {
     const crowdsaleId = getRandomId();
     const blockNo = await web3.eth.getBlockNumber();
     const gas = blockNo.gasLimit - 100000;
-    console.log('crowdsale', crowdsale)
     return crowdsaleFactory.methods
       .createCrowdsale(
         crowdsaleId,
@@ -272,11 +277,11 @@ const createNewCrowdsale = (crowdsale: any) => {
           contract: crowdsale.contract,
           contractLabel: crowdsale.contractLabel,
           aca: crowdsale.aca,
-          FLID: crowdsale.FLID,  //"string", FirstLife ID
-          TTA:  crowdsale.TTA,    //"string", Ticker (Symbol) of the token to accept
-          TTG:  crowdsale.TTG,    //"string", Ticker (Symbol) of the token to give
-          AU:   crowdsale.AU,      //"string", Admin URL
-          RU:   crowdsale.RU,      //"string", Redeem URL
+          FLID: crowdsale.FLID, //"string", FirstLife ID
+          TTA: crowdsale.TTA, //"string", Ticker (Symbol) of the token to accept
+          TTG: crowdsale.TTG, //"string", Ticker (Symbol) of the token to give
+          AU: crowdsale.AU, //"string", Admin URL
+          RU: crowdsale.RU, //"string", Redeem URL
         }),
       )
       .send({
@@ -286,8 +291,8 @@ const createNewCrowdsale = (crowdsale: any) => {
         gas: gas,
       })
       .then((data: any) => {
-        return data
-      })
+        return data;
+      });
   };
 };
 
@@ -296,10 +301,7 @@ const createNewPickUpBasket = (pickUpBox: any) => {
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
 
     const gasPrice = await web3.eth.getGasPrice();
-    const {
-      couponToGive,
-      productsAvailable
-    } = pickUpBox;
+    const { couponToGive, productsAvailable } = pickUpBox;
     const pickUpBasketId = getRandomId();
     return pickUpBasketFactory.methods
       .createPickUpBasket(
@@ -309,7 +311,7 @@ const createNewPickUpBasket = (pickUpBox: any) => {
         JSON.stringify({
           name: pickUpBox.name,
           logoURL: pickUpBox.icon,
-          description: pickUpBox.description
+          description: pickUpBox.description,
         }),
       )
       .send({
@@ -319,8 +321,8 @@ const createNewPickUpBasket = (pickUpBox: any) => {
         gas: 10_485_760,
       })
       .then((data: any) => {
-        return data
-      })
+        return data;
+      });
   };
 };
 
@@ -450,6 +452,31 @@ const formatTokenData = (data: any): ITokenData => {
     mintable: data[6],
   };
 };
+
+const unlockCrowdsale = (contractAddress: string) => {
+  return async (dispatch: any, state: any) => {
+    const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
+
+    const gasPrice = await web3.eth.getGasPrice();
+    const contract = new web3.eth.Contract(
+      TokenCrowdsaleJSON.abi as any,
+      contractAddress,
+      opts,
+    );
+    return contract.methods
+      .unlockCrowdsale()
+      .send({
+        from: state().wallet.ethAddress,
+        gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
+        nonce: web3.utils.toHex(parseInt(nonce, 10)),
+        gas: state().wallet.gas,
+      })
+      .then((data: any) => {
+        return data;
+      });
+  };
+};
+
 export {
   initWeb3,
   errorWeb3,
@@ -473,4 +500,5 @@ export {
   fetchCrowdsaleList,
   getAllCrowdsale,
   getCrowdsaleData,
+  unlockCrowdsale,
 };

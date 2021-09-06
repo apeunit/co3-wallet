@@ -20,7 +20,10 @@ export const SearchHeader = (props: any) => {
         <IconButton
           icon="back"
           onClick={() => {
-            history.push(back);
+            if (back) {
+              return history.push(back);
+            }
+            history.goBack();
           }}
         />
         <ToolBarTitle fontWeight="500">{t('common.send')}</ToolBarTitle>

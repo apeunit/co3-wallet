@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isMintableToken } from 'src/redux/actions/Chain';
+import { PayPopup } from '../components/PayPopup';
 import ActionButtonGroup from 'src/components/ActionButtonGroup';
 import Moment from 'react-moment';
 import axios from 'axios';
@@ -18,6 +19,7 @@ const CouponDetail: React.FC = () => {
   const [isMintable, setIsMintable] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState('');
+  const [showSendPopup, setShowSendPopup] = useState(false)
 
   const { ethAddress, token } = useSelector(({ wallet }: any) => {
     return {
@@ -120,7 +122,7 @@ const CouponDetail: React.FC = () => {
                 iconBg: 'blue600',
                 iconColor: 'white',
                 onClick: () => {
-                  history.replace({ pathname: '/scan', state: { token } });
+                  setShowSendPopup(true);
                 },
               },
               {
@@ -173,6 +175,7 @@ const CouponDetail: React.FC = () => {
           <Text color="#ffffff">{error}</Text>
         </Flex>}
       </Flex>
+      {showSendPopup && <PayPopup title="common.send" setCreatePayment={setShowSendPopup} state={{ token }} />}
     </Flex>
   );
 };
