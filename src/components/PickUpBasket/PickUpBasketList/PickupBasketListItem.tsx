@@ -27,8 +27,8 @@ const PickupBasketListItem: React.FC<IProps> = ({ pickupBasket, tokenList }) => 
         crowdSymbol: getTokenSymbol(tokenList, pickupBasket.token),
       }),
     );
-    history.push(`/pickup-basket-detail/${kebabCase(pickupBasket.name)}-${(pickupBasket.itemToSell).slice(-3)}`);
-    console.log("token symbol", pickupBasket)
+    history.push(`/pickup-basket-detail/${kebabCase(pickupBasket.name)}-${(pickupBasket.contractAddress).slice(-3)}`);
+    // console.log("token symbol", pickupBasket)
 
   };
 

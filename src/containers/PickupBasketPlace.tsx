@@ -56,7 +56,7 @@ const PickupBasketPlace = () => {
   // -------------------------------------------------------------------------- */
 
   useEffect(() => {
-    if (data && data.pickupBasketAddedNotificationMany) {
+    if (data && data.pickUpBasketAddedNotificationMany) {
       getPickupBasketUpdatedList();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,15 +64,16 @@ const PickupBasketPlace = () => {
 
   const getPickupBasketUpdatedList = async () => {
     const cdList: any = [];
-    data.pickupBasketAddedNotificationMany.map((pickupAdded: IPickupBasketData) => {
+   
+    data.pickUpBasketAddedNotificationMany.map((pickupAdded: IPickupBasketData) => {
 
-      const metaData = pickupAdded?.metadata && pickupAdded?.metadata?.includes('name') && JSON.parse(pickupAdded?.metadata.replace(/(\r\n|\n|\r)/gm, ""));
-      const start = pickupAdded?.start && pickupAdded?.start?.includes('1970') ? Math.round(new Date(pickupAdded?.start).getTime() * 1000) : pickupAdded?.start;
-      const end = pickupAdded?.end && pickupAdded?.end?.includes('1970') ? Math.round(new Date(pickupAdded?.end).getTime() * 1000) : pickupAdded?.end;
-      metaData && metaData.token && cdList.push({ ...pickupAdded, start, end, ...metaData });
-
+      const metaData = pickupAdded?.metadata as any || null;
+      // const start = pickupAdded?.start && pickupAdded?.start?.includes('1970') ? Math.round(new Date(pickupAdded?.start).getTime() * 1000) : pickupAdded?.start;
+      // const end = pickupAdded?.end && pickupAdded?.end?.includes('1970') ? Math.round(new Date(pickupAdded?.end).getTime() * 1000) : pickupAdded?.end;
+      metaData && cdList.push({ ...pickupAdded, ...metaData });
       return cdList;
     });
+
     if (cdList.length > 0) {
       dispatch(getAllPickupBasket(cdList));
     }

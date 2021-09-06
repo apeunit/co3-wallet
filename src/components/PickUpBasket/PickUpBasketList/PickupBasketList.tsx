@@ -19,7 +19,7 @@ interface IProps {
 const PickupBasketList: React.FC<IProps> = ({ pickupBasketList, tokenList, fetchMore, limit }) => {
   const { t } = useTranslation();
 
-  console.log("pickup basket list", pickupBasketList)
+  // console.log("pickup basket list", pickupBasketList)
 
   const { txnLoading } = useSelector(
     ({ chain }: any) => {

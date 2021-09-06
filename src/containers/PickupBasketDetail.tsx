@@ -53,7 +53,7 @@ const PickupBasketDetail: React.FC = (props) => {
       errorWeb3: chain.errorWeb3,
     };
   });
-  console.log("pickupBasketData", pickupBasketData)
+  // console.log("pickupBasketData", pickupBasketData)
 
   const then: any = moment(pickupBasketData?.end);
   const now: any = moment();
@@ -65,14 +65,14 @@ const PickupBasketDetail: React.FC = (props) => {
   useEffect(() => {
     if (tokensDataList.length > 0) {
         setCouponList(tokensDataList.filter((tk: any) => tk.purpose === COUPON_PURPOSE));
-        console.log("tokendatalist", tokensDataList)
+        // console.log("tokendatalist", tokensDataList)
     } else if ((tokenLoading && tokensDataList.length === 0) || (errorWeb3 && !errorWeb3?.connected)) {
       setTokenLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensDataList, tokenLoading, errorWeb3]);
 
-  console.log("couponlist", couponList)
+  // console.log("couponlist", couponList)
 
 //---------------------------------------------------------
 //          get pickupbasket data
@@ -93,7 +93,7 @@ const PickupBasketDetail: React.FC = (props) => {
     setProgress(0);
     setCountdown(moment(then - now));
     if (!pickupBasketData || pickupBasketData === null) {
-      history.push('/marketplace');
+      history.push('/pickupbasketplace');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

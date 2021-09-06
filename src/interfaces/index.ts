@@ -174,6 +174,7 @@ export interface IChainState {
   pickupBasketList: IPickupBasketData[];
   crowdsaleList: ICrowdsaleData[];
   crowdsaleData: any;
+  pickupBasketData: any;
 }
 
 export enum ITokenAction {

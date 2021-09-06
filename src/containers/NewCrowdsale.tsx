@@ -390,7 +390,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
               Number(crowdsale.maxSupply)
             ));
 
-            // await dispatch(unlockCrowdsale(contractAddress))
+            await dispatch(unlockCrowdsale(contractAddress))
 
             if (callbackParam) {
               window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'

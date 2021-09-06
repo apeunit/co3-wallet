@@ -58,7 +58,7 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [_pilot]);
 
-  console.log("pilot", _pilot)
+  // console.log("pilot", _pilot)
 
   return (
     <Flex

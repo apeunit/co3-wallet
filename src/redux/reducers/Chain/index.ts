@@ -7,6 +7,7 @@ import {
   GET_ALL_PICKUP_BASKET,
   GET_ALL_TOKEN,
   GET_CROWDSALE_DATA,
+  GET_PICKUP_BASKET_DATA,
   GET_TOKEN_BALANCE,
   GET_TOKEN_DETAIL,
   GET_TRANSACTION_HISTORY,
@@ -32,6 +33,7 @@ const defaultState: IChainState = {
   crowdsaleList: [],  
   pickupBasketList: [],
   crowdsaleData: null,
+  pickupBasketData: null,
 };
 
 const combinedActions: any = combineActions(
@@ -46,6 +48,7 @@ const combinedActions: any = combineActions(
   GET_ALL_CROWDSALE,
   GET_ALL_PICKUP_BASKET,
   GET_CROWDSALE_DATA,
+  GET_PICKUP_BASKET_DATA,
 );
 
 const reducer = handleActions(

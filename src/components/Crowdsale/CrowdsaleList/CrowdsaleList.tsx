@@ -19,7 +19,7 @@ interface IProps {
 const CrowdsaleList: React.FC<IProps> = ({ crowdsaleList, tokenList, fetchMore, limit }) => {
   const { t } = useTranslation();
 
-   console.log("crowdsale list", crowdsaleList)
+  //  console.log("crowdsale list", crowdsaleList)
 
   const { txnLoading } = useSelector(
     ({ chain }: any) => {
