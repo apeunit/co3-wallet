@@ -22,8 +22,9 @@ export const Slider: React.FC<IProps> = ({
   dragEnd,
 }) => {
   // tslint:disable-next-line: no-null-keyword
-  const constraintsRef = useRef(null);
-  const slideX = process.env.NODE_ENV === 'development' ? 120 : -118;
+  const constraintsRef = useRef<any>(null);
+
+  const slideX = - (constraintsRef?.current?.clientWidth || 350);
   const x = useMotionValue(slideX);
   const rotateY = useTransform(x, [0, 0, 0], [0, 0, 0], {
     clamp: false,

@@ -12,6 +12,7 @@ import { formatAmount } from 'src/utils/misc';
 import Web3 from 'web3';
 import CrowdsaleFactoryJSON from '../../../contracts/CrowdsaleFactory.json';
 import PickupBasketFactoryJSON from '../../../contracts/PickUpBasketFactory.json';
+import PickupBasketJSON from '../../../contracts/PickUpBasket.json';
 import TokenCrowdsaleJSON from '../../../contracts/TokenCrowdsale.json';
 import TokenFactoryJSON from '../../../contracts/TokenFactory.json';
 import TokenTemplateJSON from '../../../contracts/TokenTemplate.json';
@@ -358,7 +359,7 @@ const createNewCrowdsale = (crowdsale: any) => {
 const createNewPickUpBasket = (pickUpBox: any) => {
   return async (dispatch: any, state: any) => {
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
-
+    
     const gasPrice = await web3.eth.getGasPrice();
     const { couponToGive, productsAvailable } = pickUpBox;
     const pickUpBasketId = getRandomId();
@@ -539,6 +540,54 @@ const unlockCrowdsale = (contractAddress: string) => {
   };
 };
 
+const unlockPickupBasket = (contractAddress: string) => {
+  return async (dispatch: any, state: any) => {
+    const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
+
+    const gasPrice = await web3.eth.getGasPrice();
+    const contract = new web3.eth.Contract(
+      PickupBasketJSON.abi as any,
+      contractAddress,
+      opts,
+    );
+    return contract.methods
+      .unlockPickUpBasket()
+      .send({
+        from: state().wallet.ethAddress,
+        gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
+        nonce: web3.utils.toHex(parseInt(nonce, 10)),
+        gas: state().wallet.gas,
+      })
+      .then((data: any) => {
+        return data;
+      });
+  };
+};
+
+const collectPickupBasket = (contractAddress: string) => {
+  return async (dispatch: any, state: any) => {
+    const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
+
+    const gasPrice = await web3.eth.getGasPrice();
+    const contract = new web3.eth.Contract(
+      PickupBasketJSON.abi as any,
+      contractAddress,
+      opts,
+    );
+    return contract.methods
+      .pickUpItem()
+      .send({
+        from: state().wallet.ethAddress,
+        gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
+        nonce: web3.utils.toHex(parseInt(nonce, 10)),
+        gas: state().wallet.gas,
+      })
+      .then((data: any) => {
+        return data;
+      });
+  };
+};
+
 export {
   initWeb3,
   errorWeb3,
@@ -565,6 +614,8 @@ export {
   getAllPickupBasket,
   getCrowdsaleData,
   unlockCrowdsale,
-  getPickupBasketData
+  getPickupBasketData,
+  collectPickupBasket,
+  unlockPickupBasket,
 };
 

@@ -209,6 +209,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
 
   const handleChangeCrowdsale = (e: any, key: string) => {
     onchangeCrowdsale({ ...crowdsale, [key]: e });
+    console.log("itemtosell",crowdsale.itemToSell)
     console.log("crowdsale in new_crowdsale_1", crowdsale)
     setError('');
   };
@@ -342,7 +343,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
         aca: `https://api.co3-torino.firstlife.org/v6/fl/Things/${crowdsale.aca.id}`,
         categories: [],
         zoom_level: 18,
-        entity_type: 'CO3_ACTIVITY',
+        entity_type: 'CO3_CROWDSALE',
       },
       geometry: {
         type: 'Point',
@@ -361,12 +362,12 @@ const NewCrowdsale: React.FC<IProps> = () => {
       console.log('data', datatest)
       console.log('res', resTest)
       console.log('crowdsale from new crowd sale 2', crowdsale)
-      console.log('crowdsaledata', crowdsale)
       crowdsale.FLID = firstlifeId
       crowdsale.TTA = getTokenSymbol(tokenList, crowdsale.token) // symbol (ticker) of the token used to participate to the crowdsale
       crowdsale.TTG = getTokenSymbol(tokenList, crowdsale.token) //  symbol (ticker) of the Coupon that users receive when the crowdsale ends
       crowdsale.AU = `${window.location.host}?access_token=${accessToken}`
       crowdsale.RU = `${window.location.host}?access_token=${accessToken}&redeem=${crowdsale.token}` // crowdsale token is place holder i have to look for the redeem code
+      
       const receipt: any = dispatch(createNewCrowdsale(crowdsale));
       receipt
         .then(async (res: any) => {
@@ -376,6 +377,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
             const crowdsaleDataRes = _get(res, 'events.CrowdsaleAdded.returnValues');
             const contractAddress = crowdsaleDataRes._contractAddress;
             console.log(res);
+            console.log('transferring coupons....')
             await dispatch(transferTokens({
               contractAddress: crowdsale.itemToSell,
               purpose: COUPON_PURPOSE,
@@ -389,9 +391,9 @@ const NewCrowdsale: React.FC<IProps> = () => {
               contractAddress,
               Number(crowdsale.maxSupply)
             ));
-
-            await dispatch(unlockCrowdsale(contractAddress))
-
+            console.log('unlocking crowdsale....');
+            await dispatch(unlockCrowdsale(contractAddress));
+            console.log('crowdsale unlocked');
             if (callbackParam) {
               window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
                 }_id=${crowdsaleDataRes._contractAddress}`;
@@ -433,6 +435,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
           );
         });
     }).catch(async (err: any) => {
+      console.log(err);
       const errMsg = err.response ? err.response?.data?.error?.message : err.message.split('\n')[0]
       if (callbackParam) {
         window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'

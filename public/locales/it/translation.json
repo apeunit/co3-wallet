@@ -129,6 +129,9 @@
     "pickup_created": "Cestino di raccolta creato",
     "pickup_creation_failed":"Creazione del carrello di raccolta non riuscita"
   },
+  "pickupbox_coupons" : {
+    "coupons_failed":"Creazione del carrello di raccolta non riuscita"
+  },
   "marketplace": {
     "label":"Mercata",
     "goal":"Obbiettivo",

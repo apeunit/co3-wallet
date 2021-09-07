@@ -104,7 +104,7 @@ const ConfirmPayment = () => {
           });
           if (tokenNew.logoURL && tokenNew.logoURL.includes('description')) {
             const newtknData = tokenNew.logoURL && JSON.parse(tokenNew.logoURL);
-            setTokenData({...tokenNew, ...newtknData, logoURL: newtknData.logoURL});
+            setTokenData({ ...tokenNew, ...newtknData, logoURL: newtknData.logoURL });
           } else {
             setTokenData(tokenNew);
           }
@@ -196,6 +196,10 @@ const ConfirmPayment = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, tokenData]);
 
+  const tokenAmount = () => {
+    return token?.amount && token?.decimals === 2 ? token?.amount / 100 : token?.amount || 0
+  }
+
   const handleSendToken = () => {
     setLoader(true);
     const params = new URLSearchParams(location.search);
@@ -203,7 +207,7 @@ const ConfirmPayment = () => {
     if (!token) {
       return;
     }
-    if (amountParam && (token?.decimals === 2 ? token?.amount / 100 : token?.amount) < Number(amountParam)) {
+    if (tokenAmount() < Number(amountParam)) {
       setLoader(false);
       setError(t('payment.amount_error'))
       dispatch(
@@ -227,9 +231,8 @@ const ConfirmPayment = () => {
       receipt
         .then(async (res: any) => {
           if (callbackParam) {
-            window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'}_id=${
-              res.transactionHash
-            }`;
+            window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'}_id=${res.transactionHash
+              }`;
           }
           if (webHookParam) {
             await saveWebhookAPI(webHookParam, res.transactionHash, res);
@@ -247,9 +250,8 @@ const ConfirmPayment = () => {
         })
         .catch(async (err: any) => {
           if (callbackParam) {
-            window.location.href = `${callbackParam}${
-              callbackParam.includes('?') ? '&' : '?'
-            }_id=error`;
+            window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
+              }_id=error`;
           }
           if (webHookParam) {
             await saveWebhookAPI(webHookParam, 'error', err);
@@ -303,7 +305,7 @@ const ConfirmPayment = () => {
           icon={token?.logoURL || ''}
           name={token?.name || ''}
           symbol={token?.token_symbol || token?.symbol || ''}
-          amount={token?.amount && token?.decimals === 2 ? token?.amount / 100 : token?.amount || 0}
+          amount={tokenAmount()}
         />
         <Flex marginTop="10px" justifyContent="space-between">
           <Text fontSize="16px">{t('payment.amount')}</Text>
@@ -328,30 +330,30 @@ const ConfirmPayment = () => {
       ) : (
         <Flex flexDirection="row" paddingY={10} justifyContent="space-around" width="100%">
           <IconButton
-              onClick={() => {
-                history.push('/pay');
-              }}
-              size="s14"
-              icon="dialpad"
-              color="#8E949E"
-              backgroundColor="#ffffff"
-              sx={{
-                borderRadius: 'full',
-                borderColor: '#F1F3F6',
-                borderWidth: '2px',
-                borderStyle: 'solid',
-              }}
-            />
-            <Slider
-              title={t('payment.slide_to_send')}
-              bgColor="#F1F3F6"
-              btnColor="blue600"
-              txtColor="#8E949E"
-              dragEnd={handleSendToken}
-              onClick={handleSendToken}
-            />
-          </Flex>
-        )}
+            onClick={() => {
+              history.push('/pay');
+            }}
+            size="s14"
+            icon="dialpad"
+            color="#8E949E"
+            backgroundColor="#ffffff"
+            sx={{
+              borderRadius: 'full',
+              borderColor: '#F1F3F6',
+              borderWidth: '2px',
+              borderStyle: 'solid',
+            }}
+          />
+          <Slider
+            title={t('payment.slide_to_send')}
+            bgColor="#F1F3F6"
+            btnColor="blue600"
+            txtColor="#8E949E"
+            dragEnd={handleSendToken}
+            onClick={handleSendToken}
+          />
+        </Flex>
+      )}
     </Flex>
   );
 };

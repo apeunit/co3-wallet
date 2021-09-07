@@ -111,6 +111,10 @@
   padding: 0 !important;
   font-size: 14px;
 }
+.buynow-btn:disabled{
+  opacity: .5;
+  cursor: not-allowed;
+}
 
 .ellipsi-2 {
   overflow: hidden;

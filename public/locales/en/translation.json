@@ -131,6 +131,9 @@
     "pickup_created": "Pickup Basket Created",
     "pickup_creation_failed":"Pickup Basket Creation Failed"
   },
+  "pickupbox_coupons" : {
+    "coupons_failed":"you can pick up something only once and aren't allowed to take something from your own basket"     
+  },
   "marketplace": {
     "label":"Marketplace",
     "goal":"Goal",

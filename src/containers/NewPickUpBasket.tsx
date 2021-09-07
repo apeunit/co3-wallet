@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { Flex, Text } from 'rebass';
 import _get from 'lodash/get';
 import { motion } from 'framer-motion';
-
+import { COUPON_PURPOSE } from 'src/config'
 import CreateDetailStep from '../components/StepsComponents/CreateDetailStep';
 import CreateFooterStep from '../components/StepsComponents/CreateFooterStep';
 import CreateInputStep from '../components/StepsComponents/CreateInputStep';
@@ -15,17 +15,17 @@ import Loading from '../components/Loading';
 import TextArea from '../components/TextArea';
 
 import { setModalData } from 'src/redux/actions/Modal';
-import { getPermalink, saveResource } from 'src/api/firstlife';
+import { getPermalink, saveResource, savePickupBasketData } from 'src/api/firstlife';
 import { saveWebhookAPI } from 'src/utils/helper';
 
-import { createNewPickUpBasket, getAllPickupBasket } from 'src/redux/actions/Chain';
+import { createNewPickUpBasket, getAllPickupBasket, transferTokens, unlockPickupBasket } from 'src/redux/actions/Chain';
 import { createPickupbasketSteps } from './commonData';
 // import PickupBasketImageCard from '../components/PickUpBasket/NewPickUpBasket/PickupBasketImageCard';
 import CrowdsaleImageCard from '../components/Crowdsale/NewCrowdsale/CrowdsaleImageCard';
 import BuyStep from '../components/PickUpBasket/NewPickUpBasket/BuyStep';
 import SupplyStep from '../components/PickUpBasket/NewPickUpBasket/SupplyStep';
 
-import { LIMIT } from 'src/config'; 
+import { LIMIT } from 'src/config';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { CrowdsaleSortEnum, GET_PICKUP_BASKET_ADDED } from 'src/api/middleware';
 import { IPickupBasketData } from 'src/interfaces';
@@ -47,15 +47,22 @@ const NewPickUpBasket: React.FC = () => {
     productsAvailable: '',
     couponToGive: isDev ? '0xbD2Dc75534022E2bc79A49798115F9303734dA66' : '',
     FLID: '',
-    AU:  '',
-    RU:  '',
+    AU: '',
+    RU: '',
+    aca: {
+      id: '',
+      geolocation: {
+        long: 0,
+        lang: 0
+      }
+    },
   });
   const [error, setError] = useState('');
   const [uploading, setUploading] = useState(false);
-  
-// -------------------------------------------------------------------------- */
-//                         Get data from the store                          */
-// -------------------------------------------------------------------------- */
+
+  // -------------------------------------------------------------------------- */
+  //                         Get data from the store                          */
+  // -------------------------------------------------------------------------- */
 
   const { accessToken } = useSelector(({ co3uum }: any) => {
     return {
@@ -90,7 +97,7 @@ const NewPickUpBasket: React.FC = () => {
     }
   }, [pickupbasketData]);
 
-    // -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
   //                                                   
   // -------------------------------------------------------------------------- */
 
@@ -186,7 +193,7 @@ const NewPickUpBasket: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-    // -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
   //                                                   
   // -------------------------------------------------------------------------- */
 
@@ -212,7 +219,7 @@ const NewPickUpBasket: React.FC = () => {
     }
   };
 
-   // -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
   //                                                   
   // -------------------------------------------------------------------------- */
 
@@ -225,55 +232,127 @@ const NewPickUpBasket: React.FC = () => {
       callbackParam = params.get('callback');
       webHookParam = params.get('webhook');
     }
-    console.log(pickupbasket)
-    const receipt: any = dispatch(createNewPickUpBasket(pickupbasket));
-    receipt
-      .then(async (res: any) => {
-        if (res) {
-          const pickupBasketDataRes = _get(res, 'events.PickupbasketAdded.returnValues');
+
+    const cddata = {
+      type: 'Feature',
+      properties: {
+        name: pickupbasket.name,
+        icon: pickupbasket.icon,
+        productsAvailable: pickupbasket.productsAvailable,
+        couponToGive: pickupbasket.couponToGive,
+        description: pickupbasket.description,
+        logoURL: pickupbasket.icon,
+        aca: `https://api.co3-torino.firstlife.org/v6/fl/Things/${pickupbasket.aca.id}`,
+        categories: [],
+        zoom_level: 18,
+        entity_type: 'CO3_COUPON',
+      },
+      geometry: {
+        type: 'Point',
+        coordinates: [
+          pickupbasket.aca.geolocation.long,
+          pickupbasket.aca.geolocation.lang,
+        ]
+      },
+    };
+
+    savePickupBasketData(accessToken, cddata).then(async (res: any) => {
+      const firstlifeId = res.data.id
+      const datatest = res.data
+      const resTest = res
+      console.log('firstlifeId', firstlifeId)
+      console.log('data', datatest)
+      console.log('res', resTest)
+      console.log('pickupbasket from new pickupbasket 2', pickupbasket)
+      pickupbasket.FLID = firstlifeId
+      pickupbasket.AU = `${window.location.host}?access_token=${accessToken}`
+      pickupbasket.RU = `${window.location.host}?access_token=${accessToken}` 
+
+      console.log(pickupbasket)
+
+      const receipt: any = dispatch(createNewPickUpBasket(pickupbasket));
+      receipt
+        .then(async (res: any) => {
+          if (res) {
+            const pickupBasketDataRes = _get(res, 'events.PickUpBasketAdded.returnValues');
+            console.log(res);
+            const contractAddress = pickupBasketDataRes._contractAddress;
+            await dispatch(transferTokens({
+              contractAddress: pickupbasket.couponToGive,
+              purpose: COUPON_PURPOSE,
+              decimals: 0,
+              name: '',
+              symbol: '',
+              logoURL: '',
+              owner: '',
+              mintable: true
+            },
+              contractAddress,
+              Number(pickupbasket.productsAvailable)
+            ));
+
+            await dispatch(unlockPickupBasket(contractAddress))
+
+            if (callbackParam) {
+              window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
+                }_id=${pickupBasketDataRes._contractAddress}`;
+            }
+            if (webHookParam) {
+              await saveWebhookAPI(webHookParam, pickupBasketDataRes._contractAddress, res);
+            }
+            setLoader(false);
+            console.log("res from pickup box", res);
+            history.push('/');
+            dispatch(
+              setModalData(
+                true,
+                t('new_pickupbox.pickup_created'),
+                t('common.transaction_complete'),
+                'permission',
+              ),
+            );
+          }
+        }).catch(async (err: any) => {
           if (callbackParam) {
-            window.location.href = `${callbackParam}${
-              callbackParam.includes('?') ? '&' : '?'
-            }_id=${pickupBasketDataRes._contractAddress}`;
+            window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
+              }_id=error`;
           }
           if (webHookParam) {
-            await saveWebhookAPI(webHookParam, pickupBasketDataRes._contractAddress, res);
+            await saveWebhookAPI(webHookParam, 'error', err);
           }
           setLoader(false);
-          console.log("res from pickup box", res);
-          history.push('/');
+          console.log(err, 'NewPickUpBox');
           dispatch(
             setModalData(
               true,
-              t('new_pickupbox.pickup_created'),
-              t('common.transaction_complete'),
+              t('new_pickupbox.pickup_creation_failed'),
+              err.message.split('\n')[0],
               'permission',
             ),
           );
-        }
-      })
-      .catch(async (err: any) => {
-        if (callbackParam) {
-          window.location.href = `${callbackParam}${
-            callbackParam.includes('?') ? '&' : '?'
+        });
+    }).catch(async (err: any) => {
+      const errMsg = err.response ? err.response?.data?.error?.message : err.message.split('\n')[0]
+      if (callbackParam) {
+        window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
           }_id=error`;
-        }
-        if (webHookParam) {
-          await saveWebhookAPI(webHookParam, 'error', err);
-        }
-        setLoader(false);
-        console.log(err, 'NewPickUpBox');
-        dispatch(
-          setModalData(
-            true,
-            t('new_pickupbox.pickup_creation_failed'),
-            err.message.split('\n')[0],
-            'permission',
-          ),
-        );
-      });
-  };
+      }
+      if (webHookParam) {
+        await saveWebhookAPI(webHookParam, 'error', errMsg);
+      }
+      setLoader(false);
+      dispatch(
+        setModalData(
+          true,
+          t('new_crowdsale.crowdsale_creation_failed'),
+          errMsg,
+          'permission',
+        ),
+      );
 
+      return;
+    });
+  };
   return (
     <Flex
       flexDirection="column"
@@ -284,28 +363,28 @@ const NewPickUpBasket: React.FC = () => {
     >
       <Loading loader={loader} />
       {step === 6 || title.indexOf(t('common.edit')) > -1 ? (
-          <Flex
-            justifyContent="space-between"
-            alignItems="center"
-            paddingY={4}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
-          >
-            <IconButton onClick={handleEditStep} sx={{ cursor: 'pointer' }} icon="close" />
-            <Text>{title}</Text>
-            <Text/>
-          </Flex>
-        ) : (
-          <Flex
-            justifyContent="space-between"
-            alignItems="center"
-            paddingY={4}
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
-          >
-            <IconButton onClick={handlebackStep} sx={{ cursor: 'pointer' }} icon="back" />
-            <Text>{title}</Text>
-            <IconButton onClick={handleClose} sx={{ cursor: 'pointer' }} icon="close" />
-          </Flex>
-        )
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          paddingY={4}
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
+        >
+          <IconButton onClick={handleEditStep} sx={{ cursor: 'pointer' }} icon="close" />
+          <Text>{title}</Text>
+          <Text />
+        </Flex>
+      ) : (
+        <Flex
+          justifyContent="space-between"
+          alignItems="center"
+          paddingY={4}
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 100 }}
+        >
+          <IconButton onClick={handlebackStep} sx={{ cursor: 'pointer' }} icon="back" />
+          <Text>{title}</Text>
+          <IconButton onClick={handleClose} sx={{ cursor: 'pointer' }} icon="close" />
+        </Flex>
+      )
       }
       <motion.div
         initial="hidden"
@@ -339,20 +418,13 @@ const NewPickUpBasket: React.FC = () => {
             />
           )}
           {step === 2 && (
-            // <PickupBasketImageCard
-            //   pickupBasket={pickupbasket}
-            //   handleChangeIcon={handleChangeIcon}
-            //   uploading={uploading}
-            //   error={error}
-            //   icon={pickupbasket.icon}
-            // />
             <CrowdsaleImageCard
-            crowdsale={pickupbasket}
-            handleChangeIcon={handleChangeIcon}
-            uploading={uploading}
-            error={error}
-            icon={pickupbasket.icon}
-          />
+              crowdsale={pickupbasket}
+              handleChangeIcon={handleChangeIcon}
+              uploading={uploading}
+              error={error}
+              icon={pickupbasket.icon}
+            />
           )}
           {step === 3 && (
             <FramerSlide>
@@ -360,7 +432,7 @@ const NewPickUpBasket: React.FC = () => {
                 <TextArea
                   className="pickupbasket-description-input"
                   value={pickupbasket.description}
-                  onChangeValue={(e: any) =>  handleChangePickupbasket(e, 'description')}
+                  onChangeValue={(e: any) => handleChangePickupbasket(e, 'description')}
                   label={t('common.short_description')}
                   placeholder={t('new_pickupbox.description')}
                   msg={t('new_pickupbox.description_msg')}

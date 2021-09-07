@@ -57,6 +57,27 @@ export const saveCrowdsaleData = async (
 };
 
 /*
+  Save Pickup Basket Data in FirstLife
+*/
+export const savePickupBasketData = async (
+  accessToken: string | null,
+  data: any,
+  //activityId: string,
+): Promise<Object> => {
+  // headers
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${accessToken}`,
+    authentication_server: API_SERVER,
+    status: 'Public',
+  };
+
+  return axios.post(`${API_FIRSTLIFE_URL}/v6/fl/Things`, JSON.stringify(data), {
+    headers: headers,
+  });
+};
+
+/*
   Get Crowdsale List From FirstLife
 */
 export const getCrowdsaleList = async (

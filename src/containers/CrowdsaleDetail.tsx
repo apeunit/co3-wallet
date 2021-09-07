@@ -43,7 +43,6 @@ const CrowdsaleDetail: React.FC = (props) => {
   const [countdown, setCountdown] = useState<any>('');
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState('');
-  const [crowdsaleOpen, setCrowdsaleOpen] = useState(false)
   const [isDisabled, setIsDisabled] = useState(false)
 
 
@@ -60,38 +59,21 @@ const CrowdsaleDetail: React.FC = (props) => {
       errorWeb3: chain.errorWeb3,
     };
   });
-  console.log("crowdsaledata", crowdsaleData)
+  // console.log("crowdsaledata", crowdsaleData)
 
   const then: any = moment(crowdsaleData?.end);
-  console.log("then", then._d)
   const now: any = moment();
-  const crowdsaleTime: number = then._d - now._d;
-  console.log("now", now._d)
   // console.log("then minus now", then._d - now._d)
   // console.log("now minus then", now - then)
-
-
-//-------------------------------------------------------------------------------
-//        crowdsale is still open if starting time minus current time is > 0
-//-------------------------------------------------------------------------------
-
- useEffect(() => {
-    if (crowdsaleTime > 0) {
-      setCrowdsaleOpen(true)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [crowdsaleTime]);
 
 //-------------------------------------------------------------------------------
 //        if crowdsale is not open button to participate will get disabled
 //-------------------------------------------------------------------------------
 
   useEffect(() => {
-    if (!crowdsaleOpen) {
-      setIsDisabled(true)
-    }
+    setIsDisabled(!then.isSameOrAfter(now));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [crowdsaleOpen]);
+  }, [isDisabled]);
 
 //-------------------------------------------------------------------------------
 //        
@@ -127,7 +109,7 @@ const CrowdsaleDetail: React.FC = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensDataList, tokenLoading, errorWeb3]);
 
-  console.log("couponlist", couponList)
+  // console.log("couponlist", couponList)
 
 
 //---------------------------------------------------------
