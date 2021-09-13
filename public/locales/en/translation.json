@@ -128,8 +128,8 @@
     "location_msg":"Does your campaign have a location",
     "sell_msg":"How much will you, at least, need to sell",
     "loading":"Loading...",
-    "pickup_created": "Pickup Basket Created",
-    "pickup_creation_failed":"Pickup Basket Creation Failed"
+    "pickup_created": "Coupon recieved",
+    "pickup_creation_failed":"Coupon redemption failed"
   },
   "pickupbox_coupons" : {
     "coupons_failed":"you can pick up something only once and aren't allowed to take something from your own basket"     
@@ -137,19 +137,20 @@
   "marketplace": {
     "label":"Marketplace",
     "goal":"Goal",
+    "aca":"Aca",
     "closes":"Closes",
     "days":"days",
     "hours":"hours",
     "minutes":"minutes",
     "seconds":"seconds",
     "no_details":"Crowdsale details not available.",
-    "started_on":"Started on",
+    "started_on":"Created on",
     "buy_now": "ACCESS NOW",
     "no_crowdsale": "You don't have made any marketplace yet"
   },
   "pickupbasketplace": {
     "label":"Pickupbasketplace",
-    "goal":"Goal",
+    "available":"Available",
     "closes":"Closes",
     "days":"days",
     "hours":"hours",

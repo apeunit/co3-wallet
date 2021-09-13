@@ -77,7 +77,7 @@ const {
   getAllCrowdsale,
   getAllPickupBasket,
   getCrowdsaleData,
-  getPickupBasketData
+  getPickupBasketData,
 } = createActions({
   [INIT_WEB3]: (data: object): object => ({ ...data }),
   [ERROR_WEB3]: (data: object): object => ({ ...data }),
@@ -236,7 +236,9 @@ const fetchPickupBasketList = () => {
 
       contractEvent.length > 0 &&
         contractEvent.map(async (event: any) => {
-          const metaData = event.returnValues._metadata.includes('name') &&  JSON.parse(event.returnValues._metadata);
+          const metaData =
+            event.returnValues._metadata.includes('name') &&
+            JSON.parse(event.returnValues._metadata);
           if (metaData && !metaData.name.includes('TKN Sale')) {
             pickupBasketList.push({
               ...metaData,
@@ -307,13 +309,13 @@ const createNewToken = (
 const createNewCrowdsale = (crowdsale: any) => {
   return async (dispatch: any, state: any) => {
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
-    console.log("create new crowdsale 1 ")
+    console.log('create new crowdsale 1 ');
     const gasPrice = await web3.eth.getGasPrice();
     const { itemToSell, token, startDate, endDate, giveRatio, maxSupply } = crowdsale;
     const crowdsaleId = getRandomId();
     const blockNo = await web3.eth.getBlockNumber();
     const gas = blockNo.gasLimit - 100000;
-    console.log('crowdsale from store 1', crowdsale)
+    console.log('crowdsale from store 1', crowdsale);
     return crowdsaleFactory.methods
       .createCrowdsale(
         crowdsaleId,
@@ -340,26 +342,27 @@ const createNewCrowdsale = (crowdsale: any) => {
           RU: crowdsale.RU, //"string", Redeem URL
         }),
       )
-      .send({
-        from: state().wallet.ethAddress,
-        gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
-        nonce: web3.utils.toHex(parseInt(nonce, 10)),
-        gas: gas,
-      },
-      console.log("create new crowdsale 2")
+      .send(
+        {
+          from: state().wallet.ethAddress,
+          gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
+          nonce: web3.utils.toHex(parseInt(nonce, 10)),
+          gas: gas,
+        },
+        console.log('create new crowdsale 2'),
       )
       .then((data: any) => {
-        console.log('crowdsale from store 2', crowdsale)
-        console.log("create new crowdsale 3")
-        return data
-      })
+        console.log('crowdsale from store 2', crowdsale);
+        console.log('create new crowdsale 3');
+        return data;
+      });
   };
 };
 
 const createNewPickUpBasket = (pickUpBox: any) => {
   return async (dispatch: any, state: any) => {
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
-    
+
     const gasPrice = await web3.eth.getGasPrice();
     const { couponToGive, productsAvailable } = pickUpBox;
     const pickUpBasketId = getRandomId();
@@ -373,8 +376,9 @@ const createNewPickUpBasket = (pickUpBox: any) => {
           logoURL: pickUpBox.icon,
           description: pickUpBox.description,
           FLID: pickUpBox.FLID, // FirstLife ID
-          AU: pickUpBox.AU,   // Admin URL
-          RU: pickUpBox.RU,   // Redeem URL
+          AU: pickUpBox.AU, // Admin URL
+          RU: pickUpBox.RU, // Redeem URL
+          couponToGive,
         }),
       )
       .send({
@@ -521,11 +525,7 @@ const unlockCrowdsale = (contractAddress: string) => {
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
 
     const gasPrice = await web3.eth.getGasPrice();
-    const contract = new web3.eth.Contract(
-      TokenCrowdsaleJSON.abi as any,
-      contractAddress,
-      opts,
-    );
+    const contract = new web3.eth.Contract(TokenCrowdsaleJSON.abi as any, contractAddress, opts);
     return contract.methods
       .unlockCrowdsale()
       .send({
@@ -545,11 +545,7 @@ const unlockPickupBasket = (contractAddress: string) => {
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
 
     const gasPrice = await web3.eth.getGasPrice();
-    const contract = new web3.eth.Contract(
-      PickupBasketJSON.abi as any,
-      contractAddress,
-      opts,
-    );
+    const contract = new web3.eth.Contract(PickupBasketJSON.abi as any, contractAddress, opts);
     return contract.methods
       .unlockPickUpBasket()
       .send({
@@ -569,13 +565,49 @@ const collectPickupBasket = (contractAddress: string) => {
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
 
     const gasPrice = await web3.eth.getGasPrice();
-    const contract = new web3.eth.Contract(
-      PickupBasketJSON.abi as any,
-      contractAddress,
-      opts,
-    );
+    const contract = new web3.eth.Contract(PickupBasketJSON.abi as any, contractAddress, opts);
     return contract.methods
       .pickUpItem()
+      .send({
+        from: state().wallet.ethAddress,
+        gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
+        nonce: web3.utils.toHex(parseInt(nonce, 10)),
+        gas: state().wallet.gas,
+      })
+      .then((data: any) => {
+        return data;
+      });
+  };
+};
+
+const approveSender = (token: ITokenData, spender: string, amount: number) => {
+  return async (dispatch: any, state: any) => {
+    const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
+    const gasPrice = await web3.eth.getGasPrice();
+    const Token = new web3.eth.Contract(TokenTemplateJSON.abi, token.contractAddress, opts);
+    return Token.methods
+      .approve(spender, formatAmount(token, amount))
+      .send({
+        from: state().wallet.ethAddress,
+        gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
+        nonce: web3.utils.toHex(parseInt(nonce, 10)),
+        gas: state().wallet.gas,
+      })
+      .then((data: any) => {
+        console.log(data);
+        return data;
+      });
+  };
+};
+
+const joinCrowdsale = (token: ITokenData, contractAddress: string, amount: number) => {
+  return async (dispatch: any, state: any) => {
+    const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
+
+    const gasPrice = await web3.eth.getGasPrice();
+    const contract = new web3.eth.Contract(TokenCrowdsaleJSON.abi as any, contractAddress, opts);
+    return contract.methods
+      .joinCrowdsale(formatAmount(token, amount))
       .send({
         from: state().wallet.ethAddress,
         gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
@@ -617,5 +649,6 @@ export {
   getPickupBasketData,
   collectPickupBasket,
   unlockPickupBasket,
+  approveSender,
+  joinCrowdsale,
 };
-

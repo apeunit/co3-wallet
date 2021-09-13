@@ -45,8 +45,6 @@ const CrowdsaleDetail: React.FC = (props) => {
   const [error, setError] = useState('');
   const [isDisabled, setIsDisabled] = useState(false)
 
-
-
   // ---------------------------------------------------
   //               Get data from the store                          
   // ---------------------------------------------------
@@ -79,7 +77,6 @@ const CrowdsaleDetail: React.FC = (props) => {
 //        
 //-------------------------------------------------------------------------------
 
-
   // const [getCoupon, { called, data }] = useLazyQuery(GET_TOKEN, {
   //   fetchPolicy: 'no-cache',
   //   variables: {
@@ -93,7 +90,6 @@ const CrowdsaleDetail: React.FC = (props) => {
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [crowdsaleData]);
-
 
 //---------------------------------------------------------
 //        show list of coupons
@@ -110,7 +106,6 @@ const CrowdsaleDetail: React.FC = (props) => {
   }, [tokensDataList, tokenLoading, errorWeb3]);
 
   // console.log("couponlist", couponList)
-
 
 //---------------------------------------------------------
 //          get crowdsale data
@@ -161,7 +156,7 @@ const CrowdsaleDetail: React.FC = (props) => {
 
   const handleBuyNow = () => {
     history.push({
-      pathname: `/tx`,
+      pathname: `/join-crowdsale`,
       search: `to=${crowdsaleData?.contractAddress}&token=${crowdsaleData?.crowdSymbol}&amount=${crowdsaleData?.giveRatio}`,
       state: { from: `/crowdsale-detail/${kebabCase(crowdsaleData.name)}`, crowdsaleData }
     });
@@ -263,7 +258,7 @@ const CrowdsaleDetail: React.FC = (props) => {
                   height="16px"
                   marginRight="12px"
                 />
-                <Text>
+               <Text>
                   {t('marketplace.closes')} <Moment fromNow={true}>{crowdsaleData?.end}</Moment>{' '}
                   {moment().isBefore(crowdsaleData?.end) && countdown && (
                     <>
@@ -272,14 +267,14 @@ const CrowdsaleDetail: React.FC = (props) => {
                       {countdown.format('ss')} {t('marketplace.seconds')}
                     </>
                   )}
-                </Text>
-              </Flex>
-            </Flex>
-            <Flex color="#757575" padding="25px 0px 30px">
+               </Text>
+             </Flex>
+           </Flex>
+           <Flex color="#757575" padding="25px 0px 30px">
               <Text fontSize="16px" color="#757575">
                 {crowdsaleData?.description}
               </Text>
-            </Flex>
+           </Flex>
             {(tokenLoading || couponList.length > 0) &&
               (<Box width="100%" marginTop="20px">
                 <Text
@@ -297,7 +292,7 @@ const CrowdsaleDetail: React.FC = (props) => {
                   {/* <CouponList tokens={couponList} tokenLoading={tokenLoading} /> */}
                   {/* {data} */}
               </Box>)}
-              <Flex>
+            <Flex>
               <Text fontSize="12px" color="#757575">
                 {t('marketplace.started_on')}{' '}
                 <Moment format="DD/MM/YYYY">{crowdsaleData?.start}</Moment>
@@ -305,6 +300,11 @@ const CrowdsaleDetail: React.FC = (props) => {
             </Flex>
             <Flex>
               <Text fontSize="24px"></Text>
+            </Flex>
+            <Flex marginTop="10px" flexDirection="column">
+              <Text marginTop="5px" fontSize="14px" color="#757575">
+                {t('marketplace.aca')}: {crowdsaleData?.aca.name}
+              </Text>
             </Flex>
             <Flex>
               <Text fontSize="24px">
@@ -325,7 +325,7 @@ const CrowdsaleDetail: React.FC = (props) => {
                     </Flex>
                   </button>
                   <button>
-                    <Flex
+                    {/* <Flex
                       marginTop="10px"
                       height="32px"
                       width="187px"
@@ -337,7 +337,7 @@ const CrowdsaleDetail: React.FC = (props) => {
                       <Text color="#404245" fontSize={13}>
                         {t('token_details.firstlife')}
                       </Text>
-                    </Flex>
+                    </Flex> */}
                   </button>
                 </Flex>
               </Text>

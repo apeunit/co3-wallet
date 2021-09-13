@@ -19,6 +19,7 @@ import { COUPON_PURPOSE, SSO_LOGIN_URL, TOKEN_PURPOSE } from 'src/config';
 import { setModalData } from 'src/redux/actions/Modal';
 import { getApolloConnected } from 'src';
 import EmptyImg from '../images/empty.png';
+import { getMyProfileWithRoles } from 'src/api/co3uum';
 
 const modalOptions = {
   hidden: { y: 200 },
@@ -45,6 +46,10 @@ const MultiToken: React.FC = () => {
   const [transition, setTransition] = useState(false);
   const [bound, setBound] = useState(getBound());
   const [controlledPosition, setControlledPosition] = useState(getPos());
+  const [userRoles, setUserRoles] = useState<any>({});
+  // const [loader, setLoader] = useState(true);
+
+
 
   // -------------------------------------------------------------------------- */
   //               Get data from the store                          */
@@ -202,6 +207,31 @@ const MultiToken: React.FC = () => {
     }
   };
 
+
+  const getUserdata = async () => {
+    if (accessToken) {
+      // setLoader(true);
+      try {
+        const data: any = await getMyProfileWithRoles(accessToken);
+        if (data) {
+          setUserRoles(data.roles);
+          // setLoader(false);
+        }
+      } catch (error) {
+        // setLoader(false);
+      }
+    } 
+    // else {
+    //   setLoader(false);
+    // }
+  };
+
+  useEffect(() => {
+    getUserdata();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken]);
+
+
   return (
     <Flex
       flexDirection="column"
@@ -324,7 +354,7 @@ const MultiToken: React.FC = () => {
                           }}
                         />
                       </Box>
-                      <Flex justifyContent="flex-end" paddingX={6} height="35px">
+                      {!userRoles?.participant && <Flex justifyContent="flex-end" paddingX={6} height="35px">
                         {!tokenLoading && features.indexOf('createToken') > -1 && (
                           <IconButton
                             className="add-round-btn"
@@ -339,6 +369,7 @@ const MultiToken: React.FC = () => {
                           />
                         )}
                       </Flex>
+                      }                    
                       {!tokenLoading && tokensDataList.length === 0 && (tokenList.length === 0 && couponList.length === 0) ? (
                         <>
                           <Flex height="55vh" width="212px" margin="auto"  flexDirection="column">

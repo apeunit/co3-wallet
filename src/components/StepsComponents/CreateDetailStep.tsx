@@ -30,7 +30,7 @@ const CreateDetailStep: React.FC<IProps> = ({ data, handleEdit, uploading, handl
       <Box
         style={{
           overflowY: 'scroll',
-          width: '100vw',
+          width: '100%',
           height: '85vh',
           margin: data.maxSupply ? '0px' : '10vh -20px 0',
         }}

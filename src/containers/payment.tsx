@@ -170,7 +170,7 @@ const Payment: React.FC = () => {
   return (
     <Flex flexDirection="column" height="100vh">
       <SearchHeader to={to} />
-      <InfoBar style={{ width: '100vw' }}>
+      <InfoBar style={{ width: '100%' }}>
         <Text variant="base">{t('common.from')}</Text>
         <AvatarBadge image={token && token.logoURL} label={token && token.name} />
       </InfoBar>
@@ -181,7 +181,7 @@ const Payment: React.FC = () => {
         paddingX={7}
         paddingY={8}
         variant="headingX2l"
-        style={{ maxWidth: '100vw', wordBreak: 'break-all', textAlign: 'right' }}
+        style={{ maxWidth: '100%', wordBreak: 'break-all', textAlign: 'right' }}
       >
         {amount ? amount : '0'}
       </Text>

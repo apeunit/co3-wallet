@@ -288,12 +288,13 @@ const ConfirmPayment = () => {
       backgroundColor="white"
       flexDirection="column"
       height="100vh"
-      width="100vw"
+      width="100%"
       justifyContent="space-between"
-      flexWrap="wrap"
+      // flexWrap="wrap"
+      display="contents"
     >
       <Loading loader={loader} />
-      <Box style={{ width: '100vw' }}>
+      <Box style={{ width: '100%' }}>
         <SearchHeader back={(state && state.from) || '/payment'} to={to} />
         <InfoBar>
           <Text variant="base">{t('common.from')}</Text>

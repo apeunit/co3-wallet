@@ -11,6 +11,7 @@ import Settings from 'src/containers/Settings';
 import SingleTokenTxnHistory from 'src/containers/SingleTokenTxnHistory';
 import VendingMachine from 'src/containers/VendingMachine';
 import ConfirmPayment from '../components/ConfirmPayment';
+import JoinCrowdsale from '../containers/JoinCrowdsale';
 import { SelectToken } from '../components/SelectToken';
 import AppSettings from '../containers/AppSettings';
 import CrowdsaleDetail from '../containers/CrowdsaleDetail';
@@ -125,6 +126,10 @@ export const routes = [
     path: '/confirmpayment',
     component: ConfirmPayment,
   },
+  {
+    path: '/join-crowdsale',
+    component: JoinCrowdsale,
+  }, 
   {
     path: '/transaction-history',
     component: TransactionsHistory,

@@ -126,11 +126,11 @@
     "location_msg":"La tua campagna ha una posizione",
     "sell_msg":"Quanto devi almeno vendere",
     "loading":"Caricamento...",
-    "pickup_created": "Cestino di raccolta creato",
-    "pickup_creation_failed":"Creazione del carrello di raccolta non riuscita"
+    "pickup_created": "Buono creato",
+    "pickup_creation_failed":"Creazione del buono non riuscita"
   },
   "pickupbox_coupons" : {
-    "coupons_failed":"Creazione del carrello di raccolta non riuscita"
+    "coupons_failed":"puoi prendere qualcosa solo una volta e non puoi prendere qualcosa dal tuo carrello di raccolta"
   },
   "marketplace": {
     "label":"Mercata",
@@ -144,6 +144,19 @@
     "started_on":"Iniziato il",
     "buy_now": "PARTECIPA ORA",
     "no_crowdsale": "Non hai ancora creato alcun mercato"
+  },
+  "pickupbasketplace": {
+    "label":"Pickupbasketplace",
+    "available":"A disposizione",
+    "closes":"Closes",
+    "days":"days",
+    "hours":"hours",
+    "minutes":"minutes",
+    "seconds":"seconds",
+    "no_details":"Pickupbasketplace details not available.",
+    "started_on":"Creato",
+    "buy_now": "ACCESS NOW",
+    "no_pickupbasket": "You don't have made any Pickupbasketplace yet"
   },
   "new_token": {
     "label": "Nuova valuta",

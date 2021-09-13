@@ -157,6 +157,7 @@ export interface IPickupBasketData {
   token: string;
   contractAddress: string;
   entity_type?: string;
+  couponToGive?: string;
 }
 
 export interface IChainState {
@@ -222,8 +223,12 @@ export interface IMember {
   last_activity: string, //"2021-03-10",
   location: string, //null,
   name: string, //"alberto guffanti"
+  roles: IAssociate;
 }
 
+export interface IAssociate {
+  beneficiary: boolean;
+}
 export interface IMemberSearchResult {
   result: Array<IMember>
 }
@@ -233,3 +238,12 @@ export interface IProfile {
     blockchain_public_key: string
   }
 }
+
+
+// export interface IRoles {
+//   result: {
+//     admin: string
+//     associationManager: string
+//     anyone: string
+//   }
+// }

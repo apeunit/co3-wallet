@@ -227,6 +227,7 @@ const NewPickUpBasket: React.FC = () => {
     setLoader(true);
     let callbackParam: string | null;
     let webHookParam: string | null;
+    console.log("location", location)
     if (location.search) {
       const params = new URLSearchParams(location.search);
       callbackParam = params.get('callback');
@@ -268,7 +269,7 @@ const NewPickUpBasket: React.FC = () => {
       pickupbasket.AU = `${window.location.host}?access_token=${accessToken}`
       pickupbasket.RU = `${window.location.host}?access_token=${accessToken}` 
 
-      console.log(pickupbasket)
+      console.log("pickupbasket", pickupbasket)
 
       const receipt: any = dispatch(createNewPickUpBasket(pickupbasket));
       receipt
@@ -292,7 +293,7 @@ const NewPickUpBasket: React.FC = () => {
             ));
 
             await dispatch(unlockPickupBasket(contractAddress))
-
+    
             if (callbackParam) {
               window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
                 }_id=${pickupBasketDataRes._contractAddress}`;
@@ -302,7 +303,8 @@ const NewPickUpBasket: React.FC = () => {
             }
             setLoader(false);
             console.log("res from pickup box", res);
-            history.push('/');
+            history.push(`attach-sm?eid=${firstlifeId}&access_token=${accessToken}&callback=${callbackParam}&webhook=${webHookParam}`);
+            // history.push(`/`);
             dispatch(
               setModalData(
                 true,
@@ -344,7 +346,7 @@ const NewPickUpBasket: React.FC = () => {
       dispatch(
         setModalData(
           true,
-          t('new_crowdsale.crowdsale_creation_failed'),
+          t('new_pickupbox.pickup_creation_failed'),
           errMsg,
           'permission',
         ),

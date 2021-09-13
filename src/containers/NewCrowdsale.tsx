@@ -404,7 +404,8 @@ const NewCrowdsale: React.FC<IProps> = () => {
             setLoader(false);
             // console.log(res);
             // console.log(crowdsale)
-            history.push('/');
+            // history.push('/');
+            history.push(`attach-sm?eid=${firstlifeId}&access_token=${accessToken}&callback=co3app://main-screen`);
             dispatch(
               setModalData(
                 true,

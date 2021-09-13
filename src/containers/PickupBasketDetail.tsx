@@ -3,8 +3,6 @@ import { Button, Flex, Text, Box } from 'rebass';
 import ImageCard from 'src/components/ImageCard';
 import FramerSlide from '../components/FrameMotion/Slide';
 import IconButton from '../components/IconButton';
-import { makeStyles } from '@material-ui/core/styles';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import Loading from '../components/Loading';
 
 import '../assets/styles/NewToken.css';
@@ -18,49 +16,58 @@ import { getPickupBasketData, collectPickupBasket } from 'src/redux/actions/Chai
 import axios from 'axios';
 import CouponList from '../components/Coupons/CouponsList/CouponList';
 import { COUPON_PURPOSE } from 'src/config';
+import { getPublicKey } from 'src/api/co3uum';
 
 const fileDownload = require('js-file-download');
 const isDev = process.env.NODE_ENV === 'development';
 const pdfcontract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
-const useStyles = makeStyles({
-  root: {
-    width: '100%',
-  },
-});
-
 const PickupBasketDetail: React.FC = (props) => {
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const classes = useStyles();
   const history = useHistory();
   const { state }: any = history.location;
-
-  const [progress, setProgress] = useState(0);
-  const [couponList, setCouponList] = useState([]);
   const [tokenLoading, setTokenLoading] = useState(true);
+
+  // const [progress, setProgress] = useState(0);
+  const [couponList, setCouponList] = useState([]);
   const [countdown, setCountdown] = useState<any>('');
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState('');
   const [loader, setLoader] = useState(false);
+  const [isOwner, setOwner] = useState(false);
 
   // ---------------------------------------------------
   //               Get data from the store                          
   // ---------------------------------------------------
 
-  const { tokensDataList, errorWeb3, pickupBasketData, token } = useSelector(({ chain, wallet }: any) => {
+  const { tokensDataList, errorWeb3, pickupBasketData, token, accessToken, ethAddress  } = useSelector(({ co3uum, chain, wallet }: any) => {
     return {
       pickupBasketData: chain.pickupBasketData,
       token: wallet.transfer.token,
       tokensDataList: chain.tokenList,
       errorWeb3: chain.errorWeb3,
+      accessToken: co3uum.accessToken,
+      ethAddress: wallet.ethAddress,
     };
   });
-  // console.log("pickupBasketData", pickupBasketData)
 
   const then: any = moment(pickupBasketData?.end);
   const now: any = moment();
+
+  const getUserdata = async () => {
+    if (accessToken) {
+        const pbkey: any = await getPublicKey(accessToken);
+        setOwner(pickupBasketData?.owner === pbkey?.result?.blockchain_public_key)
+      }
+    };
+
+
+  useEffect(() => {
+    getUserdata();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accessToken, ethAddress]);
 
   //---------------------------------------------------------
   //        show list of coupons
@@ -68,15 +75,13 @@ const PickupBasketDetail: React.FC = (props) => {
 
   useEffect(() => {
     if (tokensDataList.length > 0) {
-      setCouponList(tokensDataList.filter((tk: any) => tk.purpose === COUPON_PURPOSE));
-      // console.log("tokendatalist", tokensDataList)
-    } else if ((tokenLoading && tokensDataList.length === 0) || (errorWeb3 && !errorWeb3?.connected)) {
       setTokenLoading(false);
+      setCouponList(tokensDataList.filter((tk: any) => tk.purpose === COUPON_PURPOSE));
+    } else if ((tokenLoading && tokensDataList.length === 0) || (errorWeb3 && !errorWeb3?.connected)) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensDataList, tokenLoading, errorWeb3]);
 
-  // console.log("couponlist", couponList)
 
   //---------------------------------------------------------
   //          get pickupbasket data
@@ -94,7 +99,7 @@ const PickupBasketDetail: React.FC = (props) => {
   //---------------------------------------------------------
 
   useEffect(() => {
-    setProgress(0);
+    // setProgress(0);
     setCountdown(moment(then - now));
     if (!pickupBasketData || pickupBasketData === null) {
       history.push('/pickupbasketplace');
@@ -128,7 +133,6 @@ const PickupBasketDetail: React.FC = (props) => {
     setLoader(true);
     const result: any = dispatch(collectPickupBasket(pickupBasketData.contractAddress))
     result.then((res: any) => {
-      console.log(res);
       setLoader(false);
       dispatch(
         setModalData(
@@ -169,7 +173,8 @@ const PickupBasketDetail: React.FC = (props) => {
         setError(t('common.download_error'))
       })
   }
-
+  console.log('couponList',couponList)
+  console.log('pickupBasketData',pickupBasketData)
   return (
     <Flex
       flexDirection="column"
@@ -232,12 +237,13 @@ const PickupBasketDetail: React.FC = (props) => {
               </Flex>
             </Flex>
             <Flex marginTop="10px" flexDirection="column">
-              <div className={classes.root}>
-                <LinearProgress variant="determinate" value={progress} />
-              </div>
+              {/* <div className={classes.root}> */}
+                {/* <LinearProgress variant="determinate" value={progress} /> */}
+              {/* </div> */}
               <Text marginTop="5px" fontSize="14px" color="#757575">
-                {/* <span className="token-goal-font">10</span> of  */}
-                {t('marketplace.goal')}: {pickupBasketData?.productsAvailable}
+              {t('pickupbasketplace.available')}: {pickupBasketData?.productsAvailable}
+
+                {/* <span className="token-goal-font">10</span> of */}
               </Text>
             </Flex>
             {/* <Flex marginTop="15px" flexDirection="row" fontSize="14px" color="#949494">
@@ -277,7 +283,16 @@ const PickupBasketDetail: React.FC = (props) => {
                 >
                   {t('crowdsaledetail.coupons_received')}
                 </Text>
-                {couponList.map((i: any) => i.contractAddress === pickupBasketData?.itemToSell && <CouponList tokens={i} tokenLoading={tokenLoading} />)}
+                {couponList.map((i: any) => {
+                  console.log(i, 'couponLi')
+                  // FIXME: This is a workaround logoUrl inception
+                  let logoUrl;
+                  try{
+
+                    logoUrl = JSON.parse(i?.logoURL);
+                    i.logoURL = logoUrl?.logoURL
+                  } catch{}
+                    return i.contractAddress === pickupBasketData.couponToGive && <CouponList tokens={i} tokenLoading={tokenLoading} />})}
               </Box>)}
             <Flex>
               <Text fontSize="12px" color="#757575">
@@ -317,7 +332,9 @@ const PickupBasketDetail: React.FC = (props) => {
                     >
                       <IconButton marginRight="5px" width="20px" height="10px" icon="locationOn" />
                       <Text color="#404245" fontSize={13}>
+                        <a rel="noopener noreferrer" target="_blank" href={`https://firstlife.torino.projectco3.eu/wall/details/${pickupBasketData?.FLID}`}>
                         {t('token_details.firstlife')}
+                        </a>
                       </Text>
                     </Flex>
                   </button>
@@ -326,6 +343,7 @@ const PickupBasketDetail: React.FC = (props) => {
             </Flex>
 
             <Button
+            disabled={isOwner}
               onClick={handleBuyNow}
               className="buynow-btn"
               variant="primary"
