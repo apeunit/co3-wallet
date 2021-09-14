@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { joinCrowdsale, approveSender } from '../redux/actions/Chain';
 import { setModalData } from '../redux/actions/Modal';
 import { SearchHeader } from '../components/SearchHeader';
+import Keyboard from '../components/Keyboard';
 import InfoBar from '../components/InfoBar';
 import AvatarBadge from '../components/AvatarBadge';
 import { useTranslation } from 'react-i18next';
@@ -19,6 +20,8 @@ import { BALANCE_NOTIFY_QUERY_TOKEN, GET_ALL_TOKENS } from 'src/api/middleware';
 import { useLazyQuery, useQuery } from '@apollo/react-hooks';
 import ErrorMsg from '../components/ErrorMsg';
 
+const amountRegex = new RegExp('^[0-9]+([0-9]{1,2})?$');
+
 const JoinCrowdsale = () => {
     const { t } = useTranslation();
     const location = useLocation();
@@ -26,6 +29,10 @@ const JoinCrowdsale = () => {
     const dispatch = useDispatch();
     const [error, setError] = useState('');
     const [loader, setLoader] = useState(false);
+    const [coupons, setCoupons] = useState('1');
+    const [showNumberPad, setShowNumberPad] = useState(true);
+    const [maxCap, setMaxCap] = useState(1);
+    const [acceptRatio, setAcceptRatio] = useState(1);
     const [tokenList, setTokenList] = useState([]);
     const [tokenData, setTokenData] = useState<any>({});
 
@@ -57,12 +64,38 @@ const JoinCrowdsale = () => {
         const params = new URLSearchParams(location.search);
         const callbackParam = params.get('callback');
         if (callbackParam) {
-            window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'}_id=${t(_error)}`;
+            window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'}_id=${t(
+                _error,
+            )}`;
         } else {
             history.push('/');
             dispatch(setModalData(false, 'permission'));
         }
-    }
+    };
+
+    const handleTap = (data: string) => {
+        const amountString: string = `${coupons}${data}`;
+        // console.log(crow)
+        if (amountRegex.test(amountString) && Number(amountString) <= maxCap) {
+            setCoupons(Number(amountString).toString());
+        }
+    };
+
+    const handleErase = () => {
+        let amountString: string = coupons || '';
+        if (amountString) {
+            amountString = amountString.slice(0, -1) || '0';
+            setCoupons(amountString);
+        }
+    };
+
+    const handleConfirm = () => {
+        const value = Number(coupons);
+        if(value < 1) return false;
+        const total = value * acceptRatio;
+        dispatch(setTransferAmount(Number(total).toString()));
+        setShowNumberPad(false)
+    };
 
     const errorModalBody = (title: string, btntitle: string, _error: string) => (
         <Flex flexDirection="column" width="max-content" margin="auto">
@@ -113,23 +146,32 @@ const JoinCrowdsale = () => {
                             setModalData(
                                 true,
                                 errorModalMsg('payment.amount_coupon_error'),
-                                errorModalBody('payment.amount_coupon_error_msg', `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`, 'payment.amount_coupon_error'),
+                                errorModalBody(
+                                    'payment.amount_coupon_error_msg',
+                                    `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`,
+                                    'payment.amount_coupon_error',
+                                ),
                                 'permission',
-                                false
+                                false,
                             ),
                         );
 
                         return;
                     }
                 } else {
-                    params.delete('token')
+                    params.delete('token');
+                    params.delete('token');
                     dispatch(
                         setModalData(
                             true,
                             errorModalMsg('payment.token_error'),
-                            errorModalBody('', `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`, 'payment.token_error'),
+                            errorModalBody(
+                                '',
+                                `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`,
+                                'payment.token_error',
+                            ),
                             'permission',
-                            false
+                            false,
                         ),
                     );
                 }
@@ -140,9 +182,13 @@ const JoinCrowdsale = () => {
                     setModalData(
                         true,
                         errorModalMsg('payment.amount_error'),
-                        errorModalBody('payment.amount_negative_error_msg', `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`, 'payment.amount_error'),
+                        errorModalBody(
+                            'payment.amount_negative_error_msg',
+                            `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`,
+                            'payment.amount_error',
+                        ),
                         'permission',
-                        false
+                        false,
                     ),
                 );
 
@@ -153,9 +199,13 @@ const JoinCrowdsale = () => {
                     setModalData(
                         true,
                         errorModalMsg('payment.amount_coupon_error'),
-                        errorModalBody('payment.amount_coupon_error_msg', `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`, 'payment.amount_coupon_error'),
+                        errorModalBody(
+                            'payment.amount_coupon_error_msg',
+                            `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`,
+                            'payment.amount_coupon_error',
+                        ),
                         'permission',
-                        false
+                        false,
                     ),
                 );
 
@@ -169,8 +219,14 @@ const JoinCrowdsale = () => {
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const tokenParam = params.get('token');
+        const maxCapParam = params.get('maxCap');
+        const acceptRatioParam = params.get('acceptRatio');
         const amountParam = params.get('amount');
         const callbackParam = params.get('callback');
+
+        setMaxCap(Number(maxCapParam));
+        setAcceptRatio(Number(acceptRatioParam))
+        
         if (tokenParam) {
             const amount = data?.balanceNotificationMany[0]?.amount;
             dispatch(
@@ -179,14 +235,21 @@ const JoinCrowdsale = () => {
                     amount,
                 }),
             );
-            if (amountParam && (tokenData?.decimals === 2 ? amount / 100 : amount) < Number(amountParam)) {
+            if (
+                amountParam &&
+                (tokenData?.decimals === 2 ? amount / 100 : amount) < Number(amountParam)
+            ) {
                 dispatch(
                     setModalData(
                         true,
                         errorModalMsg('payment.amount_error'),
-                        errorModalBody('', `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`, 'payment.amount_error'),
+                        errorModalBody(
+                            '',
+                            `${callbackParam ? 'payment.go_back' : 'payment.back_home'}`,
+                            'payment.amount_error',
+                        ),
                         'permission',
-                        false
+                        false,
                     ),
                 );
 
@@ -197,8 +260,8 @@ const JoinCrowdsale = () => {
     }, [data, tokenData]);
 
     const tokenAmount = () => {
-        return token?.amount && token?.decimals === 2 ? token?.amount / 100 : token?.amount || 0
-    }
+        return token?.amount && token?.decimals === 2 ? token?.amount / 100 : token?.amount || 0;
+    };
 
     const handleSendToken = () => {
         setLoader(true);
@@ -209,7 +272,7 @@ const JoinCrowdsale = () => {
         }
         if (tokenAmount() < Number(amountParam)) {
             setLoader(false);
-            setError(t('payment.amount_error'))
+            setError(t('payment.amount_error'));
             dispatch(
                 setModalData(true, t('payment.payment_failed'), t('payment.amount_error'), 'permission'),
             );
@@ -302,21 +365,60 @@ const JoinCrowdsale = () => {
                     <AvatarBadge image={token && token.logoURL} label={token && token.name} />
                 </InfoBar>
             </Box>
-            <Flex flexDirection="column" margin={5}>
-                <TokenCard
-                    icon={token?.logoURL || ''}
-                    name={token?.name || ''}
-                    symbol={token?.token_symbol || token?.symbol || ''}
-                    amount={tokenAmount()}
-                />
-                <Flex marginTop="10px" justifyContent="space-between">
-                    <Text fontSize="16px">{t('payment.amount')}</Text>
-                    <Text fontSize="40px">{amount}</Text>
+            {!showNumberPad ? (
+                <Flex flexDirection="column" margin={5}>
+                    <TokenCard
+                        icon={token?.logoURL || ''}
+                        name={token?.name || ''}
+                        symbol={token?.token_symbol || token?.symbol || ''}
+                        amount={tokenAmount()}
+                    />
+                    <Flex marginTop="10px" justifyContent="space-between">
+                        <Text fontSize="12px">{t('payment.price')}</Text>
+                        <Text fontSize="16px">{acceptRatio}</Text>
+                    </Flex>
+                    <Flex marginTop="10px" justifyContent="space-between">
+                        <Text fontSize="12px">{t('payment.coupons')}</Text>
+                        <Text fontSize="16px">{coupons}</Text>
+                    </Flex>
+                    <Flex marginTop="15px" justifyContent="space-between">
+                        <Text fontSize="18px">{t('payment.amount')}</Text>
+                        <Text fontSize="40px">{amount}</Text>
+                    </Flex>
                 </Flex>
-            </Flex>
+            ) : (
+                <Box>
+                    <Box marginTop="10px" paddingX={7}>
+                        <Text fontSize="20px">{t('payment.coupons')}</Text>
+                        <Text fontSize="12px" opacity={0.5}>{t('payment.max')} {maxCap}</Text>
+                    </Box>
+                    <Text
+                        marginTop="auto"
+                        alignSelf="flex-end"
+                        paddingX={7}
+                        paddingY={8}
+                        variant="headingX2l"
+                    >
+                        {coupons || 0}
+                    </Text>
+                    <Keyboard
+                        marginBottom={10}
+                        handleTap={handleTap}
+                        handleErase={handleErase}
+                        handleConfirm={handleConfirm}
+                        disbaleConfirm={true}
+                    />
+                </Box>
+            )}
 
             {error ? (
-                <Flex flexDirection="row" paddingY={10} marginTop="65px" justifyContent="space-around" width="100%">
+                <Flex
+                    flexDirection="row"
+                    paddingY={10}
+                    marginTop="65px"
+                    justifyContent="space-around"
+                    width="100%"
+                >
                     <ErrorMsg
                         style={{
                             opacity: '0.8',
@@ -329,11 +431,11 @@ const JoinCrowdsale = () => {
                         type="error"
                     />
                 </Flex>
-            ) : (
+            ) : !showNumberPad && (
                 <Flex flexDirection="row" paddingY={10} justifyContent="space-around" width="100%">
                     <IconButton
                         onClick={() => {
-                            history.push('/pay');
+                            setShowNumberPad(true)
                         }}
                         size="s14"
                         icon="dialpad"

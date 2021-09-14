@@ -25,7 +25,6 @@ const MarketPlace = () => {
   // -------------------------------------------------------------------------- */
   //                                     
   // -------------------------------------------------------------------------- */
-
   useEffect(() => {
     if (!tokenQueryData.loading && tokenQueryData.data && tokenQueryData.data.tokenAddedMany) {
       setTokenList(tokenQueryData.data.tokenAddedMany);

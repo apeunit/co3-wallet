@@ -311,7 +311,7 @@ const createNewCrowdsale = (crowdsale: any) => {
     const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
     console.log('create new crowdsale 1 ');
     const gasPrice = await web3.eth.getGasPrice();
-    const { itemToSell, token, startDate, endDate, giveRatio, maxSupply } = crowdsale;
+    const { itemToSell, token, startDate, endDate, acceptRatio, maxSupply } = crowdsale;
     const crowdsaleId = getRandomId();
     const blockNo = await web3.eth.getBlockNumber();
     const gas = blockNo.gasLimit - 100000;
@@ -323,9 +323,9 @@ const createNewCrowdsale = (crowdsale: any) => {
         token,
         Math.floor(new Date(startDate).getTime()),
         Math.floor(new Date(endDate).getTime()),
+        parseInt(acceptRatio, 10),
         1,
-        parseInt(giveRatio, 10),
-        parseInt(maxSupply, 10),
+        parseInt(maxSupply, 10) * parseInt(acceptRatio, 10),
         JSON.stringify({
           name: crowdsale.name,
           logoURL: crowdsale.icon,

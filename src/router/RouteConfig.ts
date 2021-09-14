@@ -139,7 +139,7 @@ export const routes = [
     component: TransactionDetails,
   },
   {
-    path: `/crowdsale-detail/:crowdsaleName`,
+    path: `/crowdsale-detail/:id`,
     component: CrowdsaleDetail,
   },
   {

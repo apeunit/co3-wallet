@@ -28,7 +28,7 @@ const DateInput = (props: any) => {
               margin="normal"
               id={id}
               InputAdornmentProps={{ position: 'start' }}
-              format="MM/dd/yyyy"
+              format="dd/MM/yy"
               value={value}
               minDate={minDate}
               maxDate={maxDate}

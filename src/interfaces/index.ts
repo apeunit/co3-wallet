@@ -123,7 +123,7 @@ export interface ICrowdsaleData {
   name: string;
   icon?: string;
   logoURL: string;
-  metadata?: string;
+  metadata?: any;
   startDate?: string;
   start?: string;
   end?: string;

@@ -74,18 +74,18 @@ const MultiToken: React.FC = () => {
 
   useEffect(() => {
     if (tokensDataList.length > 0) {
-        setTokenLoading(false);
-        setTokenList(tokensDataList.filter((tk: any) => tk.purpose === TOKEN_PURPOSE));
-        setCouponList(tokensDataList.filter((tk: any) => tk.purpose === COUPON_PURPOSE));
+      setTokenLoading(false);
+      setTokenList(tokensDataList.filter((tk: any) => tk.purpose === TOKEN_PURPOSE));
+      setCouponList(tokensDataList.filter((tk: any) => tk.purpose === COUPON_PURPOSE));
     } else if ((tokenLoading && tokensDataList.length === 0) || (errorWeb3 && !errorWeb3?.connected)) {
       setTokenLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensDataList, tokenLoading, errorWeb3]);
 
-// -------------------------------------------------------------------------- */
-//
-// -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
 
   const onControlledDrag = (e: any, pos: any) => {
     if (tokenLoading === false && couponList.length === 0) {
@@ -96,9 +96,9 @@ const MultiToken: React.FC = () => {
     }
   };
 
-// -------------------------------------------------------------------------- */
-//
-// -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
 
   const BoundToTop = (val: any) => {
     if (val) {
@@ -113,9 +113,9 @@ const MultiToken: React.FC = () => {
     }, 1000);
   };
 
-// -------------------------------------------------------------------------- */
-//
-// -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
 
   useEffect(() => {
     setBound(recentbound);
@@ -133,9 +133,9 @@ const MultiToken: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenLoading, couponList, tokenList]);
 
-// -------------------------------------------------------------------------- */
-//
-// -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
 
   useEffect(() => {
     if (!getApolloConnected() && !modalOpen) {
@@ -159,9 +159,9 @@ const MultiToken: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getApolloConnected(), modalOpen]);
 
-// -------------------------------------------------------------------------- */
-//
-// -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
 
   const errorModalMsg = (title: string) => (
     <Flex width="max-content" margin="auto" className="error-modal">
@@ -188,9 +188,9 @@ const MultiToken: React.FC = () => {
     </Flex>
   );
 
-// -------------------------------------------------------------------------- */
-//
-// -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
+  //
+  // -------------------------------------------------------------------------- */
 
   const displayLoginPopup = () => {
     try {
@@ -220,7 +220,7 @@ const MultiToken: React.FC = () => {
       } catch (error) {
         // setLoader(false);
       }
-    } 
+    }
     // else {
     //   setLoader(false);
     // }
@@ -231,6 +231,11 @@ const MultiToken: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [accessToken]);
 
+  const hasAddRole = () => {
+    if (process.env.NODE_ENV === 'development') return true;
+    
+    return !userRoles?.participant;
+  }
 
   return (
     <Flex
@@ -245,7 +250,7 @@ const MultiToken: React.FC = () => {
         </ToolBarTitle>
       </ToolBar>
 
-      <Flex className="pending-token"/>
+      <Flex className="pending-token" />
 
       <Flex flexDirection="column" style={{ overflow: 'hidden' }}>
         <Flex flexDirection="column" flex="1">
@@ -354,7 +359,7 @@ const MultiToken: React.FC = () => {
                           }}
                         />
                       </Box>
-                      {!userRoles?.participant && <Flex justifyContent="flex-end" paddingX={6} height="35px">
+                      {hasAddRole() && <Flex justifyContent="flex-end" paddingX={6} height="35px">
                         {!tokenLoading && features.indexOf('createToken') > -1 && (
                           <IconButton
                             className="add-round-btn"
@@ -369,10 +374,10 @@ const MultiToken: React.FC = () => {
                           />
                         )}
                       </Flex>
-                      }                    
+                      }
                       {!tokenLoading && tokensDataList.length === 0 && (tokenList.length === 0 && couponList.length === 0) ? (
                         <>
-                          <Flex height="55vh" width="212px" margin="auto"  flexDirection="column">
+                          <Flex height="55vh" width="212px" margin="auto" flexDirection="column">
                             <Text width="195px" marginBottom="25px" textAlign="center">{t('multitoken.no_assets')}</Text>
                             <Image src={EmptyImg} />
                           </Flex>
@@ -391,7 +396,7 @@ const MultiToken: React.FC = () => {
                           )}
                           {(tokenLoading || couponList.length > 0) && (
                             <>
-                              <Box style={{ margin: '10px 10px'  }}>
+                              <Box style={{ margin: '10px 10px' }}>
                                 <Text
                                   fontFamily="sans"
                                   fontSize="18px"

@@ -62,7 +62,8 @@ const NewCrowdsale: React.FC<IProps> = () => {
     maxSupply: '',
     // itemToSell: isDev ? '0xbD2Dc75534022E2bc79A49798115F9303734dA66' : '',
     itemToSell: '',
-    giveRatio: '',
+    giveRatio: 1,
+    acceptRatio: '',
     token: isDev ? '0x26BF83F78805f107740a0DafC02167e4d4d7349c' : '',
     FLID: '',
     TTA: '',
@@ -156,10 +157,11 @@ const NewCrowdsale: React.FC<IProps> = () => {
 
   const handleSteps = () => {
     setError('');
+    console.log(crowdsale.aca);
     if (step <= 9) {
       if (
         checkError(1, crowdsale.name, t('common.name')) ||
-        checkError(1, crowdsale.aca, t('common.aca_to_attach')) ||
+        checkError(1, crowdsale.aca?.id, t('common.aca_to_attach')) ||
         checkError(2, crowdsale.icon, t('common.icon')) ||
         checkError(3, crowdsale.startDate, t('new_crowdsale.start_date')) ||
         checkError(3, crowdsale.endDate, t('new_crowdsale.end_date')) ||
@@ -365,8 +367,8 @@ const NewCrowdsale: React.FC<IProps> = () => {
       crowdsale.FLID = firstlifeId
       crowdsale.TTA = getTokenSymbol(tokenList, crowdsale.token) // symbol (ticker) of the token used to participate to the crowdsale
       crowdsale.TTG = getTokenSymbol(tokenList, crowdsale.token) //  symbol (ticker) of the Coupon that users receive when the crowdsale ends
-      crowdsale.AU = `${window.location.host}?access_token=${accessToken}`
-      crowdsale.RU = `${window.location.host}?access_token=${accessToken}&redeem=${crowdsale.token}` // crowdsale token is place holder i have to look for the redeem code
+      crowdsale.AU = `${window.location.host}/marketplace/${firstlifeId}`
+      crowdsale.RU = `${window.location.host}/marketplace/${firstlifeId}&redeem=${crowdsale.token}` // crowdsale token is place holder i have to look for the redeem code
       
       const receipt: any = dispatch(createNewCrowdsale(crowdsale));
       receipt

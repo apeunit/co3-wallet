@@ -45,8 +45,8 @@ const PriceTokenStep: React.FC<IProps> = ({
     <Flex flexDirection="column" width="100%">
       <CreateInputStep
         type="number"
-        value={crowdsale.giveRatio}
-        onChangeValue={(e: any) => handleChangeCrowdsale(e, 'giveRatio')}
+        value={crowdsale.acceptRatio}
+        onChangeValue={(e: any) => handleChangeCrowdsale(e, 'acceptRatio')}
         label=""
         placeholder={t('new_crowdsale.give_ratio')}
         maxLength=""

@@ -141,7 +141,7 @@ const CreateDetailStep: React.FC<IProps> = ({ data, handleEdit, uploading, handl
               <DetailItems
                 handleEdit={handleEdit}
                 title={t('new_crowdsale.give_ratio')}
-                value={data.giveRatio}
+                value={data.acceptRatio}
               />
               <Divider />
               <DetailItems

@@ -27,7 +27,7 @@ const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
         crowdSymbol: getTokenSymbol(tokenList, crowdsale.token),
       }),
     );
-    history.push(`/crowdsale-detail/${kebabCase(crowdsale.name)}-${(crowdsale.itemToSell).slice(-3)}`);
+    history.push(`/crowdsale-detail/${crowdsale?.metadata?.FLID}`);
   };
 
   // console.log('tokenlist', tokenList)

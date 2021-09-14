@@ -138,7 +138,7 @@ const BuyStep: React.FC<IProps> = ({ data }) => {
                 <Text fontSize={16}>{t('new_crowdsale.give_ratio')}</Text>
               </Flex>
               <Text marginTop="3px" fontSize={13}>
-                {data.giveRatio}
+                {data.acceptRatio}
               </Text>
             </Flex>
           </Flex>
