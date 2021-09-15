@@ -223,6 +223,13 @@ const NewPickUpBasket: React.FC = () => {
   //                                                   
   // -------------------------------------------------------------------------- */
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const nameParam = params.get('name') || '';
+    handleChangePickupbasket(nameParam, 'name');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleCreatePickUpBasket = async () => {
     setLoader(true);
     let callbackParam: string | null;

@@ -318,6 +318,13 @@ const NewCrowdsale: React.FC<IProps> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contracts]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const nameParam = params.get('name') || '';
+    handleChangeCrowdsale(nameParam, 'name');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleCreateCrowdsale = async () => {
     setLoader(true);
     let callbackParam: string | null;

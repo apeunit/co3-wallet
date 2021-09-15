@@ -32,6 +32,7 @@ const CrowdsaleCS = () => {
       const typeParam = params.get('type');
       if (eidParam && accessTokenParam) {
         dispatch(saveAid(eidParam));
+        accessTokenCalls(params);
         if (typeParam) {
           history.push({
             pathname: `${
@@ -51,7 +52,6 @@ const CrowdsaleCS = () => {
             search: location.search,
           });
         }
-        accessTokenCalls(params);
       } else {
         history.push('/404');
       }
