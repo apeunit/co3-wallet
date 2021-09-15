@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Flex, Text, Box } from 'rebass';
+import { Button, Flex, Text } from 'rebass';
 import ImageCard from 'src/components/ImageCard';
 import FramerSlide from '../components/FrameMotion/Slide';
 import IconButton from '../components/IconButton';
@@ -7,15 +7,18 @@ import Loading from '../components/Loading';
 
 import '../assets/styles/NewToken.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import Moment from 'react-moment';
 import { setModalData } from 'src/redux/actions/Modal'
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import { getTokenSymbol } from 'src/utils/helper'
+import { CrowdsaleSortEnum, GET_PICKUP_BASKET_ADDED, GET_ALL_TOKENS } from '../api/middleware';
+import { useQuery } from '@apollo/react-hooks';
 import { getPickupBasketData, collectPickupBasket } from 'src/redux/actions/Chain';
 import axios from 'axios';
-import CouponList from '../components/Coupons/CouponsList/CouponList';
-import { COUPON_PURPOSE } from 'src/config';
+// import CouponList from '../components/Coupons/CouponsList/CouponList';
+// import { COUPON_PURPOSE } from 'src/config';
 import { getPublicKey } from 'src/api/co3uum';
 
 const fileDownload = require('js-file-download');
@@ -28,10 +31,13 @@ const PickupBasketDetail: React.FC = (props) => {
   const { t } = useTranslation();
   const history = useHistory();
   const { state }: any = history.location;
+  const { id } = useParams<any>();
+  const [tokenList, setTokenList] = useState([]);
+
   const [tokenLoading, setTokenLoading] = useState(true);
 
   // const [progress, setProgress] = useState(0);
-  const [couponList, setCouponList] = useState([]);
+  // const [couponList, setCouponList] = useState([]);
   const [countdown, setCountdown] = useState<any>('');
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState('');
@@ -41,6 +47,42 @@ const PickupBasketDetail: React.FC = (props) => {
   // ---------------------------------------------------
   //               Get data from the store                          
   // ---------------------------------------------------
+
+  const tokenQueryData = useQuery(GET_ALL_TOKENS);
+  const pickupBasketAddedQuery = useQuery(GET_PICKUP_BASKET_ADDED, {
+    fetchPolicy: 'no-cache',
+    variables: {
+      filter: {
+        metadata: {
+          FLID: id,
+        }
+      },
+      skip: 0,
+      limit: 1,
+      sort: CrowdsaleSortEnum.DESC,
+    },
+  })
+
+  useEffect(() => {
+    if (!tokenQueryData.loading && tokenQueryData.data && tokenQueryData.data.tokenAddedMany) {
+      setTokenList(tokenQueryData.data.tokenAddedMany);
+    }
+  }, [tokenQueryData]);
+
+  useEffect(() => {
+    if (!pickupBasketAddedQuery.loading && pickupBasketAddedQuery.data && pickupBasketAddedQuery.data.pickUpBasketAddedNotificationMany) {
+      const data = pickupBasketAddedQuery.data.pickUpBasketAddedNotificationMany.length ? pickupBasketAddedQuery.data.pickUpBasketAddedNotificationMany[0] : null;
+      if (!data) return history.push('/pickupbasketplace');
+      const metaData = data?.metadata as any || null
+      const pickupBasket = { ...data, ...metaData };
+      dispatch(
+        getPickupBasketData({
+          ...pickupBasket,
+          openSymbol: getTokenSymbol(tokenList, pickupBasket.couponToGive),
+        }),
+      );
+    }
+  }, [pickupBasketAddedQuery, history, dispatch, tokenList])
 
   const { tokensDataList, errorWeb3, pickupBasketData, token, accessToken, ethAddress  } = useSelector(({ co3uum, chain, wallet }: any) => {
     return {
@@ -76,7 +118,7 @@ const PickupBasketDetail: React.FC = (props) => {
   useEffect(() => {
     if (tokensDataList.length > 0) {
       setTokenLoading(false);
-      setCouponList(tokensDataList.filter((tk: any) => tk.purpose === COUPON_PURPOSE));
+      // setCouponList(tokensDataList.filter((tk: any) => tk.purpose === COUPON_PURPOSE));
     } else if ((tokenLoading && tokensDataList.length === 0) || (errorWeb3 && !errorWeb3?.connected)) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -101,9 +143,6 @@ const PickupBasketDetail: React.FC = (props) => {
   useEffect(() => {
     // setProgress(0);
     setCountdown(moment(then - now));
-    if (!pickupBasketData || pickupBasketData === null) {
-      history.push('/pickupbasketplace');
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -173,8 +212,9 @@ const PickupBasketDetail: React.FC = (props) => {
         setError(t('common.download_error'))
       })
   }
-  console.log('couponList',couponList)
-  console.log('pickupBasketData',pickupBasketData)
+
+  if (!pickupBasketData?.name) return null;
+
   return (
     <Flex
       flexDirection="column"
@@ -232,7 +272,7 @@ const PickupBasketDetail: React.FC = (props) => {
               <Flex>
                 <Text fontSize="18px" fontWeight="bold" color="#3048D9">
                   {pickupBasketData?.giveRatio}{' '}
-                  <span className="crowdsale-detail-font">{pickupBasketData?.crowdSymbol}</span>
+                  <span className="crowdsale-detail-font">{getTokenSymbol(tokenList, pickupBasketData.couponToGive)}</span>
                 </Text>
               </Flex>
             </Flex>
@@ -272,7 +312,7 @@ const PickupBasketDetail: React.FC = (props) => {
                 {pickupBasketData?.description}
               </Text>
             </Flex>
-            {(tokenLoading || couponList.length > 0) &&
+            {/* {(tokenLoading || couponList.length > 0) &&
               (<Box width="100%" marginTop="20px">
                 <Text
                   fontFamily="sans"
@@ -284,16 +324,8 @@ const PickupBasketDetail: React.FC = (props) => {
                   {t('crowdsaledetail.coupons_received')}
                 </Text>
                 {couponList.map((i: any) => {
-                  console.log(i, 'couponLi')
-                  // FIXME: This is a workaround logoUrl inception
-                  let logoUrl;
-                  try{
-
-                    logoUrl = JSON.parse(i?.logoURL);
-                    i.logoURL = logoUrl?.logoURL
-                  } catch{}
                     return i.contractAddress === pickupBasketData.couponToGive && <CouponList tokens={i} tokenLoading={tokenLoading} />})}
-              </Box>)}
+              </Box>)} */}
             <Flex>
               <Text fontSize="12px" color="#757575">
                 {t('marketplace.started_on')}{' '}

@@ -367,8 +367,8 @@ const NewCrowdsale: React.FC<IProps> = () => {
       crowdsale.FLID = firstlifeId
       crowdsale.TTA = getTokenSymbol(tokenList, crowdsale.token) // symbol (ticker) of the token used to participate to the crowdsale
       crowdsale.TTG = getTokenSymbol(tokenList, crowdsale.token) //  symbol (ticker) of the Coupon that users receive when the crowdsale ends
-      crowdsale.AU = `${window.location.host}/marketplace/${firstlifeId}`
-      crowdsale.RU = `${window.location.host}/marketplace/${firstlifeId}&redeem=${crowdsale.token}` // crowdsale token is place holder i have to look for the redeem code
+      crowdsale.AU = `${window.location.host}/crowdsale-detail/${firstlifeId}`
+      crowdsale.RU = `${window.location.host}/crowdsale-detail/${firstlifeId}&redeem=${crowdsale.token}` // crowdsale token is place holder i have to look for the redeem code
       
       const receipt: any = dispatch(createNewCrowdsale(crowdsale));
       receipt

@@ -143,7 +143,7 @@ export interface IPickupBasketData {
   name: string;
   icon?: string;
   logoURL: string;
-  metadata?: string;
+  metadata?: any;
   startDate?: string;
   start?: string;
   end?: string;
@@ -157,7 +157,7 @@ export interface IPickupBasketData {
   token: string;
   contractAddress: string;
   entity_type?: string;
-  couponToGive?: string;
+  couponToGive: string;
 }
 
 export interface IChainState {

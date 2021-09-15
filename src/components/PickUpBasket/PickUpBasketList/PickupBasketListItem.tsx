@@ -15,19 +15,15 @@ interface IProps {
 const PickupBasketListItem: React.FC<IProps> = ({ pickupBasket, tokenList }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const kebabCase = ( string : string ) => string
-  .replace(/([a-z])([A-Z])/g, "$1-$2")
-  .replace(/[\s_]+/g, '-')
-  .toLowerCase();
 
   const handleCrowdsaleItem = () => {
     dispatch(
       getPickupBasketData({
         ...pickupBasket,
-        crowdSymbol: getTokenSymbol(tokenList, pickupBasket.token),
+        couponSymbol: getTokenSymbol(tokenList, pickupBasket?.couponToGive),
       }),
     );
-    history.push(`/pickup-basket-detail/${kebabCase(pickupBasket.name)}-${(pickupBasket.contractAddress).slice(-3)}`);
+    history.push(`/pickup-basket-detail/${pickupBasket?.metadata?.FLID}`);
     // console.log("token symbol", pickupBasket)
 
   };
@@ -52,7 +48,7 @@ const PickupBasketListItem: React.FC<IProps> = ({ pickupBasket, tokenList }) => 
             </Text>
           </Text>
           <Text marginLeft="auto" marginTop="5px" fontSize="13px" fontWeight="bold" color="#3048D9">
-            {pickupBasket.giveRatio} <span>{getTokenSymbol(tokenList, pickupBasket.token)}</span>
+            {pickupBasket.giveRatio} <span>{getTokenSymbol(tokenList, pickupBasket.couponToGive)}</span>
           </Text>
         </Flex>
         <Divider />

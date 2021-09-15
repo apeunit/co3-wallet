@@ -88,7 +88,6 @@ const CrowdsaleDetail: React.FC = (props) => {
           crowdSymbol: getTokenSymbol(tokenList, crowdsale.token),
         }),
       );
-      console.log(data);
     }
   }, [crowdsalesQueryData, history, dispatch, tokenList]);
 
@@ -141,7 +140,6 @@ const CrowdsaleDetail: React.FC = (props) => {
   useEffect(() => {
     if (tokensDataList.length > 0) {
       setCouponList(tokensDataList.filter((tk: any) => tk.purpose === COUPON_PURPOSE));
-      console.log("tokendatalist", tokensDataList)
     } else if ((tokenLoading && tokensDataList.length === 0) || (errorWeb3 && !errorWeb3?.connected)) {
       setTokenLoading(false);
     }

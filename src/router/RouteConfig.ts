@@ -143,7 +143,7 @@ export const routes = [
     component: CrowdsaleDetail,
   },
   {
-    path: `/pickup-basket-detail/:pickupBasketName`,
+    path: `/pickup-basket-detail/:id`,
     component: PickupBasketDetail,
   },
   {

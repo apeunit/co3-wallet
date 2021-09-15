@@ -266,8 +266,8 @@ const NewPickUpBasket: React.FC = () => {
       console.log('res', resTest)
       console.log('pickupbasket from new pickupbasket 2', pickupbasket)
       pickupbasket.FLID = firstlifeId
-      pickupbasket.AU = `${window.location.host}?access_token=${accessToken}`
-      pickupbasket.RU = `${window.location.host}?access_token=${accessToken}` 
+      pickupbasket.AU = `${window.location.host}/pickup-basket-detail/${firstlifeId}`
+      pickupbasket.RU = `${window.location.host}/pickup-basket-detail/${firstlifeId}` 
 
       console.log("pickupbasket", pickupbasket)
 
