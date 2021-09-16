@@ -18,7 +18,7 @@
     "@types/react-places-autocomplete": "^7.2.6",
     "@types/rebass__forms": "^4.0.1",
     "apollo-boost": "^0.4.9",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "bignumber.js": "^9.0.0",
     "bip39": "^3.0.2",
     "connected-react-router": "^6.7.0",
