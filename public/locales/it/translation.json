@@ -114,8 +114,8 @@
     "crowdsale_creation_failed":"Creazione di crowdsale non riuscita"
   },
   "new_pickupbox" : {
-    "label": "Nuovo cestello di raccolta",
-    "campaign_msg":"Il nome del tuo carrello di ritiro",
+    "label": "Nuova Scatola Coupon",
+    "campaign_msg":"Il nome della tua Scatola Coupon",
     "sell_question":"Qual è il massimo che puoi dare?",
     "product_available": "Fornitura prodotti disponibili",
     "coupon_to_give": "Buono da regalare",
@@ -126,11 +126,11 @@
     "location_msg":"La tua campagna ha una posizione",
     "sell_msg":"Quanto devi almeno vendere",
     "loading":"Caricamento...",
-    "pickup_created": "Buono creato",
-    "pickup_creation_failed":"Creazione del buono non riuscita"
+    "pickup_created": "Scatola Coupon creata",
+    "pickup_creation_failed":"Creazione della Scatola Coupon non riuscita"
   },
   "pickupbox_coupons" : {
-    "coupons_failed":"puoi prendere qualcosa solo una volta e non puoi prendere qualcosa dal tuo carrello di raccolta"
+    "coupons_failed":"Puoi ritirare un Scatola Coupon solo una volta e non puoi ritirarlo dal tuo Scatola Coupon"
   },
   "marketplace": {
     "label":"Mercata",
@@ -146,17 +146,17 @@
     "no_crowdsale": "Non hai ancora creato alcun mercato"
   },
   "pickupbasketplace": {
-    "label":"Pickupbasketplace",
+    "label":"Scatole Coupon",
     "available":"A disposizione",
-    "closes":"Closes",
-    "days":"days",
-    "hours":"hours",
-    "minutes":"minutes",
-    "seconds":"seconds",
-    "no_details":"Pickupbasketplace details not available.",
-    "started_on":"Creato",
-    "buy_now": "ACCESS NOW",
-    "no_pickupbasket": "You don't have made any Pickupbasketplace yet"
+    "closes":"Chiude",
+    "days":"giorni",
+    "hours":"ore",
+    "minutes":"minuti",
+    "seconds":"secondi",
+    "no_details":"Dettagli Scatole Coupon non disponibili.",
+    "started_on":"Iniziato il",
+    "buy_now": "PARTECIPA ORA",
+    "no_pickupbasket": "Non hai ancora creato alcun Scatole Coupon"
   },
   "new_token": {
     "label": "Nuova valuta",
@@ -238,7 +238,8 @@
     "coupon": "Buono",
     "task": "Attività",
     "history": "Cronologia",
-    "crowdsale": "Crowdsale"
+    "crowdsale": "Crowdsale",
+    "pickupbasket": "Scatole Coupon"
   },
   "pay_popup": {
     "pay": "paga",

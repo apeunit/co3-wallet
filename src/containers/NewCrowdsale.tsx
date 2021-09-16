@@ -84,9 +84,9 @@ const NewCrowdsale: React.FC<IProps> = () => {
   const [tokenList, setTokenList] = useState([]);
   console.log("tokenlist", tokenList)
 
-// -------------------------------------------------------------------------- */
-//                         Get data from the store                          */
-// -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
+  //                         Get data from the store                          */
+  // -------------------------------------------------------------------------- */
 
   const { accessToken, contracts } = useSelector(({ co3uum, chain }: any) => {
     return {
@@ -97,9 +97,9 @@ const NewCrowdsale: React.FC<IProps> = () => {
   console.log('accesstoken', accessToken)
 
 
-//-------------------------------------------------------------------- */
-//                              get all tokens
-//-------------------------------------------------------------------- */
+  //-------------------------------------------------------------------- */
+  //                              get all tokens
+  //-------------------------------------------------------------------- */
 
   const tokenQueryData = useQuery(GET_ALL_TOKENS);
 
@@ -146,7 +146,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-   // -------------------------------------------------------------------------- */
+  // -------------------------------------------------------------------------- */
   //
   // -------------------------------------------------------------------------- */
 
@@ -211,7 +211,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
 
   const handleChangeCrowdsale = (e: any, key: string) => {
     onchangeCrowdsale({ ...crowdsale, [key]: e });
-    console.log("itemtosell",crowdsale.itemToSell)
+    console.log("itemtosell", crowdsale.itemToSell)
     console.log("crowdsale in new_crowdsale_1", crowdsale)
     setError('');
   };
@@ -376,7 +376,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
       crowdsale.TTG = getTokenSymbol(tokenList, crowdsale.token) //  symbol (ticker) of the Coupon that users receive when the crowdsale ends
       crowdsale.AU = `${window.location.origin}/crowdsale-detail/${firstlifeId}`
       crowdsale.RU = `${window.location.origin}/crowdsale-detail/${firstlifeId}&redeem=${crowdsale.token}` // crowdsale token is place holder i have to look for the redeem code
-      
+
       const receipt: any = dispatch(createNewCrowdsale(crowdsale));
       receipt
         .then(async (res: any) => {
@@ -413,8 +413,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
             setLoader(false);
             // console.log(res);
             // console.log(crowdsale)
-            // history.push('/');
-            history.push(`attach-sm?eid=${firstlifeId}&access_token=${accessToken}&callback=co3app://main-screen`);
+            history.push('/');
             dispatch(
               setModalData(
                 true,

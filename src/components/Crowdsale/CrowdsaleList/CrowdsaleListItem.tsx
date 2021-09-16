@@ -48,7 +48,7 @@ const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
             </Text>
           </Text>
           <Text marginLeft="auto" marginTop="5px" fontSize="13px" fontWeight="bold" color="#3048D9">
-            {crowdsale.giveRatio} <span>{getTokenSymbol(tokenList, crowdsale.token)}</span>
+            {crowdsale.acceptRatio} <span>{getTokenSymbol(tokenList, crowdsale.token)}</span>
           </Text>
         </Flex>
         <Divider />

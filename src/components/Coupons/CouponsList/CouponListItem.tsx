@@ -17,15 +17,12 @@ const CouponListItem = ({ logoURL, symbol, name, description, amount, ...rest }:
       description,
       ...rest,
     };
-    console.log(token, 'token')
     dispatch(setTransferToken(token));
-    console.log("token from couponlistitem", token)
     if (history.location.pathname === '/') {
       history.push({ pathname: '/coupon-detail', state: { token } });
     } else {
       history.push({ pathname: '/payment', state: { token } });
     }
-    console.log('token!:',token)
   };
   return (
     <Flex

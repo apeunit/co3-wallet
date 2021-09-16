@@ -116,8 +116,8 @@
     "crowdsale_creation_failed":"Crowdsale Creation Failed"
   },
   "new_pickupbox" : {
-    "label": "New Pickup Basket",
-    "campaign_msg":"The name of your Pickup Basket",
+    "label": "New Coupon Box",
+    "campaign_msg":"The name of your Coupon Box",
     "sell_question":"what's the most you can give?",
     "product_available": "Products Available Supply",
     "coupon_to_give": "Coupon To Give",
@@ -128,11 +128,11 @@
     "location_msg":"Does your campaign have a location",
     "sell_msg":"How much will you, at least, need to sell",
     "loading":"Loading...",
-    "pickup_created": "Coupon recieved",
-    "pickup_creation_failed":"Coupon redemption failed"
+    "pickup_created": "Coupon Box created",
+    "pickup_creation_failed":"Coupon Box creation failed"
   },
   "pickupbox_coupons" : {
-    "coupons_failed":"you can pick up something only once and aren't allowed to take something from your own basket"     
+    "coupons_failed":"You can collect a Coupon Box only once and aren't allowed to collect from you Coupon Box"     
   },
   "marketplace": {
     "label":"Marketplace",
@@ -149,17 +149,17 @@
     "no_crowdsale": "You don't have made any marketplace yet"
   },
   "pickupbasketplace": {
-    "label":"Pickupbasketplace",
+    "label":"Coupon Boxes",
     "available":"Available",
     "closes":"Closes",
     "days":"days",
     "hours":"hours",
     "minutes":"minutes",
     "seconds":"seconds",
-    "no_details":"Pickupbasketplace details not available.",
+    "no_details":"Coupon Boxes details not available.",
     "started_on":"Started on",
     "buy_now": "ACCESS NOW",
-    "no_pickupbasket": "You don't have made any Pickupbasketplace yet"
+    "no_pickupbasket": "You don't have made any Coupon Box yet"
   },
   "new_token": {
     "label": "New Token",
@@ -244,7 +244,7 @@
     "task": "Task",
     "history": "History",
     "crowdsale": "Crowdsale",
-    "pickupbasket": "Pickup Basket"
+    "pickupbasket": "Coupon Box"
   },
   "pay_popup": {
     "pay": "Pay",

@@ -5,7 +5,6 @@ import { IToken } from '../../../interfaces';
 import CouponListPlaceholder from './CouponListPlaceholder';
 
 const CouponList = (props: any) => {
-  console.log('CouponListProps',props)
   return (
     <Box style={{ overflowY: 'auto', height: '55vh', marginBottom: '40px' }}>
       <Flex alignItems="center" justifyContent="space-between" flexWrap="wrap" margin="0px 10px">

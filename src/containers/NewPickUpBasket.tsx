@@ -309,9 +309,8 @@ const NewPickUpBasket: React.FC = () => {
               await saveWebhookAPI(webHookParam, pickupBasketDataRes._contractAddress, res);
             }
             setLoader(false);
-            console.log("res from pickup box", res);
-            history.push(`attach-sm?eid=${firstlifeId}&access_token=${accessToken}&callback=${callbackParam}&webhook=${webHookParam}`);
-            // history.push(`/`);
+            // console.log("res from pickup box", res);
+            history.push(`/`);
             dispatch(
               setModalData(
                 true,
