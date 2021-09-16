@@ -38,7 +38,7 @@ export const saveResource = async (accessToken: string | null, resource: any): P
 /*
   Save Crowdsale Data in FirstLife
 */
-export const saveCrowdsaleData = async (
+export const createEntity = async (
   accessToken: string | null,
   data: any,
   //activityId: string,
@@ -59,10 +59,10 @@ export const saveCrowdsaleData = async (
 /*
   Save Pickup Basket Data in FirstLife
 */
-export const savePickupBasketData = async (
+export const updateEntity = async (
   accessToken: string | null,
   data: any,
-  //activityId: string,
+  activityId: string,
 ): Promise<Object> => {
   // headers
   const headers = {
@@ -72,9 +72,24 @@ export const savePickupBasketData = async (
     status: 'Public',
   };
 
-  return axios.post(`${API_FIRSTLIFE_URL}/v6/fl/Things`, JSON.stringify(data), {
+  return axios.put(`${API_FIRSTLIFE_URL}/v6/fl/Things/${activityId}`, JSON.stringify(data), {
     headers: headers,
   });
+};
+
+/*
+  Save Crowdsale Data in FirstLife
+*/
+export const saveEntity = async (
+  accessToken: string | null,
+  data: any,
+  activityId?: string | null,
+): Promise<Object> => {
+  // headers
+  if (activityId) {
+    return updateEntity(accessToken, data, activityId);
+  }
+  return createEntity(accessToken, data);
 };
 
 /*
@@ -100,9 +115,7 @@ export const getCrowdsaleList = async (
 /*
   Get ACA List From FirstLife
 */
-export const getACAList = async (
-  accessToken: string | null,
-): Promise<Object> => {
+export const getACAList = async (accessToken: string | null): Promise<Object> => {
   // headers
   const headers = {
     'Content-Type': 'application/json',

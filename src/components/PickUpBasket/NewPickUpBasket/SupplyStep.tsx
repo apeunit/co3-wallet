@@ -22,6 +22,7 @@ const SupplyStep: React.FC<IProps> = ({
 }) => {
   const { t } = useTranslation();
   const [tokenListOption, setTokenListOption]: any = useState([]);
+  const [token, setToken] = useState(null)
   const { tokenList } = useSelector(({ chain }: any) => {
     return {
       tokenList: chain.tokenList,
@@ -42,13 +43,37 @@ const SupplyStep: React.FC<IProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenList]);
 
+  const currentToken = () => {
+    if (!token) return null;
+    return tokenList.find((item: any) => item.contractAddress === token);
+  }
+
   return (
     <Flex flexDirection="column" width="100%">
+      <SelectInput
+        type="number"
+        value={pickupbasket.couponToGive}
+        onChangeValue={(e: any) => {
+          setToken(e);
+          handleChangePickupbasket(e, 'couponToGive')
+        }}
+        label=""
+        className="pickupbox-itemToSell"
+        placeholder={t('new_pickupbox.coupon_to_give')}
+        msg={t('new_pickupbox.item_sell_msg')}
+        error={error}
+        data={tokenListOption}
+      />
       <Flex margin="30px 0px">
         <CreateInputStep
           type="number"
           value={pickupbasket.productsAvailable}
-          onChangeValue={(e: any) => handleChangePickupbasket(e, 'productsAvailable')}
+          onChangeValue={(e: any) => {
+            const value = Number(e);
+            const current = currentToken();
+            if (!current || current.amount < value) return null;
+            handleChangePickupbasket(e, 'productsAvailable')
+          }}
           label=""
           placeholder={t('new_pickupbox.product_available')}
           maxLength=""
@@ -57,19 +82,9 @@ const SupplyStep: React.FC<IProps> = ({
           autoFocus={true}
           className="pickupbasket-productsAvailable-input"
           handleKeyChange={_handleKeyDown}
+          disabled={!token}
         />
       </Flex>
-      <SelectInput
-        type="number"
-        value={pickupbasket.couponToGive}
-        onChangeValue={(e: any) =>  handleChangePickupbasket(e, 'couponToGive')}
-        label=""
-        className="pickupbox-itemToSell"
-        placeholder={t('new_pickupbox.coupon_to_give')}
-        msg={t('new_pickupbox.item_sell_msg')}
-        error={error}
-        data={tokenListOption}
-      />
     </Flex>
   );
 };

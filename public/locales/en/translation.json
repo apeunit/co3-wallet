@@ -132,12 +132,16 @@
     "pickup_creation_failed":"Coupon Box creation failed"
   },
   "pickupbox_coupons" : {
+    "coupon_claimed": "Coupon Box claimed",
     "coupons_failed":"You can collect a Coupon Box only once and aren't allowed to collect from you Coupon Box"     
   },
   "marketplace": {
     "label":"Marketplace",
-    "goal":"Goal",
+    "goal":"Token goal",
+    "of": "of",
     "aca":"Aca",
+    "ended": "Ended",
+    "sold": "Sold",
     "closes":"Closes",
     "closed":"Ended",
     "days":"days",

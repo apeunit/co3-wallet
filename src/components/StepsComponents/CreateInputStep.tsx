@@ -17,6 +17,7 @@ interface IProps {
   className?: string;
   handleKeyChange?: any;
   autoFocus?: boolean;
+  disabled?: boolean,
 }
 
 const CreateInputStep: React.FC<IProps> = ({
@@ -31,6 +32,7 @@ const CreateInputStep: React.FC<IProps> = ({
   handleKeyChange,
   className,
   autoFocus,
+  disabled,
 }) => {
   const { t } = useTranslation();
 
@@ -55,6 +57,7 @@ const CreateInputStep: React.FC<IProps> = ({
           notification={error}
           handleKeyChange={handleKeyChange}
           autoFocus={autoFocus}
+          disabled={disabled || false}
         />
         {error === t('new_token.symbol_already') ? (
           <ErrorMsg style={{ top: '47vh' }} title={error} type="warning" />

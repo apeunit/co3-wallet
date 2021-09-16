@@ -76,7 +76,7 @@ const JoinCrowdsale = () => {
     const handleTap = (data: string) => {
         const amountString: string = `${coupons}${data}`;
         // console.log(crow)
-        if (amountRegex.test(amountString) && Number(amountString) <= maxCap) {
+        if (amountRegex.test(amountString) && Number(amountString) <= (maxCap / acceptRatio)) {
             setCoupons(Number(amountString).toString());
         }
     };
@@ -92,7 +92,7 @@ const JoinCrowdsale = () => {
     const handleConfirm = () => {
         const value = Number(coupons);
         if(value < 1) return false;
-        const total = value * acceptRatio;
+        const total = value * (acceptRatio / 100);
         dispatch(setTransferAmount(Number(total).toString()));
         setShowNumberPad(false)
     };
@@ -237,7 +237,7 @@ const JoinCrowdsale = () => {
             );
             if (
                 amountParam &&
-                (tokenData?.decimals === 2 ? amount / 100 : amount) < Number(amountParam)
+                amount < Number(amountParam)
             ) {
                 dispatch(
                     setModalData(
@@ -265,12 +265,10 @@ const JoinCrowdsale = () => {
 
     const handleSendToken = () => {
         setLoader(true);
-        const params = new URLSearchParams(location.search);
-        const amountParam = params.get('amount');
         if (!token) {
             return;
         }
-        if (tokenAmount() < Number(amountParam)) {
+        if (token?.amount < Number(amount)) {
             setLoader(false);
             setError(t('payment.amount_error'));
             dispatch(
@@ -375,7 +373,7 @@ const JoinCrowdsale = () => {
                     />
                     <Flex marginTop="10px" justifyContent="space-between">
                         <Text fontSize="12px">{t('payment.price')}</Text>
-                        <Text fontSize="16px">{acceptRatio}</Text>
+                        <Text fontSize="16px">{acceptRatio / 100}</Text>
                     </Flex>
                     <Flex marginTop="10px" justifyContent="space-between">
                         <Text fontSize="12px">{t('payment.coupons')}</Text>
@@ -390,7 +388,7 @@ const JoinCrowdsale = () => {
                 <Box>
                     <Box marginTop="10px" paddingX={7}>
                         <Text fontSize="20px">{t('payment.coupons')}</Text>
-                        <Text fontSize="12px" opacity={0.5}>{t('payment.max')} {maxCap}</Text>
+                        <Text fontSize="12px" opacity={0.5}>{t('payment.max')} {maxCap / acceptRatio}</Text>
                     </Box>
                     <Text
                         marginTop="auto"

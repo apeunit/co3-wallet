@@ -21,6 +21,7 @@ const SupplyStep: React.FC<IProps> = ({
 }) => {
   const { t } = useTranslation();
   const [tokenListOption, setTokenListOption]: any = useState([]);
+  const [token, setToken] = useState(null)
   const { tokenList } = useSelector(({ chain }: any) => {
     return {
       tokenList: chain.tokenList,
@@ -42,13 +43,39 @@ const SupplyStep: React.FC<IProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenList]);
 
+  const currentToken = () => {
+    if (!token) return null;
+    return tokenList.find((item: any) => item.contractAddress === token);
+  }
+
   return (
     <Flex flexDirection="column" width="100%">
+      <SelectInput
+        type="number"
+        value={crowdsale.itemToSell}
+        onChangeValue={(e: any) => {
+          setToken(e);
+          handleChangeCrowdsale(e, 'itemToSell')
+        }}
+        label=""
+        className="crowdsale-itemToSell"
+        placeholder={t('new_crowdsale.item_to_sell')}
+        msg={t('new_crowdsale.item_sell_msg')}
+        error={error}
+        data={tokenListOption}
+      />
       <Flex margin="30px 0px">
         <CreateInputStep
           type="number"
           value={crowdsale.maxSupply}
-          onChangeValue={(e: any) => handleChangeCrowdsale(e, 'maxSupply')}
+          onChangeValue={(e: any) => {
+            const value = Number(e);
+            const current = currentToken();
+
+            if (!current || current.amount < value) return null;
+
+            handleChangeCrowdsale(e, 'maxSupply')
+          }}
           label=""
           placeholder={t('new_crowdsale.max_supply')}
           maxLength=""
@@ -57,19 +84,9 @@ const SupplyStep: React.FC<IProps> = ({
           autoFocus={true}
           className="crowdsale-maxSupply-input"
           handleKeyChange={_handleKeyDown}
+          disabled={!token}
         />
       </Flex>
-      <SelectInput
-        type="number"
-        value={crowdsale.itemToSell}
-        onChangeValue={(e: any) => handleChangeCrowdsale(e, 'itemToSell')}
-        label=""
-        className="crowdsale-itemToSell"
-        placeholder={t('new_crowdsale.item_to_sell')}
-        msg={t('new_crowdsale.item_sell_msg')}
-        error={error}
-        data={tokenListOption}
-      />
     </Flex>
   );
 };

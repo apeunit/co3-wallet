@@ -315,7 +315,7 @@ const createNewCrowdsale = (crowdsale: any) => {
     const crowdsaleId = getRandomId();
     const blockNo = await web3.eth.getBlockNumber();
     const gas = blockNo.gasLimit - 100000;
-    console.log('crowdsale from store 1', crowdsale);
+    const acceptAmount = parseInt(acceptRatio, 10) * 100;
     return crowdsaleFactory.methods
       .createCrowdsale(
         crowdsaleId,
@@ -323,9 +323,9 @@ const createNewCrowdsale = (crowdsale: any) => {
         token,
         Math.floor(new Date(startDate).getTime() / 1000),
         Math.floor(new Date(endDate).getTime() / 1000),
-        parseInt(acceptRatio, 10),
+        acceptAmount,
         1,
-        parseInt(maxSupply, 10) * parseInt(acceptRatio, 10),
+        parseInt(maxSupply, 10) * acceptAmount,
         JSON.stringify({
           name: crowdsale.name,
           logoURL: crowdsale.icon,

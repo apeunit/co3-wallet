@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Flex, Text } from 'rebass';
+import { Button, Flex, Text, Box } from 'rebass';
 import ImageCard from 'src/components/ImageCard';
 import FramerSlide from '../components/FrameMotion/Slide';
 import IconButton from '../components/IconButton';
-import { makeStyles } from '@material-ui/core/styles';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import '../assets/styles/NewToken.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
@@ -13,7 +11,7 @@ import { CrowdsaleSortEnum, GET_CROWDSALE_ADDED, GET_ALL_TOKENS } from '../api/m
 import { useQuery } from '@apollo/react-hooks';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
-import { getTokenSymbol } from 'src/utils/helper'
+import { getTokenSymbol, getTokenName } from 'src/utils/helper'
 import { getCrowdsaleData } from 'src/redux/actions/Chain';
 import axios from 'axios';
 import CouponCard from '../components/Coupons/CouponCard';
@@ -24,26 +22,21 @@ const fileDownload = require('js-file-download');
 const isDev = process.env.NODE_ENV === 'development';
 const pdfcontract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 
-const useStyles = makeStyles({
-  root: {
-    width: '100%',
-  },
-});
-
 const CrowdsaleDetail: React.FC = (props) => {
 
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const classes = useStyles();
   const history = useHistory();
   const { state }: any = history.location;
   const { id } = useParams<any>();
   const [tokenList, setTokenList] = useState([])
 
   const [progress, setProgress] = useState(0);
+  const [raised, setRaised] = useState(0);
+  const [maxCap, setMaxCap] = useState(1);
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState('');
-  const [isDisabled, setIsDisabled] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(true)
 
   // ---------------------------------------------------
   //               Get data from the store                          
@@ -86,12 +79,13 @@ const CrowdsaleDetail: React.FC = (props) => {
     }
   }, [crowdsalesQueryData, history, dispatch, tokenList]);
 
-  const { crowdsaleData, token } = useSelector(({ chain, wallet }: any) => {
+  const { crowdsaleData, token, address } = useSelector(({ chain, wallet }: any) => {
     return {
       crowdsaleData: chain.crowdsaleData,
       token: wallet.transfer.token,
       tokensDataList: chain.tokenList,
       errorWeb3: chain.errorWeb3,
+      address: wallet.ethAddress
     };
   });
   // console.log("crowdsaledata", crowdsaleData)
@@ -103,10 +97,22 @@ const CrowdsaleDetail: React.FC = (props) => {
   //-------------------------------------------------------------------------------
 
   useEffect(() => {
-    setIsDisabled(!moment().isBefore(crowdsaleData?.end));
-    setProgress(0);
+    setIsDisabled(!moment().isBefore(crowdsaleData?.end) || raised === maxCap || crowdsaleData?.owner === address);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDisabled, crowdsaleData]);
+  }, [isDisabled, crowdsaleData, raised, maxCap, address]);
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_LISTENER_API_URL}/crowdsale/${id}`)
+      .then((res) => res.json())
+      .then((res) => {
+        const current = res.raised || 0;
+        const max = res.maxCap || 1;
+        setRaised(current);
+        setMaxCap(max);
+        setProgress((current * 100) / max);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   //-------------------------------------------------------------------------------
   //        
@@ -207,6 +213,7 @@ const CrowdsaleDetail: React.FC = (props) => {
       })
   }
   if (!crowdsaleData?.name) return null;
+  
   return (
     <Flex
       flexDirection="column"
@@ -260,33 +267,34 @@ const CrowdsaleDetail: React.FC = (props) => {
           >
             <Flex justifyContent="space-between">
               <Text fontSize="24px">{crowdsaleData?.name}</Text>
-              <Flex>
-                <Text fontSize="18px" fontWeight="bold" color="#3048D9">
-                  {crowdsaleData?.acceptRatio}{' '}
-                  <span className="crowdsale-detail-font">{crowdsaleData?.crowdSymbol}</span>
-                </Text>
-              </Flex>
             </Flex>
             <Flex marginTop="10px" flexDirection="column">
-              <div className={classes.root}>
-                <LinearProgress variant="determinate" value={progress} />
-              </div>
-              <Text marginTop="5px" fontSize="14px" color="#757575">
+              <Box sx={{
+                width: '100%',
+                backgroundColor: '#949494',
+              }}>
+                <Box sx={{
+                  width: `${progress}%`,
+                  backgroundColor: '#3752F5',
+                  height: '5px',
+                }} />
+              </Box>
+              <Flex marginTop="5px" flexDirection="row" alignItems="flex-end" justifyContent="space-between" fontSize="14px" color="#3752F5" >
                 {/* <span className="token-goal-font">10</span> of  */}
-                {t('marketplace.goal')}: {crowdsaleData?.maxCap}
-              </Text>
-            </Flex>
-            <Flex marginTop="15px" flexDirection="row" fontSize="14px" color="#949494">
-              <Flex>
-                <IconButton
-                  cursor={'default'}
-                  icon="hourglassEmpty"
-                  width="14px"
-                  height="16px"
-                  marginRight="12px"
-                />
-                <Text>
-                  {moment().isSameOrBefore(crowdsaleData?.end) ? t('marketplace.closes') : t('marketplace.closed')} <Moment date={crowdsaleData?.end} fromNow />{' '}
+                <Text fontSize="16px" fontWeight={600}>{raised / (crowdsaleData?.acceptRatio || 1)}/{maxCap / (crowdsaleData?.acceptRatio || 1)} {t('marketplace.sold')}</Text>
+                <Box>
+                  <Text display="inline-block" fontSize="18px" fontWeight={600} marginRight={1}>{crowdsaleData?.acceptRatio / 100}{' '}</Text>
+                  <Text display="inline-block" fontSize="14px" fontWeight={700}>{crowdsaleData?.crowdSymbol}</Text>
+                </Box>
+              </Flex>
+              <Flex marginTop="2px" flexDirection="row" alignItems="flex-end" justifyContent="space-between" fontSize="14px" color="#757575">
+                <Text fontSize="14px">
+                  {raised !== maxCap ? (
+                    <>
+                      {moment().isSameOrBefore(crowdsaleData?.end) ? t('marketplace.closes') : t('marketplace.closed')} <Moment date={crowdsaleData?.end} fromNow />{' '}
+                    </>
+                  ) : t('marketplace.ended')}
+
                   {/* {moment().isBefore(crowdsaleData?.end) && countdown && (
                     <>
                       {countdown.format('D')} {t('marketplace.days')} {countdown.format('HH')}{' '}
@@ -294,6 +302,9 @@ const CrowdsaleDetail: React.FC = (props) => {
                       {countdown.format('ss')} {t('marketplace.seconds')}
                     </>
                   )} */}
+                </Text>
+                <Text fontSize="14px" color="#3752F5">
+                  {getTokenName(tokenList, crowdsaleData?.token)}
                 </Text>
               </Flex>
             </Flex>

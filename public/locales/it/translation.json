@@ -130,11 +130,15 @@
     "pickup_creation_failed":"Creazione della Scatola Coupon non riuscita"
   },
   "pickupbox_coupons" : {
+    "coupon_claimed": "Scatola Coupon rivendicato",
     "coupons_failed":"Puoi ritirare un Scatola Coupon solo una volta e non puoi ritirarlo dal tuo Scatola Coupon"
   },
   "marketplace": {
     "label":"Mercata",
-    "goal":"Obbiettivo",
+    "goal":"Obiettivo gettone",
+    "of": "di",
+    "ended": "Conclusa",
+    "sold": "Venduto",
     "closes":"Chiude",
     "closed":"Conclusa",
     "days":"giorni",

@@ -25,7 +25,7 @@ import { createNewCrowdsale, fetchTokenByTicker, getAllCrowdsale, transferTokens
 import { COUPON_PURPOSE, LIMIT } from 'src/config';
 import ScenarioJSON from '../config/scenario.config.json';
 import { setModalData } from 'src/redux/actions/Modal';
-import { getACAList, getPermalink, saveCrowdsaleData, saveResource } from 'src/api/firstlife';
+import { getACAList, getPermalink, saveEntity, saveResource } from 'src/api/firstlife';
 import Loading from '../components/Loading';
 import { getTokenSymbol, saveWebhookAPI } from 'src/utils/helper';
 import { useLazyQuery, useQuery } from '@apollo/react-hooks';
@@ -329,11 +329,12 @@ const NewCrowdsale: React.FC<IProps> = () => {
     setLoader(true);
     let callbackParam: string | null;
     let webHookParam: string | null;
+    let eidParam: string | null = null;
     if (location.search) {
       const params = new URLSearchParams(location.search);
       callbackParam = params.get('callback');
       webHookParam = params.get('webhook');
-      console.log('params', params)
+      eidParam = params.get('eid');
     }
 
     const cddata = {
@@ -363,8 +364,8 @@ const NewCrowdsale: React.FC<IProps> = () => {
       },
     };
 
-    saveCrowdsaleData(accessToken, cddata).then(async (res: any) => {
-      const firstlifeId = res.data.id
+    saveEntity(accessToken, cddata, eidParam).then(async (res: any) => {
+      const firstlifeId = eidParam || res.data.id
       const datatest = res.data
       const resTest = res
       console.log('firstlifeId', firstlifeId)

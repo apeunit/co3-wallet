@@ -15,7 +15,7 @@ import Loading from '../components/Loading';
 import TextArea from '../components/TextArea';
 
 import { setModalData } from 'src/redux/actions/Modal';
-import { getPermalink, saveResource, savePickupBasketData } from 'src/api/firstlife';
+import { getPermalink, saveResource, saveEntity } from 'src/api/firstlife';
 import { saveWebhookAPI } from 'src/utils/helper';
 
 import { createNewPickUpBasket, getAllPickupBasket, transferTokens, unlockPickupBasket } from 'src/redux/actions/Chain';
@@ -234,11 +234,13 @@ const NewPickUpBasket: React.FC = () => {
     setLoader(true);
     let callbackParam: string | null;
     let webHookParam: string | null;
+    let eidParam: string | null = null;
     console.log("location", location)
     if (location.search) {
       const params = new URLSearchParams(location.search);
       callbackParam = params.get('callback');
       webHookParam = params.get('webhook');
+      eidParam = params.get('eid');
     }
 
     const cddata = {
@@ -264,7 +266,7 @@ const NewPickUpBasket: React.FC = () => {
       },
     };
 
-    savePickupBasketData(accessToken, cddata).then(async (res: any) => {
+    saveEntity(accessToken, cddata, eidParam).then(async (res: any) => {
       const firstlifeId = res.data.id
       const datatest = res.data
       const resTest = res
