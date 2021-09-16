@@ -73,8 +73,8 @@ const JoinCrowdsale = () => {
         }
     };
 
-    const handleTap = (data: string) => {
-        const amountString: string = `${coupons}${data}`;
+    const handleTap = (e: string) => {
+        const amountString: string = `${coupons}${e}`;
         // console.log(crow)
         if (amountRegex.test(amountString) && Number(amountString) <= (maxCap / acceptRatio)) {
             setCoupons(Number(amountString).toString());
@@ -92,8 +92,8 @@ const JoinCrowdsale = () => {
     const handleConfirm = () => {
         const value = Number(coupons);
         if(value < 1) return false;
-        const total = value * (acceptRatio / 100);
-        dispatch(setTransferAmount(Number(total).toString()));
+        const total = Math.round(value * acceptRatio);
+        dispatch(setTransferAmount(Number(total / 100).toString()));
         setShowNumberPad(false)
     };
 
@@ -228,7 +228,7 @@ const JoinCrowdsale = () => {
         setAcceptRatio(Number(acceptRatioParam))
         
         if (tokenParam) {
-            const amount = data?.balanceNotificationMany[0]?.amount;
+            const amount = data ? (data?.balanceNotificationMany[0]?.amount || 0) : undefined;
             dispatch(
                 setTransferToken({
                     ...tokenData,
@@ -257,7 +257,7 @@ const JoinCrowdsale = () => {
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data, tokenData]);
+    }, [tokenData, tokenAmountQuery, data]);
 
     const tokenAmount = () => {
         return token?.amount && token?.decimals === 2 ? token?.amount / 100 : token?.amount || 0;
@@ -351,12 +351,12 @@ const JoinCrowdsale = () => {
             backgroundColor="white"
             flexDirection="column"
             height="100vh"
-            width="100vw"
+            width="100%"
             justifyContent="space-between"
             flexWrap="wrap"
         >
             <Loading loader={loader} />
-            <Box style={{ width: '100vw' }}>
+            <Box style={{ width: '100%' }}>
                 <SearchHeader back={(state && state.from) || '/payment'} to={to} />
                 <InfoBar>
                     <Text variant="base">{t('common.from')}</Text>

@@ -16,7 +16,7 @@ const TokenCard = (props: any) => {
       alignItems="center"
       padding={6}
       backgroundColor="#F8F9FA"
-      height="55vw"
+      height="55%"
       flexDirection="column"
       justifyContent="space-between"
       sx={{

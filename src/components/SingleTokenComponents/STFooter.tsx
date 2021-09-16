@@ -3,7 +3,7 @@ import { Flex, Text } from 'rebass';
 import IconButton from '../IconButton';
 import '../../assets/styles/NewToken.css';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { PILOT } from 'src/config';
 
@@ -13,8 +13,8 @@ interface IProps {
 
 const STFooter: React.FC<IProps> = ({ iconActive }) => {
   const history = useHistory();
+  const location = useLocation();
   const { t } = useTranslation();
-  const [active, setActive] = useState(iconActive);
   const [icons, setIcons] = useState([
     {
       label: t('multitoken.label'),
@@ -28,7 +28,7 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
     },
     {
       label: t('pickupbasketplace.label'),
-      icon: 'clouddone',
+      icon: 'localOffer',
       url: '/pickupbasketplace',
     },
   ]);
@@ -39,11 +39,9 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
     };
   });
 
-  const changeTab = (icon: string, url: string) => {
-    setActive(icon);
+  const changeTab = (url: string) => {
     history.push(url);
   };
-
   useEffect(() => {
     if (((_pilot && _pilot.features.indexOf('multiToken') > -1) || PILOT === 'turin') && !icons.find((icon) => icon.url === '/marketplace')) {
       setIcons([
@@ -73,27 +71,27 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
       className="wallet-footer"
     >
       {icons.map(({ icon, label, url }: any, index: number) =>
-        active === icon ? (
+        url === location.pathname ? (
           <Flex
-            key={index}
+            key={`selected-${index}`}
             className="token-footer-icon"
             height="40px"
-            width={icon === 'sellIcon' ? '130px' : '105px'}
+            paddingX="20px"
             backgroundColor="blue100"
             sx={{ borderRadius: 'full' }}
           >
             <Flex width="max-content" margin="0px auto">
               <IconButton className="footer-icon-active" paddingBottom="10px" icon={icon} />
               <Text fontSize={13} marginTop="10px" color="blue600">
-                {label}
+                {label.replace(/\s/g, '')}
               </Text>
             </Flex>
           </Flex>
         ) : (
           <IconButton
             className={`footer-icon ${icon}`}
-            onClick={() => changeTab(icon, url)}
-            key={index}
+            onClick={() => changeTab(url)}
+            key={`icons-${index}`}
             icon={icon}
           />
         ),

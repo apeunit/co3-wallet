@@ -90,10 +90,10 @@ const MultiToken: React.FC = () => {
   const onControlledDrag = (e: any, pos: any) => {
     if (tokenLoading === false && couponList.length === 0) {
       return;
-    } else {
-      const { x, y } = pos;
-      setControlledPosition({ x, y });
     }
+    const { x, y } = pos;
+    setControlledPosition({ x, y });
+    
   };
 
   // -------------------------------------------------------------------------- */
@@ -245,7 +245,7 @@ const MultiToken: React.FC = () => {
       backgroundColor="white"
     >
       <ToolBar className="head-title" position="absolute" color="background">
-        <ToolBarTitle marginLeft="10px" fontSize="20px" color="dark">
+        <ToolBarTitle marginLeft="20px" marginTop={28} fontSize="40px" color="#3752F5">
           {t('multitoken.label')}
         </ToolBarTitle>
       </ToolBar>
@@ -257,6 +257,7 @@ const MultiToken: React.FC = () => {
           <ActionButtonGroup
             alignItems="flex-start"
             marginBottom={6}
+            marginLeft="12px"
             color="background"
             sx={{ top: '135px', position: 'absolute' }}
             loading={tokenList === undefined || tokenLoading}
@@ -383,7 +384,7 @@ const MultiToken: React.FC = () => {
                           </Flex>
                         </>
                       ) : (
-                        <>
+                        <Box height="75vh" overflowY="scroll">
                           {(tokenLoading || tokenList.length > 0) && (
                             <>
                               <Flex alignItems="flex-start" paddingX={7}>
@@ -410,7 +411,7 @@ const MultiToken: React.FC = () => {
                               </Box>
                             </>
                           )}
-                        </>
+                        </Box>
                       )}
                     </Box>
                   </motion.div>

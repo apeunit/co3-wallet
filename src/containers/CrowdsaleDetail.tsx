@@ -34,6 +34,7 @@ const CrowdsaleDetail: React.FC = (props) => {
   const [progress, setProgress] = useState(0);
   const [raised, setRaised] = useState(0);
   const [maxCap, setMaxCap] = useState(1);
+  const [loading, setLoading] = useState(true);
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState('');
   const [isDisabled, setIsDisabled] = useState(true)
@@ -97,7 +98,9 @@ const CrowdsaleDetail: React.FC = (props) => {
   //-------------------------------------------------------------------------------
 
   useEffect(() => {
-    setIsDisabled(!moment().isBefore(crowdsaleData?.end) || raised === maxCap || crowdsaleData?.owner === address);
+    if(!loading){
+      setIsDisabled(!moment().isBefore(crowdsaleData?.end) || raised === maxCap || crowdsaleData?.owner === address);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDisabled, crowdsaleData, raised, maxCap, address]);
 
@@ -110,6 +113,7 @@ const CrowdsaleDetail: React.FC = (props) => {
         setRaised(current);
         setMaxCap(max);
         setProgress((current * 100) / max);
+        setLoading(false);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
@@ -213,7 +217,7 @@ const CrowdsaleDetail: React.FC = (props) => {
       })
   }
   if (!crowdsaleData?.name) return null;
-  
+
   return (
     <Flex
       flexDirection="column"
@@ -281,7 +285,9 @@ const CrowdsaleDetail: React.FC = (props) => {
               </Box>
               <Flex marginTop="5px" flexDirection="row" alignItems="flex-end" justifyContent="space-between" fontSize="14px" color="#3752F5" >
                 {/* <span className="token-goal-font">10</span> of  */}
-                <Text fontSize="16px" fontWeight={600}>{raised / (crowdsaleData?.acceptRatio || 1)}/{maxCap / (crowdsaleData?.acceptRatio || 1)} {t('marketplace.sold')}</Text>
+                <Box>
+                  {!loading && (<Text fontSize="16px" fontWeight={600}>{raised / (crowdsaleData?.acceptRatio || 1)}/{maxCap / (crowdsaleData?.acceptRatio || 1)} {t('marketplace.sold')}</Text>)}
+                </Box>
                 <Box>
                   <Text display="inline-block" fontSize="18px" fontWeight={600} marginRight={1}>{crowdsaleData?.acceptRatio / 100}{' '}</Text>
                   <Text display="inline-block" fontSize="14px" fontWeight={700}>{crowdsaleData?.crowdSymbol}</Text>

@@ -267,7 +267,7 @@ const NewPickUpBasket: React.FC = () => {
     };
 
     saveEntity(accessToken, cddata, eidParam).then(async (res: any) => {
-      const firstlifeId = res.data.id
+      const firstlifeId = eidParam || res.data.id
       const datatest = res.data
       const resTest = res
       console.log('firstlifeId', firstlifeId)

@@ -12,7 +12,7 @@ const ImageCard = (props: any) => {
       color="#303030"
       alignItems="center"
       padding={6}
-      height={uploadIcon === 'crowdsale' ? '240px' : '55vw'}
+      height={uploadIcon === 'crowdsale' ? '240px' : '55%'}
       flexDirection="column"
       justifyContent="space-between"
       backgroundColor="#F8F9FA"

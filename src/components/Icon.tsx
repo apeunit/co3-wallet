@@ -35,7 +35,6 @@ import {
   InsertDriveFile,
   KeyboardArrowDown,
   KeyboardArrowUp,
-  LocalOffer,
   LocationOn,
   Loop,
   Map,
@@ -52,6 +51,7 @@ import {
   Toll,
   Warning,
   CloudDownload,
+  LocalOffer,
 } from '@material-ui/icons';
 import { IIconName } from '../interfaces';
 
@@ -109,6 +109,7 @@ const Icons = {
   calendarToday: CalendarToday,
   hourglassEmpty: HourglassEmpty,
   dowload: CloudDownload,
+  localOffer: LocalOffer,
 };
 
 const Icon = (props: IIconName) => {
