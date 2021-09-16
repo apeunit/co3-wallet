@@ -95,9 +95,6 @@ const CrowdsaleDetail: React.FC = (props) => {
     };
   });
   // console.log("crowdsaledata", crowdsaleData)
-
-  const then: any = moment(crowdsaleData?.end);
-  const now: any = moment();
   // console.log("then minus now", then._d - now._d)
   // console.log("now minus then", now - then)
 
@@ -106,10 +103,10 @@ const CrowdsaleDetail: React.FC = (props) => {
   //-------------------------------------------------------------------------------
 
   useEffect(() => {
-    setIsDisabled(!then.isSameOrAfter(now));
+    setIsDisabled(!moment().isBefore(crowdsaleData?.end));
     setProgress(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDisabled]);
+  }, [isDisabled, crowdsaleData]);
 
   //-------------------------------------------------------------------------------
   //        
@@ -289,7 +286,7 @@ const CrowdsaleDetail: React.FC = (props) => {
                   marginRight="12px"
                 />
                 <Text>
-                  {t('marketplace.closes')} <Moment date={crowdsaleData?.end} fromNow />{' '}
+                  {moment().isSameOrBefore(crowdsaleData?.end) ? t('marketplace.closes') : t('marketplace.closed')} <Moment date={crowdsaleData?.end} fromNow />{' '}
                   {/* {moment().isBefore(crowdsaleData?.end) && countdown && (
                     <>
                       {countdown.format('D')} {t('marketplace.days')} {countdown.format('HH')}{' '}
