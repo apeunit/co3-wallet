@@ -346,7 +346,7 @@ const PickupBasketDetail: React.FC = (props) => {
                   height="13px"
                 />
                 <Text fontSize="14px" lineHeight="14px">
-                  {t('marketplace.buy_now')}
+                  {t('pickupbasketplace.buy_now')}
                 </Text>
               </Flex>
             </Button>

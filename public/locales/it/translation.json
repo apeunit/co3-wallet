@@ -114,8 +114,8 @@
     "crowdsale_creation_failed":"Creazione di crowdsale non riuscita"
   },
   "new_pickupbox" : {
-    "label": "Nuova Scatola Coupon",
-    "campaign_msg":"Il nome della tua Scatola Coupon",
+    "label": "Nuova Coupon box",
+    "campaign_msg":"Il nome della tua Coupon Box",
     "sell_question":"Qual è il massimo che puoi dare?",
     "product_available": "Fornitura prodotti disponibili",
     "coupon_to_give": "Buono da regalare",
@@ -126,12 +126,12 @@
     "location_msg":"La tua campagna ha una posizione",
     "sell_msg":"Quanto devi almeno vendere",
     "loading":"Caricamento...",
-    "pickup_created": "Scatola Coupon creata",
-    "pickup_creation_failed":"Creazione della Scatola Coupon non riuscita"
+    "pickup_created": "Coupon Box creata",
+    "pickup_creation_failed":"Creazione della Coupon Box non riuscita"
   },
   "pickupbox_coupons" : {
-    "coupon_claimed": "Scatola Coupon rivendicato",
-    "coupons_failed":"Puoi ritirare un Scatola Coupon solo una volta e non puoi ritirarlo dal tuo Scatola Coupon"
+    "coupon_claimed": "Coupon Box rivendicato",
+    "coupons_failed":"Puoi ritirare un Coupon Box solo una volta e non puoi ritirarlo dal tuo Coupon Box"
   },
   "marketplace": {
     "label":"Mercata",
@@ -151,17 +151,17 @@
     "no_crowdsale": "Non hai ancora creato alcun mercato"
   },
   "pickupbasketplace": {
-    "label":"Scatole Coupon",
+    "label":"Coupon Box",
     "available":"A disposizione",
     "closes":"Chiude",
     "days":"giorni",
     "hours":"ore",
     "minutes":"minuti",
     "seconds":"secondi",
-    "no_details":"Dettagli Scatole Coupon non disponibili.",
+    "no_details":"Dettagli Coupon Box non disponibili.",
     "started_on":"Iniziato il",
-    "buy_now": "PARTECIPA ORA",
-    "no_pickupbasket": "Non hai ancora creato alcun Scatole Coupon"
+    "buy_now": "RISCATTATE COUPON",
+    "no_pickupbasket": "Non hai ancora creato alcun Coupon Box"
   },
   "new_token": {
     "label": "Nuova valuta",
@@ -244,7 +244,7 @@
     "task": "Attività",
     "history": "Cronologia",
     "crowdsale": "Crowdsale",
-    "pickupbasket": "Scatole Coupon"
+    "pickupbasket": "Coupon Box"
   },
   "pay_popup": {
     "pay": "paga",
