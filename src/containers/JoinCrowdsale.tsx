@@ -353,7 +353,6 @@ const JoinCrowdsale = () => {
             height="100vh"
             width="100%"
             justifyContent="space-between"
-            flexWrap="wrap"
         >
             <Loading loader={loader} />
             <Box style={{ width: '100%' }}>

@@ -290,7 +290,6 @@ const ConfirmPayment = () => {
       height="100vh"
       width="100%"
       justifyContent="space-between"
-      // flexWrap="wrap"
       display="contents"
     >
       <Loading loader={loader} />
