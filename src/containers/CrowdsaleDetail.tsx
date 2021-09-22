@@ -102,7 +102,7 @@ const CrowdsaleDetail: React.FC = (props) => {
       setIsDisabled(!moment().isBefore(crowdsaleData?.end) || raised === maxCap || crowdsaleData?.owner === address);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDisabled, crowdsaleData, raised, maxCap, address]);
+  }, [loading, crowdsaleData, raised, maxCap, address, id]);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_LISTENER_API_URL}/crowdsale/${id}`)
@@ -117,31 +117,6 @@ const CrowdsaleDetail: React.FC = (props) => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
-  //-------------------------------------------------------------------------------
-  //        
-  //-------------------------------------------------------------------------------
-
-  // const [getCoupon, { called, data }] = useLazyQuery(GET_TOKEN, {
-  //   fetchPolicy: 'no-cache',
-  //   variables: {
-  //     contractAddress: crowdsaleData.itemToSell,
-  //   },
-  // });
-
-  // useEffect(() => {
-  //   if (crowdsaleData) {
-  //     getCoupon()
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [crowdsaleData]);
-
-  //---------------------------------------------------------
-  //        show list of coupons
-  //---------------------------------------------------------
-
-  // console.log("couponlist", couponList)
-
   //---------------------------------------------------------
   //          get crowdsale data
   //---------------------------------------------------------

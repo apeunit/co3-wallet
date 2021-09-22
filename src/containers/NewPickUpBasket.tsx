@@ -243,7 +243,7 @@ const NewPickUpBasket: React.FC = () => {
       eidParam = params.get('eid');
     }
 
-    const cddata = {
+    const cddata: any = {
       type: 'Feature',
       properties: {
         name: pickupbasket.name,
@@ -252,19 +252,22 @@ const NewPickUpBasket: React.FC = () => {
         couponToGive: pickupbasket.couponToGive,
         description: pickupbasket.description,
         logoURL: pickupbasket.icon,
-        aca: `https://api.co3-torino.firstlife.org/v6/fl/Things/${pickupbasket.aca.id}`,
         categories: [],
         zoom_level: 18,
         entity_type: 'CO3_COUPON',
-      },
-      geometry: {
+      }
+    };
+
+    if (!eidParam) {
+      cddata.properties.aca = `https://api.co3-torino.firstlife.org/v6/fl/Things/${pickupbasket.aca.id}`;
+      cddata.geometry = {
         type: 'Point',
         coordinates: [
           pickupbasket.aca.geolocation.long,
           pickupbasket.aca.geolocation.lang,
         ]
-      },
-    };
+      };
+    }
 
     saveEntity(accessToken, cddata, eidParam).then(async (res: any) => {
       const firstlifeId = eidParam || res.data.id
@@ -276,7 +279,7 @@ const NewPickUpBasket: React.FC = () => {
       console.log('pickupbasket from new pickupbasket 2', pickupbasket)
       pickupbasket.FLID = firstlifeId
       pickupbasket.AU = `${window.location.origin}/pickup-basket-detail/${firstlifeId}`
-      pickupbasket.RU = `${window.location.origin}/pickup-basket-detail/${firstlifeId}` 
+      pickupbasket.RU = `${window.location.origin}/pickup-basket-detail/${firstlifeId}`
 
       console.log("pickupbasket", pickupbasket)
 
@@ -302,7 +305,7 @@ const NewPickUpBasket: React.FC = () => {
             ));
 
             await dispatch(unlockPickupBasket(contractAddress))
-    
+
             if (callbackParam) {
               window.location.href = `${callbackParam}${callbackParam.includes('?') ? '&' : '?'
                 }_id=${pickupBasketDataRes._contractAddress}`;

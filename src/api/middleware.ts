@@ -23,6 +23,27 @@ const TRANSFER_NOTIFY_QUERY: any = gql`
   }
 `;
 
+const TRANSFER_NOTIFY_QUERY_FILTER: any = gql`
+  query transferQuery(
+    $filter: FilterFindManyTransferNotificationInput
+    $limit: Int
+    $sort: SortFindManyTransferNotificationInput
+  ) {
+    transferNotificationMany(filter: $filter, sort: $sort, limit: $limit) {
+      _id
+      receiver_pk
+      token_symbol
+      executed_on
+      amount
+      sender_pk
+      purpose
+      contractAddress
+      owner
+      decimals
+    }
+  }
+`;
+
 /*
   Get Tokens List of specific ethAddress (wallet owner)
 */
@@ -169,5 +190,6 @@ export {
   CrowdsaleSortEnum,
   GET_ALL_TOKENS,
   BALANCE_NOTIFY_QUERY_TOKEN,
-  GET_TOKEN
+  GET_TOKEN,
+  TRANSFER_NOTIFY_QUERY_FILTER,
 };

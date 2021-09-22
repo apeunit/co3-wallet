@@ -51,6 +51,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
   const [title, setTitle] = useState<string>(t('new_crowdsale.label'));
   const [contractLabel, changeContractLabel] = useState('');
   const [loader, setLoader] = useState(false);
+  const [showAca, setShowAca] = useState(false);
   const [crowdsale, onchangeCrowdsale] = useState({
     name: '',
     icon: '',
@@ -161,7 +162,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
     if (step <= 9) {
       if (
         checkError(1, crowdsale.name, t('common.name')) ||
-        checkError(1, crowdsale.aca?.id, t('common.aca_to_attach')) ||
+        checkError(1, showAca ? crowdsale.aca?.id : true, t('common.aca_to_attach')) ||
         checkError(2, crowdsale.icon, t('common.icon')) ||
         checkError(3, crowdsale.startDate, t('new_crowdsale.start_date')) ||
         checkError(3, crowdsale.endDate, t('new_crowdsale.end_date')) ||
@@ -321,7 +322,11 @@ const NewCrowdsale: React.FC<IProps> = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const nameParam = params.get('name') || '';
+    const eidParam = params.get('eid');
     handleChangeCrowdsale(nameParam, 'name');
+    if (!eidParam) {
+      setShowAca(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -337,7 +342,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
       eidParam = params.get('eid');
     }
 
-    const cddata = {
+    let cddata: any = {
       type: 'Feature',
       properties: {
         name: crowdsale.name,
@@ -350,19 +355,22 @@ const NewCrowdsale: React.FC<IProps> = () => {
         contract: crowdsale.contract,
         contractLabel: crowdsale.contractLabel,
         logoURL: crowdsale.icon,
-        aca: `https://api.co3-torino.firstlife.org/v6/fl/Things/${crowdsale.aca.id}`,
         categories: [],
         zoom_level: 18,
         entity_type: 'CO3_CROWDSALE',
       },
-      geometry: {
+    };
+
+    if (!eidParam) {
+      cddata.properties.aca = `https://api.co3-torino.firstlife.org/v6/fl/Things/${crowdsale.aca.id}`;
+      cddata.geometry = {
         type: 'Point',
         coordinates: [
           crowdsale.aca.geolocation.long,
           crowdsale.aca.geolocation.lang,
         ]
-      },
-    };
+      };
+    }
 
     saveEntity(accessToken, cddata, eidParam).then(async (res: any) => {
       const firstlifeId = eidParam || res.data.id
@@ -532,7 +540,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
                 error={error}
                 handleKeyChange={_handleKeyDown}
               />
-              <SelectAca
+              {showAca && (<SelectAca
                 value={crowdsale.aca}
                 onChangeValue={(e: any) => {
                   handleChangeCrowdsale(e, 'aca')
@@ -542,7 +550,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
                 className="crowdsale-aca"
                 error={error}
                 data={acaList}
-              />
+              />)}
             </div>
           )}
           {step === 2 && (

@@ -12,8 +12,8 @@ import Moment from 'react-moment';
 import { setModalData } from 'src/redux/actions/Modal'
 import { useTranslation } from 'react-i18next';
 import { getTokenSymbol } from 'src/utils/helper'
-import { CrowdsaleSortEnum, GET_PICKUP_BASKET_ADDED, GET_ALL_TOKENS } from '../api/middleware';
-import { useQuery } from '@apollo/react-hooks';
+import { CrowdsaleSortEnum, GET_PICKUP_BASKET_ADDED, GET_ALL_TOKENS, TRANSFER_NOTIFY_QUERY_FILTER } from '../api/middleware';
+import { useLazyQuery, useQuery } from '@apollo/react-hooks';
 import { getPickupBasketData, collectPickupBasket } from 'src/redux/actions/Chain';
 import axios from 'axios';
 import CouponCard from '../components/Coupons/CouponCard';
@@ -62,7 +62,7 @@ const PickupBasketDetail: React.FC = (props) => {
       limit: 1,
       sort: CrowdsaleSortEnum.DESC,
     },
-  })
+  });
 
   useEffect(() => {
     if (!tokenQueryData.loading && tokenQueryData.data && tokenQueryData.data.tokenAddedMany) {
@@ -95,10 +95,28 @@ const PickupBasketDetail: React.FC = (props) => {
     };
   });
 
+  const [historyQuery, historyData] = useLazyQuery(TRANSFER_NOTIFY_QUERY_FILTER, {
+    fetchPolicy: 'no-cache',
+  });
 
   useEffect(() => {
-    setDisabled(pickupBasketData?.owner === ethAddress)// eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pickupBasketData, ethAddress]);
+    if (pickupBasketData) {
+      historyQuery({
+        variables: {
+          filter: {
+            receiver_pk: ethAddress,
+            sender_pk: pickupBasketData.contractAddress,
+          },
+          limit: 1,
+          sort: CrowdsaleSortEnum.DESC,
+        },
+      });
+    }
+  }, [pickupBasketData, historyQuery, ethAddress, inc]);
+
+  useEffect(() => {
+    setDisabled(pickupBasketData?.owner === ethAddress || !(available > 0) || !historyData.data || !!historyData.data?.transferNotificationMany?.length)// eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickupBasketData, ethAddress, available, historyData, inc, id]);
 
   useEffect(() => {
     fetch(`${process.env.REACT_APP_LISTENER_API_URL}/pickUpBasket/${id}`)
@@ -110,7 +128,6 @@ const PickupBasketDetail: React.FC = (props) => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, pickupBasketData, inc]);
-
   //---------------------------------------------------------
   //        show list of coupons
   //---------------------------------------------------------
@@ -149,7 +166,7 @@ const PickupBasketDetail: React.FC = (props) => {
     const result: any = dispatch(collectPickupBasket(pickupBasketData.contractAddress))
     result.then((res: any) => {
       setLoader(false);
-      setInc(inc + 1 );
+      setInc(inc + 1);
       dispatch(
         setModalData(
           true,
@@ -253,7 +270,7 @@ const PickupBasketDetail: React.FC = (props) => {
               <Text fontSize="24px">{pickupBasketData?.name}</Text>
             </Flex>
             <Flex marginTop="10px" flexDirection="column">
-            <Box sx={{
+              <Box sx={{
                 width: '100%',
                 backgroundColor: '#949494',
                 maxWidth: '100%'
