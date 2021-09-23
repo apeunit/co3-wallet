@@ -42,6 +42,7 @@ const PickupBasketDetail: React.FC = (props) => {
   const [loader, setLoader] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
   const [available, setAvailable] = useState(0);
+  const [isOwner, setIsOwner] = useState(false);
   const [progress, setProgress] = useState(0);
   const [inc, setInc] = useState(0);
 
@@ -116,6 +117,7 @@ const PickupBasketDetail: React.FC = (props) => {
 
   useEffect(() => {
     setDisabled(pickupBasketData?.owner === ethAddress || !(available > 0) || !historyData.data || !!historyData.data?.transferNotificationMany?.length)// eslint-disable-next-line react-hooks/exhaustive-deps
+    setIsOwner(pickupBasketData?.owner === ethAddress);
   }, [pickupBasketData, ethAddress, available, historyData, inc, id]);
 
   useEffect(() => {
@@ -346,27 +348,45 @@ const PickupBasketDetail: React.FC = (props) => {
               </Text>
             </Flex>
 
-            <Button
-              disabled={isDisabled}
-              onClick={handleBuyNow}
-              className="buynow-btn"
-              variant="primary"
-              sx={{ position: 'relative', bottom: 1 }}
-              mr={2}
-            >
-              <Flex justifyContent="center">
-                <IconButton
-                  marginRight="10px"
-                  cursor={'default'}
-                  icon="shoppingCart"
-                  width="22px"
-                  height="13px"
-                />
-                <Text fontSize="14px" lineHeight="14px">
-                  {t('pickupbasketplace.buy_now')}
-                </Text>
-              </Flex>
-            </Button>
+            {isOwner ? (
+              <Button
+                onClick={() => history.push({
+                  pathname: '/refill',
+                  search: "?" + new URLSearchParams({ to: pickupBasketData.contractAddress, coupon: pickupBasketData.couponToGive }).toString()
+                })}
+                className="buynow-btn"
+                variant="primary"
+                sx={{ position: 'relative', bottom: 1 }}
+                mr={2}
+              >
+                <Flex justifyContent="center">
+                  <Text fontSize="14px" lineHeight="14px">
+                    {t('pickupbasketplace.refill')}
+                  </Text>
+                </Flex>
+              </Button>
+            ) : (
+              <Button
+                disabled={isDisabled}
+                onClick={handleBuyNow}
+                className="buynow-btn"
+                variant="primary"
+                sx={{ position: 'relative', bottom: 1 }}
+                mr={2}
+              >
+                <Flex justifyContent="center">
+                  <IconButton
+                    marginRight="10px"
+                    cursor={'default'}
+                    icon="shoppingCart"
+                    width="22px"
+                    height="13px"
+                  />
+                  <Text fontSize="14px" lineHeight="14px">
+                    {t('pickupbasketplace.buy_now')}
+                  </Text>
+                </Flex>
+              </Button>)}
           </Flex>
         </Flex>
       </FramerSlide>

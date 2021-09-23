@@ -1,31 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Flex } from 'rebass';
 import TokenListItem from './TokenListItem';
 import { IToken } from '../../../interfaces';
 import TokenListPlaceholder from './TokenListPlaceholder';
 import { useLocation } from 'react-router-dom';
-import IconButton from '../../IconButton';
 
 const TokenList = (props: any) => {
   const location = useLocation();
 
-  const [expand, setExpand] = useState(false);
   const filtered = () => {
     const list = props.tokens;
-    if (expand) return list;
-    return list.slice(0, 2);
+    return list
   };
   return (
     <Flex
       width="100%"
       color="text"
       flexDirection="column"
-      // maxHeight={
-      //   props.tokens.find((tkn: IToken) => (tkn.purpose === TOKEN_PURPOSE)) ? 160 : 280
-      // }
-      // sx={{
-      //   overflowY: 'auto',
-      // }}
+      paddingBottom="40px"
     >
       {props.tokenLoading ? (
         <TokenListPlaceholder counter={2} />
@@ -46,15 +38,6 @@ const TokenList = (props: any) => {
               );
             })}
           </Box>
-          {props.tokens && props.tokens.length > 2 && (
-            <Flex width="100%" justifyContent="center">
-              <IconButton
-                onClick={() => setExpand(!expand)}
-                display="inline-block"
-                icon={!expand ? 'arrowDown' : 'arrowUp'}
-              />
-            </Flex>
-          )}
         </>
       )}
     </Flex>

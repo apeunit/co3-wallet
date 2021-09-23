@@ -620,6 +620,26 @@ const joinCrowdsale = (token: ITokenData, contractAddress: string, amount: numbe
   };
 };
 
+const refillPickupBox = (contractAddress: string, amount: number) => {
+  return async (dispatch: any, state: any) => {
+    const nonce = await web3.eth.getTransactionCount(state().wallet.ethAddress);
+
+    const gasPrice = await web3.eth.getGasPrice();
+    const contract = new web3.eth.Contract(PickupBasketJSON.abi as any, contractAddress, opts);
+    return contract.methods
+      .refill(amount)
+      .send({
+        from: state().wallet.ethAddress,
+        gasPrice: web3.utils.toHex(web3.utils.toBN(gasPrice)),
+        nonce: web3.utils.toHex(parseInt(nonce, 10)),
+        gas: state().wallet.gas,
+      })
+      .then((data: any) => {
+        return data;
+      });
+  };
+};
+
 export {
   initWeb3,
   errorWeb3,
@@ -651,4 +671,5 @@ export {
   unlockPickupBasket,
   approveSender,
   joinCrowdsale,
+  refillPickupBox,
 };

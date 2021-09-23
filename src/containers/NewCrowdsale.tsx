@@ -37,6 +37,7 @@ const pdfContract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 interface IProps {
   crowdsale: ICrowdsaleData;
   tokenList: any;
+  // tokenlist: ITokenListData;
 }
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -84,6 +85,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
   const [acaList, setAcaList] = useState([]);
   const [tokenList, setTokenList] = useState([]);
   console.log("tokenlist", tokenList)
+
 
   // -------------------------------------------------------------------------- */
   //                         Get data from the store                          */
@@ -310,6 +312,13 @@ const NewCrowdsale: React.FC<IProps> = () => {
   //
   // -------------------------------------------------------------------------- */
 
+  // useEffect(() => {
+  //   if (tokenList.map(i => i.contractAddress === crowdsale.itemToSell) {
+  //     setTokenSymbol()
+  //   }
+  // }, [tokenList, crowdsale])
+  
+
 
   useEffect(() => {
     if (contracts?.tokenFactory) {
@@ -329,6 +338,10 @@ const NewCrowdsale: React.FC<IProps> = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const currentCoupon = (): any => {
+    return tokenList.find((item: any) => item.contractAddress === crowdsale.itemToSell)
+  }
 
   const handleCreateCrowdsale = async () => {
     setLoader(true);
@@ -382,7 +395,7 @@ const NewCrowdsale: React.FC<IProps> = () => {
       console.log('crowdsale from new crowd sale 2', crowdsale)
       crowdsale.FLID = firstlifeId
       crowdsale.TTA = getTokenSymbol(tokenList, crowdsale.token) // symbol (ticker) of the token used to participate to the crowdsale
-      crowdsale.TTG = getTokenSymbol(tokenList, crowdsale.token) //  symbol (ticker) of the Coupon that users receive when the crowdsale ends
+      crowdsale.TTG = currentCoupon()?.symbol //  symbol (ticker) of the Coupon that users receive when the crowdsale ends
       crowdsale.AU = `${window.location.origin}/crowdsale-detail/${firstlifeId}`
       crowdsale.RU = `${window.location.origin}/crowdsale-detail/${firstlifeId}&redeem=${crowdsale.token}` // crowdsale token is place holder i have to look for the redeem code
 

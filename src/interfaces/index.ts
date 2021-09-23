@@ -139,6 +139,22 @@ export interface ICrowdsaleData {
   entity_type?: string;
 }
 
+export interface ITokenListData {
+  contractAddress: string;
+  decimals: number;
+  hardCap: number;
+  logoURL: string;
+  mintable: true
+  name: string;
+  owner: string;
+  purpose: number;
+  symbol: string;
+  timestamp: string;
+  __typename: string;
+  _id: string;
+
+}
+
 export interface IPickupBasketData {
   name: string;
   icon?: string;

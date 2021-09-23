@@ -17,6 +17,11 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
   const { t } = useTranslation();
   const [icons, setIcons] = useState([
     {
+      label: t('pickupbasketplace.label'),
+      icon: 'localOffer',
+      url: '/pickupbasketplace',
+    },
+    {
       label: t('multitoken.label'),
       icon: 'walletIcon',
       url: '/',
@@ -25,12 +30,7 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
       label: t('settings.label'),
       icon: 'settings',
       url: '/settings',
-    },
-    {
-      label: t('pickupbasketplace.label'),
-      icon: 'localOffer',
-      url: '/pickupbasketplace',
-    },
+    }
   ]);
 
   const { _pilot } = useSelector(({ pilot }: any) => {

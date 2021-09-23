@@ -35,6 +35,7 @@ const JoinCrowdsale = () => {
     const [acceptRatio, setAcceptRatio] = useState(1);
     const [tokenList, setTokenList] = useState([]);
     const [tokenData, setTokenData] = useState<any>({});
+    const [tokenField, setTokenField] = useState(true)
 
     const { amount, token, to, ethAddress } = useSelector(({ wallet }: any) => {
         return {
@@ -95,6 +96,7 @@ const JoinCrowdsale = () => {
         const total = Math.round(value * acceptRatio);
         dispatch(setTransferAmount(Number(total / 100).toString()));
         setShowNumberPad(false)
+        setTokenField(false)
     };
 
     const errorModalBody = (title: string, btntitle: string, _error: string) => (
@@ -357,10 +359,12 @@ const JoinCrowdsale = () => {
             <Loading loader={loader} />
             <Box style={{ width: '100%' }}>
                 <SearchHeader back={(state && state.from) || '/payment'} to={to} />
+                {tokenField ? 
                 <InfoBar>
-                    <Text variant="base">{t('common.from')}</Text>
-                    <AvatarBadge image={token && token.logoURL} label={token && token.name} />
-                </InfoBar>
+                <Text variant="base">{t('common.from')}</Text>
+                <AvatarBadge image={token && token.logoURL} label={token && token.name} />
+                </InfoBar> : null
+                }                
             </Box>
             {!showNumberPad ? (
                 <Flex flexDirection="column" margin={5}>

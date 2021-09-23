@@ -71,29 +71,31 @@ const App = () => {
   }, [data]);
 
   useEffect(() => {
-    dispatch(getMnemonic());
-    if(localStorage.getItem('access_token')) {
-      dispatch(saveAccessToken(localStorage.getItem('access_token')));
-      const res = getPublicKey(localStorage.getItem('access_token') as string);
-      res
-        .then((data) => console.log("data"))
-        .catch((e) => {
+    (async () => {
+      dispatch(getMnemonic());
+      if (localStorage.getItem('access_token')) {
+        try {
+          await dispatch(saveAccessToken(localStorage.getItem('access_token')));
+          await getPublicKey(localStorage.getItem('access_token') as string);
+        } catch (e) {
           localStorage.removeItem('access_token')
           dispatch(saveAccessToken(''));
           params.delete('access_token')
           params.delete('role')
           return;
-        })
-    } 
-    const _accessToken = params.get('access_token');
-    const aid = params.get('aid');
-    if (_accessToken) {
-      localStorage.setItem('access_token', _accessToken);
-      dispatch(saveAccessToken(_accessToken));
-    }
-    if (aid) {
-      dispatch(saveAid(aid));
-    }
+        }
+      }
+      
+      const _accessToken = params.get('access_token');
+      const aid = params.get('aid');
+      if (_accessToken) {
+        localStorage.setItem('access_token', _accessToken);
+        dispatch(saveAccessToken(_accessToken));
+      }
+      if (aid) {
+        dispatch(saveAid(aid));
+      }
+    })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

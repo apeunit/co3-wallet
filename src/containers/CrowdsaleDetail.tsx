@@ -66,7 +66,7 @@ const CrowdsaleDetail: React.FC = (props) => {
   useEffect(() => {
     if (!crowdsalesQueryData.loading && crowdsalesQueryData.data && crowdsalesQueryData.data.crowdsaleAddedNotificationMany) {
       const data = crowdsalesQueryData.data.crowdsaleAddedNotificationMany.length ? crowdsalesQueryData.data.crowdsaleAddedNotificationMany[0] : null;
-      if (!data) return history.push('/marketplace');
+      if (!data) return history.push(`/crowdsale-detail/${id}`);
       const metaData = data?.metadata as any || null
       const start = data?.start && data?.start?.includes('1970') ? Math.round(new Date(data?.start).getTime() * 1000) : data?.start;
       const end = data?.end && data?.end?.includes('1970') ? Math.round(new Date(data?.end).getTime() * 1000) : data?.end;
@@ -78,7 +78,7 @@ const CrowdsaleDetail: React.FC = (props) => {
         }),
       );
     }
-  }, [crowdsalesQueryData, history, dispatch, tokenList]);
+  }, [crowdsalesQueryData, history, dispatch, tokenList, id]);
 
   const { crowdsaleData, token, address } = useSelector(({ chain, wallet }: any) => {
     return {

@@ -30,9 +30,13 @@ const CrowdsaleCS = () => {
       const eidParam = params.get('eid');
       const accessTokenParam = params.get('access_token');
       const typeParam = params.get('type');
-      if (eidParam && accessTokenParam) {
-        dispatch(saveAid(eidParam));
+      
+      if(accessTokenParam){
         accessTokenCalls(params);
+      }
+
+      if (eidParam) {
+        dispatch(saveAid(eidParam));
         if (typeParam) {
           history.push({
             pathname: `${

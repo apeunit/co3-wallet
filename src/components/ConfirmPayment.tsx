@@ -8,8 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { transferTokens } from '../redux/actions/Chain';
 import { setModalData } from '../redux/actions/Modal';
 import { SearchHeader } from './SearchHeader';
-import InfoBar from './InfoBar';
-import AvatarBadge from './AvatarBadge';
 import { useTranslation } from 'react-i18next';
 import Loading from '../components/Loading';
 import { saveWebhookAPI } from 'src/utils/helper';
@@ -281,7 +279,6 @@ const ConfirmPayment = () => {
       }, 2000);
     }
   };
-  const { state }: any = history.location;
 
   return (
     <Flex
@@ -294,20 +291,16 @@ const ConfirmPayment = () => {
     >
       <Loading loader={loader} />
       <Box style={{ width: '100%' }}>
-        <SearchHeader back={(state && state.from) || '/payment'} to={to} />
-        <InfoBar>
-          <Text variant="base">{t('common.from')}</Text>
-          <AvatarBadge image={token && token.logoURL} label={token && token.name} />
-        </InfoBar>
+        <SearchHeader to={to} />
       </Box>
-      <Flex flexDirection="column" margin={5}>
+      <Flex flexDirection="column" margin={5} height="30rem">
         <TokenCard
           icon={token?.logoURL || ''}
           name={token?.name || ''}
           symbol={token?.token_symbol || token?.symbol || ''}
           amount={tokenAmount()}
         />
-        <Flex marginTop="10px" justifyContent="space-between">
+        <Flex marginTop="30px" paddingBottom="50px" justifyContent="space-between">
           <Text fontSize="16px">{t('payment.amount')}</Text>
           <Text fontSize="40px">{amount}</Text>
         </Flex>

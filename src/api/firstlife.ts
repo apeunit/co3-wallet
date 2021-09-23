@@ -2,7 +2,7 @@ import axios from 'axios';
 import { API_FIRSTLIFE_URL, API_FIRSTLIFE_URL_STORAGE, API_SERVER } from 'src/config';
 
 export const getResourceURL = async (resourceId: string): Promise<Object> => {
-  return `${API_FIRSTLIFE_URL_STORAGE}/files/${resourceId}`;
+  return `${API_FIRSTLIFE_URL_STORAGE}/files/thumb/${resourceId}`;
 };
 
 export const getPermalink = (resourceUploadReply: any): string => {

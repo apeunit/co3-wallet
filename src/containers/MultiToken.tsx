@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ToolBar from '../components/ToolBar';
 import IconButton from '../components/IconButton';
 import ToolBarTitle from '../components/ToolBarTitle';
@@ -7,13 +7,10 @@ import TokenList from '../components/Tokens/TokensList/TokenList';
 import { Box, Button, Flex, Image, Text } from 'rebass';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import STFooter from '../components/SingleTokenComponents/STFooter';
 import { AssetPopup } from '../components/AssetPopup';
 import { PayPopup } from '../components/PayPopup';
 import CouponList from '../components/Coupons/CouponsList/CouponList';
-import Draggable from 'react-draggable';
-import { getBound, getPos } from '../utils/sliderFtns';
 import { useTranslation } from 'react-i18next';
 import { COUPON_PURPOSE, SSO_LOGIN_URL, TOKEN_PURPOSE } from 'src/config';
 import { setModalData } from 'src/redux/actions/Modal';
@@ -21,10 +18,6 @@ import { getApolloConnected } from 'src';
 import EmptyImg from '../images/empty.png';
 import { getMyProfileWithRoles } from 'src/api/co3uum';
 
-const modalOptions = {
-  hidden: { y: 200 },
-  visible: { y: 0, transition: { delay: 0.6, ease: 'easeOut', duration: 0.23 } },
-};
 
 /**
  * Loads the token list from node and get its balance
@@ -32,22 +25,18 @@ const modalOptions = {
  */
 const MultiToken: React.FC = () => {
   const dispatch = useDispatch();
-  const dragger = useRef(null);
   const history = useHistory();
   const { t } = useTranslation();
-  const recentbound = getBound();
-  const recentPos = getPos();
 
   const [tokenList, setTokenList] = useState([]);
   const [couponList, setCouponList] = useState([]);
   const [tokenLoading, setTokenLoading] = useState(true);
   const [createToken, setCreateToken] = useState(false);
   const [createPayment, setCreatePayment] = useState(false);
-  const [transition, setTransition] = useState(false);
-  const [bound, setBound] = useState(getBound());
-  const [controlledPosition, setControlledPosition] = useState(getPos());
   const [userRoles, setUserRoles] = useState<any>({});
   // const [loader, setLoader] = useState(true);
+  const [buttons, setButtons] = useState<any>([]);
+
 
 
 
@@ -55,11 +44,10 @@ const MultiToken: React.FC = () => {
   //               Get data from the store                          */
   // -------------------------------------------------------------------------- */
 
-  const { tokensDataList, errorWeb3, features, accessToken, modalOpen } = useSelector(
-    ({ chain, pilot, co3uum, modal }: any) => {
+  const { tokensDataList, errorWeb3, accessToken, modalOpen } = useSelector(
+    ({ chain, co3uum, modal }: any) => {
       return {
         errorWeb3: chain.errorWeb3,
-        features: pilot.features,
         accessToken: co3uum.accessToken,
         modalOpen: modal.isOpen,
         tokensDataList: chain.tokenList,
@@ -82,56 +70,6 @@ const MultiToken: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensDataList, tokenLoading, errorWeb3]);
-
-  // -------------------------------------------------------------------------- */
-  //
-  // -------------------------------------------------------------------------- */
-
-  const onControlledDrag = (e: any, pos: any) => {
-    if (tokenLoading === false && couponList.length === 0) {
-      return;
-    }
-    const { x, y } = pos;
-    setControlledPosition({ x, y });
-    
-  };
-
-  // -------------------------------------------------------------------------- */
-  //
-  // -------------------------------------------------------------------------- */
-
-  const BoundToTop = (val: any) => {
-    if (val) {
-      setBound({ left: 0, top: 0, right: 0, bottom: 0 });
-      setControlledPosition({ x: 0, y: tokenList.length === 0 ? 60 : 0 });
-    } else {
-      setBound(recentbound);
-      setControlledPosition(recentPos);
-    }
-    setTimeout(() => {
-      setTransition(true);
-    }, 1000);
-  };
-
-  // -------------------------------------------------------------------------- */
-  //
-  // -------------------------------------------------------------------------- */
-
-  useEffect(() => {
-    setBound(recentbound);
-    setControlledPosition(recentPos);
-
-    if (!tokenLoading) {
-      if (couponList.length > 0) {
-        BoundToTop(false);
-      } else {
-        BoundToTop(true);
-      }
-    }
-    setTransition(false);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenLoading, couponList, tokenList]);
 
   // -------------------------------------------------------------------------- */
   //
@@ -206,8 +144,6 @@ const MultiToken: React.FC = () => {
       console.log(err);
     }
   };
-
-
   const getUserdata = async () => {
     if (accessToken) {
       // setLoader(true);
@@ -221,9 +157,6 @@ const MultiToken: React.FC = () => {
         // setLoader(false);
       }
     }
-    // else {
-    //   setLoader(false);
-    // }
   };
 
   useEffect(() => {
@@ -233,9 +166,64 @@ const MultiToken: React.FC = () => {
 
   const hasAddRole = () => {
     if (process.env.NODE_ENV === 'development') return true;
-    
     return !userRoles?.participant;
   }
+
+  useEffect(() => {
+    const list = [{
+      icon: 'pay',
+      iconColor: 'white',
+      iconBg: 'primary',
+      label: t('multitoken.pay'),
+      labelColor: 'primary',
+      color: 'primary',
+      className: 'pay-btn',
+      onClick: () => {
+        accessToken ? setCreatePayment(!createPayment) : displayLoginPopup()
+      },
+    },
+    {
+      icon: 'receive',
+      label: t('multitoken.receive'),
+      iconColor: 'white',
+      iconBg: 'primary',
+      labelColor: 'primary',
+      color: 'primary',
+      className: 'recieve-btn',
+      onClick: () => {
+        history.replace('/receive');
+      },
+    },
+    {
+      icon: 'history',
+      label: t('multitoken.history'),
+      iconBorderColor: 'primary',
+      iconBg: 'white',
+      labelColor: 'primary',
+      color: 'primary',
+      className: 'txnhistory-btn',
+      onClick: () => {
+        history.replace('/transaction-history');
+      },
+    }];
+   if (hasAddRole()) {
+     list.push(              
+      {
+        icon: 'add',
+        label: t('multitoken.add'),
+        iconBorderColor: 'primary',
+        iconBg: 'white',
+        labelColor: 'primary',
+        color: 'primary',
+        className: 'add-round-btn',
+        onClick: () => {
+          accessToken ? setCreateToken(!createToken) : displayLoginPopup()
+        }
+      })
+   }
+    setButtons(list)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userRoles])
 
   return (
     <Flex
@@ -253,70 +241,25 @@ const MultiToken: React.FC = () => {
       <Flex className="pending-token" />
 
       <Flex flexDirection="column" style={{ overflow: 'hidden' }}>
-        <Flex flexDirection="column" flex="1">
+        <Flex flexDirection="column" flex="0.4">
           <ActionButtonGroup
             alignItems="flex-start"
-            marginBottom={6}
             marginLeft="12px"
             color="background"
             sx={{ top: '135px', position: 'absolute' }}
             loading={tokenList === undefined || tokenLoading}
-            buttons={[
-              {
-                icon: 'pay',
-                iconColor: 'white',
-                iconBg: 'primary',
-                label: t('multitoken.pay'),
-                labelColor: 'primary',
-                color: 'primary',
-                className: 'pay-btn',
-                onClick: () => {
-                  accessToken ? setCreatePayment(!createPayment) : displayLoginPopup()
-                },
-              },
-              {
-                icon: 'receive',
-                label: t('multitoken.receive'),
-                iconColor: 'white',
-                iconBg: 'primary',
-                labelColor: 'primary',
-                color: 'primary',
-                className: 'recieve-btn',
-                onClick: () => {
-                  history.replace('/receive');
-                },
-              },
-              {
-                icon: 'history',
-                label: t('multitoken.history'),
-                iconBorderColor: 'primary',
-                iconBg: 'white',
-                labelColor: 'primary',
-                color: 'primary',
-                className: 'txnhistory-btn',
-                onClick: () => {
-                  history.replace('/transaction-history');
-                },
-              },
-            ]}
+            buttons={buttons}
           />
-          <Flex
+        </Flex>
+        {/* -------------------------------------------------------------- */}
+        <Flex
             flexDirection="column"
             style={{ overflow: 'hidden' }}
             flex={couponList.length > 0 ? 1 : 'auto'}
             maxHeight={couponList.length > 0 ? 'auto' : 'max-content'}
             margin={`auto 0 75px 0`}
-            className={`${transition ? 'dragger-wrapper' : ''} ${tokenList.length > 0 && tokenList.length <= 3 && couponList.length === 0 ? 'set-height' : ''}`}
+            className={`${tokenList.length > 0 && tokenList.length <= 3 && couponList.length === 0 ? 'set-height' : ''}`}
           >
-            <Draggable
-              axis="y"
-              handle=".handle"
-              grid={[25, 25]}
-              bounds={bound}
-              ref={dragger}
-              onDrag={onControlledDrag}
-              position={controlledPosition}
-            >
               <Flex
                 flexDirection="column"
                 style={{
@@ -326,16 +269,9 @@ const MultiToken: React.FC = () => {
                   flex: 1,
                 }}
               >
-                <motion.div initial="hidden" animate="visible" exit="hidden">
-                  <motion.div variants={modalOptions}>
                     <Box
                       backgroundColor="background"
-                      paddingTop={3}
-                      sx={{
-                        borderTopLeftRadius: 'r10',
-                        borderTopRightRadius: 'r10',
-                        flexGrow: 0,
-                      }}
+                      paddingTop={9}
                       style={{
                         border: '1px solid #f0f0f0',
                         borderBottom: '1px solid #fff',
@@ -343,39 +279,6 @@ const MultiToken: React.FC = () => {
                         height: '100%',
                       }}
                     >
-                      <Box
-                        padding="10px"
-                        className="handle"
-                        style={{ pointerEvents: tokensDataList.length === 0 ? 'none' : 'auto' }}
-                      >
-                        <Box
-                          backgroundColor="gray200"
-                          width="134px"
-                          height="5px"
-                          marginBottom={1}
-                          margin="0 auto"
-                          sx={{
-                            borderRadius: 'full',
-                            flexGrow: 0,
-                          }}
-                        />
-                      </Box>
-                      {hasAddRole() && <Flex justifyContent="flex-end" paddingX={6} height="35px">
-                        {!tokenLoading && features.indexOf('createToken') > -1 && (
-                          <IconButton
-                            className="add-round-btn"
-                            marginY={2}
-                            size="s8"
-                            backgroundColor={'black'}
-                            color={'white'}
-                            icon={'add'}
-                            onClick={() =>
-                              accessToken ? setCreateToken(!createToken) : displayLoginPopup()
-                            }
-                          />
-                        )}
-                      </Flex>
-                      }
                       {!tokenLoading && tokensDataList.length === 0 && (tokenList.length === 0 && couponList.length === 0) ? (
                         <>
                           <Flex height="55vh" width="212px" margin="auto" flexDirection="column">
@@ -384,7 +287,7 @@ const MultiToken: React.FC = () => {
                           </Flex>
                         </>
                       ) : (
-                        <Box height="75vh" overflowY="scroll">
+                        <Box height="75vh" overflowY="scroll" paddingBottom="180px">
                           {(tokenLoading || tokenList.length > 0) && (
                             <>
                               <Flex alignItems="flex-start" paddingX={7}>
@@ -414,12 +317,8 @@ const MultiToken: React.FC = () => {
                         </Box>
                       )}
                     </Box>
-                  </motion.div>
-                </motion.div>
               </Flex>
-            </Draggable>
           </Flex>
-        </Flex>
       </Flex>
       <STFooter iconActive="walletIcon" />
       {createToken && <AssetPopup setCreateToken={setCreateToken} />}

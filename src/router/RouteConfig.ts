@@ -20,6 +20,7 @@ import MainPage from '../containers/MainPage';
 import MarketPlace from '../containers/MarketPlace';
 import PickupBasketPlace from '../containers/PickupBasketPlace';
 import Minting from '../containers/Minting';
+import Refill from '../containers/Refill';
 import NewCoupon from '../containers/NewCoupon';
 import NewCrowdsale from '../containers/NewCrowdsale';
 import NewPickUpBasket from '../containers/NewPickUpBasket';
@@ -57,6 +58,10 @@ export const routes = [
   {
     path: '/token-mint',
     component: Minting,
+  },
+  {
+    path: '/refill',
+    component: Refill,
   },
   {
     path: '/settings',
