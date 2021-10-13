@@ -14,19 +14,22 @@ import {
   setPublicKey,
 } from './redux/actions/Wallet';
 import _get from 'lodash/get';
+import { useTranslation } from 'react-i18next';
 import { saveAccessToken, saveAid } from './redux/actions/CO3UUM';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { BALANCE_NOTIFY_QUERY } from './api/middleware';
 import { LISTENER_POLL_INTERVAL } from './config';
 import { getAllToken } from './redux/actions/Chain';
 import _isEqual from 'lodash/isEqual';
+import { setModalData } from 'src/redux/actions/Modal'
 
 const App = () => {
   const dispatch = useDispatch();
+  const { t } = useTranslation();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const [tokenList, setTokenList] = useState([]);
-  const { accessToken, type, ethAddress, privateKey, mnemonic } = useSelector(
+  const { type, accessToken, ethAddress, privateKey, mnemonic, publicKey } = useSelector(
     ({ modal, co3uum, wallet }: any) => {
       return {
         type: modal.type,
@@ -34,6 +37,7 @@ const App = () => {
         mnemonic: wallet.mnemonic,
         privateKey: wallet.privateKey,
         ethAddress: wallet.ethAddress,
+        publicKey: wallet.publicKey,
       };
     },
     shallowEqual,
@@ -70,13 +74,18 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
+  const checkToken = async (token: string) => {
+    await dispatch(saveAccessToken(token));
+    const pubKey = await getPublicKey(token);
+    dispatch(setPublicKey(_get(pubKey, 'result.blockchain_public_key')));
+  }
+
   useEffect(() => {
     (async () => {
       dispatch(getMnemonic());
       if (localStorage.getItem('access_token')) {
         try {
-          await dispatch(saveAccessToken(localStorage.getItem('access_token')));
-          await getPublicKey(localStorage.getItem('access_token') as string);
+          await checkToken(localStorage.getItem('access_token') as string)
         } catch (e) {
           localStorage.removeItem('access_token')
           dispatch(saveAccessToken(''));
@@ -85,12 +94,12 @@ const App = () => {
           return;
         }
       }
-      
+
       const _accessToken = params.get('access_token');
       const aid = params.get('aid');
       if (_accessToken) {
         localStorage.setItem('access_token', _accessToken);
-        dispatch(saveAccessToken(_accessToken));
+        await checkToken(_accessToken);
       }
       if (aid) {
         dispatch(saveAid(aid));
@@ -98,22 +107,6 @@ const App = () => {
     })()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const getUserPublicKey = async () => {
-    const _accessToken = accessToken || params.get('access_token');
-    if (_accessToken) {
-      localStorage.setItem('access_token', _accessToken);
-      const pbkey = await getPublicKey(_accessToken);
-      if (_get(pbkey, 'result.blockchain_public_key')) {
-        dispatch(setPublicKey(_get(pbkey, 'result.blockchain_public_key')));
-      }
-    }
-  };
-
-  useEffect(() => {
-    getUserPublicKey();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessToken]);
 
   useEffect(() => {
     // -------------------------------------------------------------------------- */
@@ -125,9 +118,25 @@ const App = () => {
     if (mnemonic && !privateKey) {
       dispatch(initWallet(mnemonic));
     }
+
     // TODO: Need to show the error message if the wallet is not generated.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mnemonic, privateKey]);
+
+
+  useEffect(() => {
+    if(ethAddress && publicKey && ethAddress !== publicKey && params.get('access_token')){
+      dispatch(
+        setModalData(
+          true,
+          t('app_settings.address_mismatch_title'),
+          t('app_settings.address_mismatch_description'),
+          'permission',
+        ),
+      );
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ethAddress, publicKey, accessToken]);
 
   return (
     <div className="app-wrapper">

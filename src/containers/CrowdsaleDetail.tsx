@@ -89,13 +89,12 @@ const CrowdsaleDetail: React.FC = (props) => {
       address: wallet.ethAddress
     };
   });
-  // console.log("crowdsaledata", crowdsaleData)
-  // console.log("then minus now", then._d - now._d)
-  // console.log("now minus then", now - then)
 
   //-------------------------------------------------------------------------------
   //        if crowdsale is not open button to participate will get disabled
   //-------------------------------------------------------------------------------
+  console.log("crowdsaleData in crowdsaledetails", crowdsaleData)
+
 
   useEffect(() => {
     if(!loading){
@@ -117,6 +116,7 @@ const CrowdsaleDetail: React.FC = (props) => {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
   //---------------------------------------------------------
   //          get crowdsale data
   //---------------------------------------------------------
@@ -129,27 +129,12 @@ const CrowdsaleDetail: React.FC = (props) => {
   }, [state])
 
   //---------------------------------------------------------
-  //        ???
+  //        crowdsaledata open?
   //---------------------------------------------------------
 
-  // useEffect(() => {
-  //   setProgress(0);
-  //   setCountdown(moment(then - now));
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  //---------------------------------------------------------
-  //       ???           
-  //---------------------------------------------------------
-
-  // useEffect(() => {
-  //   let interval: any = null;
-  //   interval = setInterval(() => {
-  //     setCountdown(moment(then - now));
-  //   }, 1000);
-
-  //   return () => clearInterval(interval);
-  // }, [crowdsaleData, countdown, then, now]);
+  const crowdsaleOpen = maxCap / (crowdsaleData?.acceptRatio || 1) - raised / (crowdsaleData?.acceptRatio || 1) > 0
+  console.log("crowdsaleOpen", crowdsaleOpen)
+  console.log("crowdsaleOpen type", typeof crowdsaleOpen)
 
 
   //---------------------------------------------------------
@@ -264,6 +249,10 @@ const CrowdsaleDetail: React.FC = (props) => {
                   {!loading && (<Text fontSize="16px" fontWeight={600}>{raised / (crowdsaleData?.acceptRatio || 1)}/{maxCap / (crowdsaleData?.acceptRatio || 1)} {t('marketplace.sold')}</Text>)}
                 </Box>
                 <Box>
+                  {/* {!loading && (<Text fontSize="16px" fontWeight={600}>{raised / (crowdsaleData?.acceptRatio || 1)}/{maxCap / (crowdsaleData?.acceptRatio || 1)} {t('marketplace.sold')}</Text>)} */}
+                  {maxCap / (crowdsaleData?.acceptRatio || 1) - raised / (crowdsaleData?.acceptRatio || 1)}
+                </Box>
+                <Box>
                   <Text display="inline-block" fontSize="18px" fontWeight={600} marginRight={1}>{crowdsaleData?.acceptRatio / 100}{' '}</Text>
                   <Text display="inline-block" fontSize="14px" fontWeight={700}>{crowdsaleData?.crowdSymbol}</Text>
                 </Box>
@@ -283,6 +272,13 @@ const CrowdsaleDetail: React.FC = (props) => {
                       {countdown.format('ss')} {t('marketplace.seconds')}
                     </>
                   )} */}
+                </Text>
+                <Text fontSize="14px">
+                  {raised !== maxCap ? (
+                    <>
+                      {crowdsaleOpen && moment().isSameOrBefore(crowdsaleData?.end) ? "OPEN" : "CLOSED"}{' '}
+                    </>
+                  ) : t('marketplace.ended')}
                 </Text>
                 <Text fontSize="14px" color="#3752F5">
                   {getTokenName(tokenList, crowdsaleData?.token)}

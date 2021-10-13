@@ -6,7 +6,9 @@
     "token_factory_address_error": "Token Factory Address is required",
     "websocket_url": "Websocket URL",
     "websocket_url_placeholder": "Enter websocket URL",
-    "websocket_url_error": "Websocket URL is required"
+    "websocket_url_error": "Websocket URL is required",
+    "address_mismatch_title": "Current wallet doesn´t match your existent one",
+    "address_mismatch_description": "You can keep the current address or import your existent wallet. Please note that if you continue with the current address you will lose your other assets"
   },
   "minting": {
     "label": "Minting",
@@ -34,7 +36,8 @@
     "error_login_msg": "This action requires to be logged in, do you want to proceed?",
     "tokens": "Tokens",
     "discounts": "Discounts",
-    "add": "Add"
+    "add": "Add",
+    "app": "From AR"
   },
   "new_coupon": {
     "label": "New Coupon",
@@ -273,6 +276,7 @@
     "wallet_security": "Wallet Security",
     "backup_wallet": "Backup Wallet",
     "backup_wallet_error": "Backup missing",
+    "backup_wallet_error_popup": "Don't forget to backup your new wallet and save your seed phrase securely. If you do you will lose your assets",
     "import_wallet": "Import Wallet",
     "delete_wallet": "Delete Wallet",
     "slide_delete": "Slide to Delete",

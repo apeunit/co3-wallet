@@ -14,6 +14,7 @@ import { isValidChecksumAddress } from 'ethereumjs-util';
 import { setModalData } from 'src/redux/actions/Modal';
 import IconButton from './IconButton';
 
+
 export const SelectToken: React.FC = (props: any) => {
   const location = useLocation();
   const history = useHistory();
@@ -21,10 +22,12 @@ export const SelectToken: React.FC = (props: any) => {
   const dispatch = useDispatch();
   const [tokenList, setTokenList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { toAddress, ethAddress } = useSelector(({ wallet }: any) => {
+
+  const { toAddress, ethAddress } = useSelector(({ wallet, co3uum }: any) => {
     return {
       ethAddress: wallet.ethAddress,
       toAddress: wallet.transfer.to,
+      accessToken: co3uum.accessToken
     };
   });
 

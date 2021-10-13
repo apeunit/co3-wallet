@@ -336,6 +336,10 @@ const NewCrowdsale: React.FC<IProps> = () => {
     if (!eidParam) {
       setShowAca(true);
     }
+    
+    if(nameParam && eidParam){
+      setStep(2);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

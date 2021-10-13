@@ -44,5 +44,10 @@ code {
 .upload-icon-loader {
   animation: rotate 3s linear reverse infinite;
 }
-
+.accordion {
+  border-top: 1px rgba(0, 0, 0, 0.12) solid;
+}
+.accordion:last-of-type{
+  border-bottom: 1px rgba(0, 0, 0, 0.12) solid;
+}
 @keyframes rotate { 100% { transform:rotate(-360deg); } }

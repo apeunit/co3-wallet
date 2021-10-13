@@ -7,17 +7,17 @@ import '../assets/styles/Setting.css';
 import STFooter from 'src/components/SingleTokenComponents/STFooter';
 import IconButton from 'src/components/IconButton';
 import { Divider } from '@material-ui/core';
-import { getPublicKey, getUserIDName, savePublicKeyAPI } from 'src/api/co3uum';
+import { getPublicKey, getUserIDName } from 'src/api/co3uum';
 import _get from 'lodash/get';
 import { setPublicKey } from 'src/redux/actions/Wallet';
 import { useHistory } from 'react-router-dom';
 import { languages } from './commonData';
 import { BACKUP_WALLET, MNEMONIC_PHRASE } from 'src/config';
 import { mnemonicToSeed } from 'bip39';
-import { publicToAddress, toChecksumAddress } from 'ethereumjs-util';
+// import { publicToAddress, toChecksumAddress } from 'ethereumjs-util';
 import packageJson from '../../package.json';
 
-const hdkey = require('ethereumjs-wallet/hdkey');
+// const hdkey = require('ethereumjs-wallet/hdkey');
 
 const mnemonicPhrase: any = MNEMONIC_PHRASE;
 const backupWallet = localStorage.getItem('co3-app-backup') || BACKUP_WALLET;
@@ -59,17 +59,17 @@ const Settings: React.FC = () => {
 
   const savePublicKey = async () => {
     await mnemonicToSeed(mnemonicPhrase).then(async (seed: any) => {
-      const hdkeyInstance = hdkey.fromMasterSeed(seed);
-      const node = hdkeyInstance.derivePath('m/44\'/60\'/0\'/0\'/0');
-      const child = node.deriveChild(0);
-      const wallet = child.getWallet();
-      const publicKey = toChecksumAddress(
-        publicToAddress(wallet.getPublicKeyString()).toString('hex'),
-      );
-      dispatch(setPublicKey(publicKey));
-      if (accessToken) {
-        await savePublicKeyAPI(accessToken, publicKey);
-      }
+      // const hdkeyInstance = hdkey.fromMasterSeed(seed);
+      // const node = hdkeyInstance.derivePath('m/44\'/60\'/0\'/0\'/0');
+      // const child = node.deriveChild(0);
+      // const wallet = child.getWallet();
+      // const publicKey = toChecksumAddress(
+      //   publicToAddress(wallet.getPublicKeyString()).toString('hex'),
+      // );
+      // dispatch(setPublicKey(publicKey));
+      // if (accessToken) {
+      //   await savePublicKeyAPI(accessToken, publicKey);
+      // }
     });
   };
 

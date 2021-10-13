@@ -15,18 +15,20 @@ import { setModalData } from 'src/redux/actions/Modal';
 const amountRegex = new RegExp('^[0-9]+(.[0-9]{1,2})?$');
 
 const Payment: React.FC = () => {
-  const location = useLocation();
+  const location = useLocation<any>();
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useDispatch();
   const [error, setError] = useState('');
   const [keyDisable, setKeyDisable] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [token, setToken] = useState<any>(null);
 
-  const { to, amount, token, tokenList } = useSelector(({ wallet, chain }: any) => {
+  const { to, amount, tokenData, tokenList } = useSelector(({ wallet, chain, co3uum }: any) => {
     return {
       to: wallet.transfer.to,
       amount: wallet.transfer.amount,
-      token: wallet.transfer.token,
+      tokenData: wallet.transfer.token,
       tokenList: chain.tokenList,
     };
   });
@@ -48,6 +50,36 @@ const Payment: React.FC = () => {
       dispatch(setModalData(false, 'permission'));
     }
   }
+
+  // const result = async (result: any) => {
+  //   const res = await getMemberBySearchString(accessToken, search)
+  //   console.log(res)
+  //   setResult(res)
+
+  // }
+
+  // useEffect(() => {
+  //   const res = getMemberBySearchString(accessToken, search)
+  //   console.log("res in payment", res)
+  // }, [accessToken])
+
+
+  useEffect(() => {
+    if (!tokenData) {
+      setToken(location?.state?.token);
+      dispatch(setTransferToken(location?.state?.token));
+    } else {
+      setToken(tokenData);
+    }
+    
+    setUser(location?.state?.user);
+
+    if (location?.state?.to && !to) {
+      dispatch(setToAddress(location?.state?.to))
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location, tokenData])
 
   const errorModalBody = (title: string, btnTitle: string, _error: string) => (
     <Flex flexDirection="column" width="max-content" margin="auto">
@@ -112,6 +144,8 @@ const Payment: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, location.search, t, tokenList]);
 
+  console.log("to", to)
+
   const handleTap = (tap: string) => {
     const amountString: string = `${amount}${tap}`;
     if (token?.decimals === 0 && tap.includes('.')) {
@@ -148,7 +182,7 @@ const Payment: React.FC = () => {
 
   const handleConfirm = () => {
     if (amount > 0 && amount <= (token.decimals === 2 ? token?.amount / 100 : parseInt(token?.amount, 10))) {
-      history.push({ pathname: '/confirmpayment', search: location.search, state: { token } });
+      history.push({ pathname: '/confirmpayment', search: location.search, state: { ...(location?.state || {}), token, } });
       setError('');
     } else {
       setError(t('payment.amount_error'));
@@ -169,7 +203,7 @@ const Payment: React.FC = () => {
 
   return (
     <Flex flexDirection="column" height="100vh">
-      <SearchHeader to={to} />
+      <SearchHeader to={user ? user?.name : to} />
       <InfoBar style={{ width: '100%' }}>
         <Text variant="base">{t('common.from')}</Text>
         <AvatarBadge image={token && token.logoURL} label={token && token.name} />

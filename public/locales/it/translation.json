@@ -6,7 +6,9 @@
     "token_factory_address_error": "L'indirizzo del contratto token factory è obbligatorio",
     "websocket_url": "URL del websocket",
     "websocket_url_placeholder": "Inserisci l'URL del websocket",
-    "websocket_url_error": "È richiesto l'URL del socket Web"
+    "websocket_url_error": "È richiesto l'URL del socket Web",
+    "address_mismatch_title": "Wallet address mismatch",
+    "address_mismatch_description": "Transaction complete"
   },
   "minting": {
     "label": "Mintinng",
@@ -34,7 +36,7 @@
     "error_login_msg": "Questa operazione richiede il login, vuoi procedere?",
     "tokens": "Tokens",
     "discounts": "Discounts",
-    "add": "Aggiungi"
+    "add": "Da AR"
   },
   "new_coupon": {
     "label": "Nuovo coupon",

@@ -52,6 +52,8 @@ import {
   Warning,
   CloudDownload,
   LocalOffer,
+  PhoneIphone,
+  Launch 
 } from '@material-ui/icons';
 import { IIconName } from '../interfaces';
 
@@ -59,6 +61,7 @@ const Icons = {
   pay: CreditCard,
   receive: GetApp,
   history: History,
+  phone: PhoneIphone, 
   notifications: NotificationsNone,
   ranking: EmojiEvents,
   menu: Subject,
@@ -110,6 +113,7 @@ const Icons = {
   hourglassEmpty: HourglassEmpty,
   dowload: CloudDownload,
   localOffer: LocalOffer,
+  launch: Launch
 };
 
 const Icon = (props: IIconName) => {

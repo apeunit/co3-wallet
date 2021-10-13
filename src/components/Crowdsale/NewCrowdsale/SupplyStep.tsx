@@ -38,15 +38,24 @@ const SupplyStep: React.FC<IProps> = ({
         });
       }
       setTokenListOption(tokenListOption);
-      console.log("tokenlistoption", tokenListOption)
+      console.log("tokenlistoption1", tokenListOption)
+      console.log("tokenlist1", tokenList)
+
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenList]);
 
+
+
   const currentToken = () => {
     if (!token) return null;
+    console.log("current token", currentToken)
     return tokenList.find((item: any) => item.contractAddress === token);
   }
+
+  console.log("tokenlist2", tokenList)
+  console.log("tokenlistoption2", tokenListOption)
+  console.log("current token", currentToken)
 
   return (
     <Flex flexDirection="column" width="100%">

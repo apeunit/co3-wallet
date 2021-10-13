@@ -190,6 +190,8 @@ export interface IChainState {
   txnLoading: boolean | true;
   pickupBasketList: IPickupBasketData[];
   crowdsaleList: ICrowdsaleData[];
+  openCrowdsaleList: ICrowdsaleData[];
+  closedCrowdsaleList: ICrowdsaleData[];
   crowdsaleData: any;
   pickupBasketData: any;
 }

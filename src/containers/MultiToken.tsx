@@ -18,7 +18,6 @@ import { getApolloConnected } from 'src';
 import EmptyImg from '../images/empty.png';
 import { getMyProfileWithRoles } from 'src/api/co3uum';
 
-
 /**
  * Loads the token list from node and get its balance
  * @returns List of Tokens with balance
@@ -206,23 +205,24 @@ const MultiToken: React.FC = () => {
         history.replace('/transaction-history');
       },
     }];
-   if (hasAddRole()) {
-     list.push(              
-      {
-        icon: 'add',
-        label: t('multitoken.add'),
-        iconBorderColor: 'primary',
-        iconBg: 'white',
-        labelColor: 'primary',
-        color: 'primary',
-        className: 'add-round-btn',
-        onClick: () => {
-          accessToken ? setCreateToken(!createToken) : displayLoginPopup()
-        }
-      })
-   }
+
+    if (hasAddRole()) {
+      list.push(
+        {
+          icon: 'add',
+          label: t('multitoken.add'),
+          iconBorderColor: 'primary',
+          iconBg: 'white',
+          labelColor: 'primary',
+          color: 'primary',
+          className: 'add-round-btn',
+          onClick: () => {
+            accessToken ? setCreateToken(!createToken) : displayLoginPopup()
+          }
+        })
+    }
     setButtons(list)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userRoles])
 
   return (
@@ -253,72 +253,72 @@ const MultiToken: React.FC = () => {
         </Flex>
         {/* -------------------------------------------------------------- */}
         <Flex
+          flexDirection="column"
+          style={{ overflow: 'hidden' }}
+          flex={couponList.length > 0 ? 1 : 'auto'}
+          maxHeight={couponList.length > 0 ? 'auto' : 'max-content'}
+          margin={`auto 0 75px 0`}
+          className={`${tokenList.length > 0 && tokenList.length <= 3 && couponList.length === 0 ? 'set-height' : ''}`}
+        >
+          <Flex
             flexDirection="column"
-            style={{ overflow: 'hidden' }}
-            flex={couponList.length > 0 ? 1 : 'auto'}
-            maxHeight={couponList.length > 0 ? 'auto' : 'max-content'}
-            margin={`auto 0 75px 0`}
-            className={`${tokenList.length > 0 && tokenList.length <= 3 && couponList.length === 0 ? 'set-height' : ''}`}
+            style={{
+              position: 'relative',
+              zIndex: 12,
+              overflow: 'hidden',
+              flex: 1,
+            }}
           >
-              <Flex
-                flexDirection="column"
-                style={{
-                  position: 'relative',
-                  zIndex: 12,
-                  overflow: 'hidden',
-                  flex: 1,
-                }}
-              >
-                    <Box
-                      backgroundColor="background"
-                      paddingTop={9}
-                      style={{
-                        border: '1px solid #f0f0f0',
-                        borderBottom: '1px solid #fff',
-                        transition: 'all 0.24s ease-out',
-                        height: '100%',
-                      }}
-                    >
-                      {!tokenLoading && tokensDataList.length === 0 && (tokenList.length === 0 && couponList.length === 0) ? (
-                        <>
-                          <Flex height="55vh" width="212px" margin="auto" flexDirection="column">
-                            <Text width="195px" marginBottom="25px" textAlign="center">{t('multitoken.no_assets')}</Text>
-                            <Image src={EmptyImg} />
-                          </Flex>
-                        </>
-                      ) : (
-                        <Box height="75vh" overflowY="scroll" paddingBottom="180px">
-                          {(tokenLoading || tokenList.length > 0) && (
-                            <>
-                              <Flex alignItems="flex-start" paddingX={7}>
-                                <Text fontFamily="sans" fontSize="18px" color={'lightGray'} textAlign="left">
-                                  {t('multitoken.tokens')}
-                                </Text>
-                              </Flex>
-                              <TokenList tokens={tokenList} tokenLoading={tokenLoading} />
-                            </>
-                          )}
-                          {(tokenLoading || couponList.length > 0) && (
-                            <>
-                              <Box style={{ margin: '10px 10px' }}>
-                                <Text
-                                  fontFamily="sans"
-                                  fontSize="18px"
-                                  padding="0px 10px 5px"
-                                  color={'lightGray'}
-                                  textAlign="left"
-                                >
-                                  {t('multitoken.coupons_passes')}
-                                </Text>
-                                <CouponList tokens={couponList} tokenLoading={tokenLoading} />
-                              </Box>
-                            </>
-                          )}
-                        </Box>
-                      )}
-                    </Box>
-              </Flex>
+            <Box
+              backgroundColor="background"
+              paddingTop={9}
+              style={{
+                border: '1px solid #f0f0f0',
+                borderBottom: '1px solid #fff',
+                transition: 'all 0.24s ease-out',
+                height: '100%',
+              }}
+            >
+              {!tokenLoading && tokensDataList.length === 0 && (tokenList.length === 0 && couponList.length === 0) ? (
+                <>
+                  <Flex height="55vh" width="212px" margin="auto" flexDirection="column">
+                    <Text width="195px" marginBottom="25px" textAlign="center">{t('multitoken.no_assets')}</Text>
+                    <Image src={EmptyImg} />
+                  </Flex>
+                </>
+              ) : (
+                <Box height="75vh" overflowY="scroll" paddingBottom="180px">
+                  {(tokenLoading || tokenList.length > 0) && (
+                    <>
+                      <Flex alignItems="flex-start" paddingX={7}>
+                        <Text fontFamily="sans" fontSize="18px" color={'lightGray'} textAlign="left">
+                          {t('multitoken.tokens')}
+                        </Text>
+                      </Flex>
+                      <TokenList tokens={tokenList} tokenLoading={tokenLoading} />
+                    </>
+                  )}
+                  {(tokenLoading || couponList.length > 0) && (
+                    <>
+                      <Box style={{ margin: '10px 10px' }}>
+                        <Text
+                          fontFamily="sans"
+                          fontSize="18px"
+                          padding="0px 10px 5px"
+                          color={'lightGray'}
+                          textAlign="left"
+                        >
+                          {t('multitoken.coupons_passes')}
+                        </Text>
+                        <CouponList tokens={couponList} tokenLoading={tokenLoading} />
+                      </Box>
+                    </>
+                  )}
+                </Box>
+              )}
+            </Box>
           </Flex>
+        </Flex>
       </Flex>
       <STFooter iconActive="walletIcon" />
       {createToken && <AssetPopup setCreateToken={setCreateToken} />}

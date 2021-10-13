@@ -9,6 +9,8 @@ import { CrowdsaleSortEnum } from 'src/api/middleware';
 import { useSelector } from 'react-redux';
 import EmptyImg from '../../../images/empty.png';
 
+// import Chevron from "../../Chevron";
+
 interface IProps {
   crowdsaleList: ICrowdsaleData[];
   fetchMore?: any;
@@ -16,10 +18,11 @@ interface IProps {
   limit: number;
 }
 
+
 const CrowdsaleList: React.FC<IProps> = ({ crowdsaleList, tokenList, fetchMore, limit }) => {
   const { t } = useTranslation();
 
-  //  console.log("crowdsale list", crowdsaleList)
+  // const [setRotate, setRotateState] = useState("accordion__icon");
 
   const { txnLoading } = useSelector(
     ({ chain }: any) => {
@@ -54,10 +57,6 @@ const CrowdsaleList: React.FC<IProps> = ({ crowdsaleList, tokenList, fetchMore, 
       justifyContent="space-between"
       style={{ overflow: 'hidden' }}
     >
-      <Text fontSize={3} paddingX={7} paddingTop={5} paddingBottom={4}>
-        {t('marketplace.label')}
-      </Text>
-      <div style={{ overflow: 'scroll', height: '85vh' }}>
         <Flex flexDirection="column" height="100%">
           {txnLoading && crowdsaleList.length === 0 ? (
             <CrowdsaleListPlaceholder counter={2} />
@@ -68,11 +67,10 @@ const CrowdsaleList: React.FC<IProps> = ({ crowdsaleList, tokenList, fetchMore, 
             </Flex>
           ) : (
             crowdsaleList && crowdsaleList.length > 0 && crowdsaleList.map((crowdsale: ICrowdsaleData, index: number) => (
-              <CrowdsaleListItem key={index} crowdsale={crowdsale} tokenList={tokenList} />
+              <CrowdsaleListItem key={index} crowdsale={crowdsale} tokenList={tokenList} last={crowdsaleList.length - 1 === index} />
             ))
           )}
         </Flex>
-      </div>
     </Flex>
   );
 };

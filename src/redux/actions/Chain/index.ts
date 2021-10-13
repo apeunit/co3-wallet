@@ -33,6 +33,8 @@ import {
   TOKEN_LOADING,
   TRANSFER_TOKEN,
   TXN_LOADING,
+  SET_OPEN_CROWDSALE,
+  SET_CLOSED_CROWDSALE
 } from './ActionTypes';
 import _ from 'lodash';
 
@@ -78,6 +80,8 @@ const {
   getAllPickupBasket,
   getCrowdsaleData,
   getPickupBasketData,
+  setOpenCrowdsale,
+  setClosedCrowdsale,
 } = createActions({
   [INIT_WEB3]: (data: object): object => ({ ...data }),
   [ERROR_WEB3]: (data: object): object => ({ ...data }),
@@ -85,6 +89,8 @@ const {
   [TXN_LOADING]: (txnLoading: object): object => ({ txnLoading }),
   [GET_ALL_TOKEN]: (tokenList: []): object => ({ tokenList }),
   [GET_ALL_CROWDSALE]: (crowdsaleList: []): object => ({ crowdsaleList }),
+  [SET_OPEN_CROWDSALE]: (openCrowdsaleList: []): object => ({ openCrowdsaleList }),
+  [SET_CLOSED_CROWDSALE]: (closedCrowdsaleList: []): object => ({ closedCrowdsaleList }),
   [GET_ALL_PICKUP_BASKET]: (pickupBasketList: any): object => ({ pickupBasketList }),
   [GET_TRANSACTION_HISTORY]: (transactionHistory: []): object => ({ transactionHistory }),
   [CREATE_TOKEN]: (tokenCreated: object) => ({ tokenCreated }),
@@ -672,4 +678,6 @@ export {
   approveSender,
   joinCrowdsale,
   refillPickupBox,
+  setClosedCrowdsale,
+  setOpenCrowdsale,
 };

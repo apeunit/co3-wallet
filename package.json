@@ -27,6 +27,7 @@
     "cypress-file-upload": "^4.1.1",
     "cypress-wait-until": "^1.7.1",
     "date-fns": "^2.14.0",
+    "detect-browser": "^5.2.1",
     "emotion-theming": "^10.0.27",
     "ethereum-private-key-to-address": "0.0.3",
     "ethereumjs-tx": "^2.1.2",

@@ -8,6 +8,9 @@ import { getUserIDName } from 'src/api/co3uum';
 import { setModalData } from 'src/redux/actions/Modal';
 import { useDispatch } from 'react-redux';
 import { SSO_LOGIN_URL } from 'src/config';
+import { detect as detectBrowser } from 'detect-browser';
+
+const browser = detectBrowser();
 
 const shade = {
   hidden: { opacity: 0 },
@@ -163,6 +166,21 @@ export const AssetPopup = ({ setCreateToken }: any) => {
                       iconBg: 'blue600',
                       onClick: () => {
                         handleoption(`/new-pickupbasket`);
+                      },
+                    },
+                    {
+                      icon: 'launch',
+                      label: t('multitoken.app'),
+                      key: 'app',
+                      iconColor: 'white',
+                      className: 'add-crowdsale-btn',
+                      iconBg: 'blue600',
+                      onClick: () => {
+                        if (browser?.os === 'iOS') {
+                          window.location.href = String(process.env.REACT_APP_IOS_APP_SHORTCUT);
+                          return;
+                        }
+                        window.location.href = String(process.env.REACT_APP_ANDROID_APP_SHORTCUT);
                       },
                     },
                   ]}

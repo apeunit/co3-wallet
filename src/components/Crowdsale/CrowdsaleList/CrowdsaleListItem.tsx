@@ -10,11 +10,14 @@ import { useHistory } from 'react-router-dom';
 interface IProps {
   crowdsale: ICrowdsaleData;
   tokenList: any;
+  last?: boolean
 }
 
-const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
+const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList, last }) => {
   const dispatch = useDispatch();
   const history = useHistory();
+
+
 
   const handleCrowdsaleItem = () => {
     dispatch(
@@ -25,9 +28,7 @@ const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
     );
     history.push(`/crowdsale-detail/${crowdsale?.metadata?.FLID}`);
   };
-
-  // console.log('tokenlist', tokenList)
-
+  
   return (
     <Flex
       marginTop="5px"
@@ -56,15 +57,18 @@ const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList }) => {
         <Flex marginBottom="15px" justifyContent="space-between" width="100%">
           <Text marginRight="10px" width="180px" fontSize="16px">
             {crowdsale.name}
-            <Text color="#00000099" fontSize="14px" height="45px" className="ellipsi-2">
+            <Text color="#00000099" fontSize="14px" maxHeight="45px" className="ellipsi-2">
               {crowdsale.description}
+            </Text>
+            <Text color="#00000099" fontSize="14px">
+              {/* {crowdsaleOpen && moment().isSameOrBefore(crowdsale?.end) ? "OPEN" : "CLOSED"}{' '} */}
             </Text>
           </Text>
            <Text marginLeft="auto" marginTop="5px" fontSize="13px" fontWeight="bold" color="#3048D9">
             {crowdsale.acceptRatio && crowdsale.acceptRatio / 100} <span>{getTokenSymbol(tokenList, crowdsale.token)}</span>
           </Text>
         </Flex>
-        <Divider />
+        {!last && <Divider />}
       </Flex>
     </Flex>
   );

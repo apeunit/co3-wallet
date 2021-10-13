@@ -19,7 +19,7 @@ import ErrorMsg from './ErrorMsg';
 
 const ConfirmPayment = () => {
   const { t } = useTranslation();
-  const location = useLocation();
+  const location = useLocation<any>();
   const history = useHistory();
   const dispatch = useDispatch();
   const [error, setError] = useState('');
@@ -169,6 +169,9 @@ const ConfirmPayment = () => {
     const tokenParam = params.get('token');
     const amountParam = params.get('amount');
     const callbackParam = params.get('callback');
+    if (!tokenData) {
+      dispatch(setTransferToken(location?.state?.token))
+    }
     if (tokenParam) {
       const amount = data?.balanceNotificationMany[0]?.amount;
       dispatch(
@@ -192,11 +195,16 @@ const ConfirmPayment = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, tokenData]);
+  }, [data, tokenData, location]);
 
   const tokenAmount = () => {
     return token?.amount && token?.decimals === 2 ? token?.amount / 100 : token?.amount || 0
   }
+  useEffect(() => {
+    if(!to || !token){
+      history.push('/');
+    }
+  },[history, location, to, token]);
 
   const handleSendToken = () => {
     setLoader(true);
