@@ -6,7 +6,7 @@ const { toggleModal, setModalData } = createActions({
   [SET_MODAL_DATA]: (
     isOpen = false,
     title: string,
-    body: string,
+    body: any,
     type: string,
     isClose = true,
   ): object => ({

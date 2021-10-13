@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Flex, Image, Text } from 'rebass';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import '../assets/styles/Setting.css';
 import IconButton from 'src/components/IconButton';
@@ -14,6 +14,8 @@ import { initWallet, setMnemonic } from 'src/redux/actions/Wallet';
 import Loading from '../components/Loading';
 import { setModalData } from '../redux/actions/Modal';
 import { importImages } from '../images/illustrations';
+import { saveAccessToken } from '../redux/actions/CO3UUM';
+
 
 const useStyles = makeStyles({
   root: {
@@ -42,6 +44,9 @@ const ImportWallet = () => {
   const [focusId, setFocusId] = useState(0);
   const customRef: any = useRef([]);
   const [loader, setLoader] = useState(false);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+
 
   const displayModal = (msg: any) => {
     dispatch(setModalData(true, msg, '', 'permission'));
@@ -56,6 +61,10 @@ const ImportWallet = () => {
     setLoader(false);
     history.push('/');
     displayModal(t('recovery_phrase.new_wallet_success'));
+    localStorage.removeItem('access_token')
+    dispatch(saveAccessToken(''));
+    params.delete('access_token')
+    params.delete('role')
   };
 
   const checkPhrase = (firstKey: number, lastKey: number) => {

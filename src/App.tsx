@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import Router from './router/Router';
 import './i18n';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import Modal from './containers/Modal';
 import FullScreen from 'react-request-fullscreen';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
@@ -22,11 +22,15 @@ import { LISTENER_POLL_INTERVAL } from './config';
 import { getAllToken } from './redux/actions/Chain';
 import _isEqual from 'lodash/isEqual';
 import { setModalData } from 'src/redux/actions/Modal'
+import { Button } from 'rebass';
+import { savePublicKeyAPI } from 'src/api/co3uum';
+
 
 const App = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const location = useLocation();
+  const history = useHistory();
   const params = new URLSearchParams(location.search);
   const [tokenList, setTokenList] = useState([]);
   const { type, accessToken, ethAddress, privateKey, mnemonic, publicKey } = useSelector(
@@ -78,8 +82,9 @@ const App = () => {
     await dispatch(saveAccessToken(token));
     const pubKey = await getPublicKey(token);
     dispatch(setPublicKey(_get(pubKey, 'result.blockchain_public_key')));
+    console.log(pubKey, "pubKey")
   }
-
+  
   useEffect(() => {
     (async () => {
       dispatch(getMnemonic());
@@ -108,6 +113,18 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+   const importWallet = () => {
+    history.push('/import-wallet')
+    dispatch(setModalData(false));
+    window.location.reload();
+   }
+
+   const keepWallet = () => {
+    savePublicKeyAPI(accessToken, ethAddress)
+    dispatch(setModalData(false));
+   }
+   
+
   useEffect(() => {
     // -------------------------------------------------------------------------- */
     //             Generate memonic phrase and create the user wallet.            */
@@ -125,12 +142,38 @@ const App = () => {
 
 
   useEffect(() => {
+    console.log(ethAddress);
+    console.log(publicKey);
     if(ethAddress && publicKey && ethAddress !== publicKey && params.get('access_token')){
       dispatch(
         setModalData(
           true,
           t('app_settings.address_mismatch_title'),
-          t('app_settings.address_mismatch_description'),
+          [ t('app_settings.address_mismatch_description'), 
+          [ <Button
+            className="modal-login-btn"
+            height="30px"
+            margin="20px 5px 0px"
+            margin-right="10px"
+            width="130px"
+            style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
+            onClick={() => keepWallet()}
+          >
+           keep
+          </Button>, 
+          
+          <Button
+          className="modal-login-btn"
+          height="30px"
+          margin="20px 5px 0px"
+          width="130px"
+          style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
+          onClick={() => importWallet()}
+        >
+          import
+        </Button> 
+        
+        ] ],
           'permission',
         ),
       );
@@ -146,6 +189,7 @@ const App = () => {
       >
         <div className="App">
           <Router />
+          {/* <Modal /> */}
           {type === 'permission' && <Modal />}
         </div>
       </FullScreen>
