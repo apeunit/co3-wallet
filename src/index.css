@@ -1,19 +1,17 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 /* custom-styles */
-.app-wrapper{
+.app-wrapper {
   max-width: 768px;
   margin: 0 auto;
 }
@@ -26,19 +24,131 @@ code {
   min-height: 32em !important;
 }
 
+.action-buttons-container {
+  flex: 0.4;
+}
+
+.multitoken-title {
+  margin-top: 28px !important;
+}
+.action-buttons-group {
+  top: 135px;
+  position: absolute;
+}
 @media only screen and (max-height: 800px) {
   .set-height .react-draggable {
     min-height: 27em !important;
   }
 }
 
+/* ----------- iPhone 5, 5S, 5C and 5SE ----------- */
+
+/* Portrait and Landscape */
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px) and (-webkit-min-device-pixel-ratio: 2) {
+  .tokenBoxHeight {
+    height: 65vh;
+  }
+  .action-buttons-container {
+    flex: 0.2;
+  }
+  .multitoken-title {
+    margin-top: 5px !important;
+  }
+  .action-buttons-group {
+    top: 85px;
+    position: absolute;
+  }
+  .error-modal-text {
+    width: 13rem !important;
+  }
+  .token-list-name {
+    font-size: 13px !important;
+  }
+  .token-list-symbol {
+    font-size: 12px !important;
+  }
+}
+
+
+/* ----------- Moto G4 & Galaxy S5 -----------  */
+
+/* Portrait and Landscape */
+
+@media only screen and (min-device-width: 360px) and (max-device-width: 640px) and (-webkit-min-device-pixel-ratio: 1) {
+  .tokenBoxHeight {
+    height: 65vh;
+  }
+  .action-buttons-container {
+    flex: 0.2;
+  }
+  .multitoken-title {
+    margin-top: 10px !important;
+  }
+  .action-buttons-group {
+    top: 100px;
+    position: absolute;
+  }
+}
+
+/* ----------- iPhone 6, 6S, 7 and 8 ----------- */
+
+/* Portrait and Landscape */
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) {
+  .tokenBoxHeight {
+    height: 75vh;
+  }
+  .action-buttons-container {
+    flex: 0.3;
+  }
+}
+/* ----------- iPhone X ----------- */
+
+/* Portrait and Landscape */
+@media only screen and (min-device-width: 375px) and (max-device-width: 812px) and (-webkit-min-device-pixel-ratio: 3) {
+  .tokenBoxHeight {
+    height: 85vh;
+  }
+}
+/* ----------- Pixel 2 ----------- */
+
+/* Portrait and Landscape */
+@media only screen and (min-device-width: 411px) and (max-device-width: 731px) {
+  .tokenBoxHeight {
+    height: 80vh;
+  }
+}
+
+/* ----------- Pixel 2XL ----------- not working*/
+
+/* Portrait and Landscape */
+@media only screen and (min-device-width: 411px) and (max-device-width: 823px) and (-webkit-min-device-pixel-ratio: 3) {
+  .tokenBoxHeight {
+    height: 85vh;
+  }
+}
+
+
+/* ----------- iPhone 6+, 7+ and 8+ ----------- */
+
+/* Portrait and Landscape */
+@media only screen and (min-device-width: 414px) and (max-device-width: 736px) {
+  .tokenBoxHeight {
+    height: 86vh;
+  }
+  .action-buttons-container {
+    flex: 0.4;
+  }
+}
+
+
 .head-title {
   position: absolute;
 }
 
 /* .dragger-wrapper  */
-.dragger-wrapper .react-draggable{
-  transition: transform .18s ease-out !important;
+.dragger-wrapper .react-draggable {
+  transition: transform 0.18s ease-out !important;
 }
 
 .upload-icon-loader {
@@ -47,7 +157,11 @@ code {
 .accordion {
   border-top: 1px rgba(0, 0, 0, 0.12) solid;
 }
-.accordion:last-of-type{
+.accordion:last-of-type {
   border-bottom: 1px rgba(0, 0, 0, 0.12) solid;
 }
-@keyframes rotate { 100% { transform:rotate(-360deg); } }
+@keyframes rotate {
+  100% {
+    transform: rotate(-360deg);
+  }
+}

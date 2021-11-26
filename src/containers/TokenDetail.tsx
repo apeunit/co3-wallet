@@ -4,10 +4,11 @@ import TokenCard from '../components/Tokens/CreateTokens/TokenCard';
 import IconButton from '../components/IconButton';
 import { useHistory } from 'react-router-dom';
 import ActionButtonGroup from '../components/ActionButtonGroup';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isMintableToken } from '../redux/actions/Chain';
 import { useTranslation } from 'react-i18next';
 import { PayPopup } from '../components/PayPopup';
+import { setModalData } from 'src/redux/actions/Modal';
 import Moment from 'react-moment';
 import axios from 'axios';
 const fileDownload = require('js-file-download');
@@ -16,21 +17,46 @@ const isDev = process.env.NODE_ENV === 'development';
 
 const TokenDetail: React.FC = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+
   const history = useHistory();
   const [isMintable, setIsMintable] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState('');
   const [showSendPopup, setShowSendPopup] = useState(false)
 
-  const { ethAddress, token } = useSelector(({ wallet }: any) => {
+  const { ethAddress, token, accessToken } = useSelector(({ wallet, co3uum }: any) => {
     return {
       ethAddress: wallet.ethAddress,
       token: wallet.transfer.token,
+      accessToken: co3uum.accessToken,
     };
   });
 
   const handleBackStep = () => {
     history.push('/');
+  };
+
+  const errorModalMsg = (title: string) => (
+    <Flex width="max-content" margin="auto" className="error-modal">
+      <IconButton height="26px" width="26px" icon="errorOutline" />
+      <Text className="error-message">{t(title)}</Text>
+    </Flex>
+  );
+
+  const displayLoginPopup = () => {
+    try {
+      dispatch(
+        setModalData(
+          true,
+          errorModalMsg('multitoken.error_login'),
+          t('multitoken.error_login_msg'),
+          'permission',
+        ),
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   useEffect(() => {
@@ -88,6 +114,10 @@ const TokenDetail: React.FC = () => {
                 iconBg: 'blue600',
                 iconColor: 'white',
                 onClick: () => {
+                  if(!accessToken){
+                    displayLoginPopup();
+                    return;
+                  }
                   setShowSendPopup(true)
                 },
               },
@@ -101,6 +131,10 @@ const TokenDetail: React.FC = () => {
                 iconColor: '#00E0A8',
                 iconBorderColor: '#00E0A8',
                 onClick: () => {
+                  if(!accessToken){
+                    displayLoginPopup();
+                    return;
+                  }
                   history.replace({ pathname: '/token-mint', state: { token } });
                 },
               },
@@ -141,7 +175,7 @@ const TokenDetail: React.FC = () => {
           <Text color="#ffffff">{error}</Text>
         </Flex>}
       </Flex>
-      {showSendPopup && <PayPopup title="common.send" setCreatePayment={setShowSendPopup} state={{ token }} />}
+      {accessToken && showSendPopup && <PayPopup title="common.send" setCreatePayment={setShowSendPopup} state={{ token }} />}
     </Flex>
   );
 };

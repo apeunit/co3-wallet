@@ -61,7 +61,7 @@
     "is_required": "is required",
     "edit": "Edit",
     "transaction_complete": "Transaction Complete",
-    "from": "Token",
+    "from": "From",
     "to": "To",
     "send": "Send",
     "pending": "Pending",
@@ -83,7 +83,9 @@
     "downloading": "Downloading...",
     "download_error": "File download failed",
     "aca_to_attach": "Attach ACA",
-    "aca_to_attach_message": "Which ACA do you want to attach?"
+    "aca_to_attach_message": "Which ACA do you want to attach?",
+    "invalid_receiver": "Invalid user",
+    "invalid_receiver_msg": "The user has not signed in yet"
   },
   "new_crowdsale" : {
     "label": "New Crowdsale",
@@ -246,6 +248,10 @@
     "event_name": "Event Name",
     "token_mint": "Token Mint",
     "transfer_token": "Transfer Token",
+    "crowdsale_creation": "Crowdsale Creation",
+    "crowdsale_participation": "Crowdsale Participation",
+    "coupon_box_creation": "CouponBox Creation",
+    "coupon_box_participation": "CouponBox Collection",
     "decimal": "Decimal",
     "balance": "Balance",
     "token_symbol": "Token Symbol",

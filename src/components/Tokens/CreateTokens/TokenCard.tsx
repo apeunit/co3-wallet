@@ -6,6 +6,7 @@ import AddImage from '../../AddImage';
 import avatarImg from '../../../images/placeholder-img.png';
 import Avatar from '../../Avatar';
 import TokenCardPlaceholder from './TokenCardPlaceholder';
+import { getThumbUrl } from 'src/api/firstlife';
 
 const TokenCard = (props: any) => {
   const { name, symbol, amount, loading, type, ...rest } = props;
@@ -74,7 +75,7 @@ const TokenCard = (props: any) => {
                   uploading={props.uploading}
                   accept="image/*"
                   onChange={props.onChange}
-                  image={props.icon}
+                  image={getThumbUrl(props.icon)}
                   placeholder={avatarImg}
                   padding={0}
                 />
@@ -83,7 +84,7 @@ const TokenCard = (props: any) => {
               <Avatar
                 marginRight="10px"
                 loading={!props.icon}
-                image={props.icon}
+                image={getThumbUrl(props.icon)}
                 borderRadius="50px"
                 size="56px"
                 justifyContent="flex-end"

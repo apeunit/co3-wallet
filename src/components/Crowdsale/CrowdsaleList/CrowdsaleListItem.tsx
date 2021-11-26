@@ -6,6 +6,7 @@ import { getTokenSymbol } from 'src/utils/helper';
 import { getCrowdsaleData } from 'src/redux/actions/Chain';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getThumbUrl } from 'src/api/firstlife';
 
 interface IProps {
   crowdsale: ICrowdsaleData;
@@ -16,9 +17,7 @@ interface IProps {
 const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList, last }) => {
   const dispatch = useDispatch();
   const history = useHistory();
-
-
-
+  
   const handleCrowdsaleItem = () => {
     dispatch(
       getCrowdsaleData({
@@ -44,7 +43,7 @@ const CrowdsaleListItem: React.FC<IProps> = ({ crowdsale, tokenList, last }) => 
           height: '70px'
         }}>
           <Image
-            src={crowdsale?.logoURL}
+            src={getThumbUrl(crowdsale?.logoURL)}
             sx={{
               objectFit: 'contain',
               width: '100%',

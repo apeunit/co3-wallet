@@ -82,7 +82,6 @@ const App = () => {
     await dispatch(saveAccessToken(token));
     const pubKey = await getPublicKey(token);
     dispatch(setPublicKey(_get(pubKey, 'result.blockchain_public_key')));
-    console.log(pubKey, "pubKey")
   }
   
   useEffect(() => {
@@ -142,8 +141,6 @@ const App = () => {
 
 
   useEffect(() => {
-    console.log(ethAddress);
-    console.log(publicKey);
     if(ethAddress && publicKey && ethAddress !== publicKey && params.get('access_token')){
       dispatch(
         setModalData(

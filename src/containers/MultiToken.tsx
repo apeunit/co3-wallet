@@ -109,7 +109,7 @@ const MultiToken: React.FC = () => {
 
   const errorModalBody = (title: string) => (
     <Flex flexDirection="column" width="max-content" margin="auto">
-      <Text margin="10px 0px" width="275px">
+      <Text className="error-modal-text" margin="10px 0px" width="275px">
         {t(title)}
       </Text>
       <Button
@@ -190,7 +190,7 @@ const MultiToken: React.FC = () => {
       color: 'primary',
       className: 'recieve-btn',
       onClick: () => {
-        history.replace('/receive');
+        accessToken ? history.replace('/receive') : displayLoginPopup();
       },
     },
     {
@@ -202,7 +202,7 @@ const MultiToken: React.FC = () => {
       color: 'primary',
       className: 'txnhistory-btn',
       onClick: () => {
-        history.replace('/transaction-history');
+        accessToken ? history.replace('/transaction-history') : displayLoginPopup();
       },
     }];
 
@@ -233,7 +233,7 @@ const MultiToken: React.FC = () => {
       backgroundColor="white"
     >
       <ToolBar className="head-title" position="absolute" color="background">
-        <ToolBarTitle marginLeft="20px" marginTop={28} fontSize="40px" color="#3752F5">
+        <ToolBarTitle marginLeft="20px" className="multitoken-title" fontSize="40px" color="#3752F5">
           {t('multitoken.label')}
         </ToolBarTitle>
       </ToolBar>
@@ -241,12 +241,12 @@ const MultiToken: React.FC = () => {
       <Flex className="pending-token" />
 
       <Flex flexDirection="column" style={{ overflow: 'hidden' }}>
-        <Flex flexDirection="column" flex="0.4">
+        <Flex flexDirection="column" className="action-buttons-container">
           <ActionButtonGroup
+            className="action-buttons-group"
             alignItems="flex-start"
             marginLeft="12px"
             color="background"
-            sx={{ top: '135px', position: 'absolute' }}
             loading={tokenList === undefined || tokenLoading}
             buttons={buttons}
           />
@@ -271,7 +271,6 @@ const MultiToken: React.FC = () => {
           >
             <Box
               backgroundColor="background"
-              paddingTop={9}
               style={{
                 border: '1px solid #f0f0f0',
                 borderBottom: '1px solid #fff',
@@ -281,13 +280,13 @@ const MultiToken: React.FC = () => {
             >
               {!tokenLoading && tokensDataList.length === 0 && (tokenList.length === 0 && couponList.length === 0) ? (
                 <>
-                  <Flex height="55vh" width="212px" margin="auto" flexDirection="column">
+                  <Flex height="55vh" width="212px" margin="auto" paddingTop={10} flexDirection="column">
                     <Text width="195px" marginBottom="25px" textAlign="center">{t('multitoken.no_assets')}</Text>
                     <Image src={EmptyImg} />
                   </Flex>
                 </>
               ) : (
-                <Box height="75vh" overflowY="scroll" paddingBottom="180px">
+                <Box className="tokenBoxHeight" paddingTop={9} overflowY="scroll" paddingBottom="180px">
                   {(tokenLoading || tokenList.length > 0) && (
                     <>
                       <Flex alignItems="flex-start" paddingX={7}>
@@ -300,7 +299,7 @@ const MultiToken: React.FC = () => {
                   )}
                   {(tokenLoading || couponList.length > 0) && (
                     <>
-                      <Box style={{ margin: '10px 10px' }}>
+                      <Box style={{ padding: '10px 10px' }}>
                         <Text
                           fontFamily="sans"
                           fontSize="18px"
@@ -321,8 +320,8 @@ const MultiToken: React.FC = () => {
         </Flex>
       </Flex>
       <STFooter iconActive="walletIcon" />
-      {createToken && <AssetPopup setCreateToken={setCreateToken} />}
-      {createPayment && <PayPopup setCreatePayment={setCreatePayment} />}
+      {accessToken && createToken ? <AssetPopup setCreateToken={setCreateToken} /> : ''}
+      {accessToken && createPayment ? <PayPopup setCreatePayment={setCreatePayment} /> : ''}
     </Flex>
   );
 };

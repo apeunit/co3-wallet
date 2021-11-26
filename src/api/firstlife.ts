@@ -5,6 +5,11 @@ export const getResourceURL = async (resourceId: string): Promise<Object> => {
   return `${API_FIRSTLIFE_URL_STORAGE}/files/thumb/${resourceId}`;
 };
 
+export const getThumbUrl = (url: string): string => {
+  if (!url) return '';
+  return url.replace('/files', '/files/thumb');
+};
+
 export const getPermalink = (resourceUploadReply: any): string => {
   const index = resourceUploadReply.result.n - 1;
 

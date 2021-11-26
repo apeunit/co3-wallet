@@ -19,6 +19,7 @@ import axios from 'axios';
 import CouponCard from '../components/Coupons/CouponCard';
 // import CouponList from '../components/Coupons/CouponsList/CouponList';
 // import { COUPON_PURPOSE } from 'src/config';
+import { getThumbUrl } from 'src/api/firstlife';
 
 const fileDownload = require('js-file-download');
 const isDev = process.env.NODE_ENV === 'development';
@@ -248,7 +249,7 @@ const PickupBasketDetail: React.FC = (props) => {
               padding="0px"
               name=""
               symbol=""
-              icon={pickupBasketData?.icon || pickupBasketData?.logoURL}
+              icon={getThumbUrl(pickupBasketData?.icon || pickupBasketData?.logoURL)}
               uploading={false}
               type=""
               uploadIcon="crowdsale"

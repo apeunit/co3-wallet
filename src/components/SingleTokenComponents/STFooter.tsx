@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Flex, Text } from 'rebass';
 import IconButton from '../IconButton';
 import '../../assets/styles/NewToken.css';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { shallowEqual, useSelector } from 'react-redux';
 import { PILOT } from 'src/config';
 
 interface IProps {
@@ -15,23 +15,50 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
   const history = useHistory();
   const location = useLocation();
   const { t } = useTranslation();
-  const [icons, setIcons] = useState([
-    {
-      label: t('pickupbasketplace.label'),
-      icon: 'localOffer',
-      url: '/pickupbasketplace',
-    },
-    {
-      label: t('multitoken.label'),
-      icon: 'walletIcon',
-      url: '/',
-    },
-    {
-      label: t('settings.label'),
-      icon: 'settings',
-      url: '/settings',
+  const { accessToken } = useSelector(({ chain, co3uum, modal }: any) => {
+    return {
+      errorWeb3: chain.errorWeb3,
+      accessToken: co3uum.accessToken,
+      modalOpen: modal.isOpen,
+      tokensDataList: chain.tokenList,
+    };
+  }, shallowEqual);
+
+  const icons = () => {
+    const list = [];
+
+    if (
+      ((_pilot && _pilot.features.indexOf('multiToken') > -1) || PILOT === 'turin') &&
+      accessToken
+    ) {
+      list.push(
+        {
+          label: t('marketplace.label'),
+          icon: 'sellIcon',
+          url: '/marketplace',
+        },
+        {
+          label: t('pickupbasketplace.label'),
+          icon: 'localOffer',
+          url: '/pickupbasketplace',
+        },
+      );
     }
-  ]);
+
+    list.push(
+      {
+        label: t('multitoken.label'),
+        icon: 'walletIcon',
+        url: '/',
+      },
+      {
+        label: t('settings.label'),
+        icon: 'settings',
+        url: '/settings',
+      },
+    );
+    return list;
+  };
 
   const { _pilot } = useSelector(({ pilot }: any) => {
     return {
@@ -42,19 +69,6 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
   const changeTab = (url: string) => {
     history.push(url);
   };
-  useEffect(() => {
-    if (((_pilot && _pilot.features.indexOf('multiToken') > -1) || PILOT === 'turin') && !icons.find((icon) => icon.url === '/marketplace')) {
-      setIcons([
-        {
-          label: t('marketplace.label'),
-          icon: 'sellIcon',
-          url: '/marketplace',
-        },
-        ...icons,
-      ]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [_pilot]);
 
   // console.log("pilot", _pilot)
 
@@ -70,7 +84,7 @@ const STFooter: React.FC<IProps> = ({ iconActive }) => {
       style={{ zIndex: 20 }}
       className="wallet-footer"
     >
-      {icons.map(({ icon, label, url }: any, index: number) =>
+      {icons().map(({ icon, label, url }: any, index: number) =>
         url === location.pathname ? (
           <Flex
             key={`selected-${index}`}

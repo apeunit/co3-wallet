@@ -5,11 +5,12 @@ import IconButton from '../components/IconButton';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
+
 const TransactionsDetails: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const state = history.location.state;
-
+  
   return (
     <Flex flexDirection="column" style={{ height: '100vh' }}>
       <Flex paddingY={7} alignItems="center">
@@ -26,7 +27,7 @@ const TransactionsDetails: React.FC = () => {
         </Text>
       </Flex>
 
-      <TransactionDetailsList transaction={state} />
+      <TransactionDetailsList transaction={state}  />
     </Flex>
   );
 };

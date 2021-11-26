@@ -3,12 +3,15 @@ import { Flex, Text } from 'rebass';
 import IconButton from '../components/IconButton';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isMintableToken } from 'src/redux/actions/Chain';
 import { PayPopup } from '../components/PayPopup';
+import { setModalData } from 'src/redux/actions/Modal';
 import ActionButtonGroup from 'src/components/ActionButtonGroup';
 import Moment from 'react-moment';
 import axios from 'axios';
+import { getThumbUrl } from 'src/api/firstlife';
+
 const fileDownload = require('js-file-download');
 const pdfcontract = require('../assets/Token-Legal-Contract_Placeholder.pdf');
 const isDev = process.env.NODE_ENV === 'development';
@@ -16,17 +19,42 @@ const isDev = process.env.NODE_ENV === 'development';
 const CouponDetail: React.FC = () => {
   const { t } = useTranslation();
   const history = useHistory();
+  const dispatch = useDispatch();
+
   const [isMintable, setIsMintable] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [error, setError] = useState('');
   const [showSendPopup, setShowSendPopup] = useState(false)
 
-  const { ethAddress, token } = useSelector(({ wallet }: any) => {
+  const { ethAddress, token, accessToken } = useSelector(({ wallet, co3uum }: any) => {
     return {
       ethAddress: wallet.ethAddress,
       token: wallet.transfer.token,
+      accessToken: co3uum.accessToken,
     };
   });
+
+  const errorModalMsg = (title: string) => (
+    <Flex width="max-content" margin="auto" className="error-modal">
+      <IconButton height="26px" width="26px" icon="errorOutline" />
+      <Text className="error-message">{t(title)}</Text>
+    </Flex>
+  );
+
+  const displayLoginPopup = () => {
+    try {
+      dispatch(
+        setModalData(
+          true,
+          errorModalMsg('multitoken.error_login'),
+          t('multitoken.error_login_msg'),
+          'permission',
+        ),
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     if (!token || token === null) {
@@ -68,7 +96,7 @@ const CouponDetail: React.FC = () => {
       </Flex>
       <Flex flexDirection="column" width="100%" style={{ transform: 'translateY(-30px)' }}>
         <Flex sx={{ borderRadius: 8, overflow: 'hidden' }} width="94%" marginX="auto" maxHeight="339px">
-          <img style={{ width: '100%', margin: 'auto', maxHeight: '339px', maxWidth: '339px', height: 'auto' }} src={token?.image || token?.logoURL} alt="CouponImage" />
+          <img style={{ width: '100%', margin: 'auto', maxHeight: '339px', maxWidth: '339px', height: 'auto' }} src={getThumbUrl(token?.image || token?.logoURL)} alt="CouponImage" />
           <Flex
             backgroundColor="rgba(0,0,0,.5)"
             justifyContent="center"
@@ -122,6 +150,10 @@ const CouponDetail: React.FC = () => {
                 iconBg: 'blue600',
                 iconColor: 'white',
                 onClick: () => {
+                  if(!accessToken){
+                    displayLoginPopup();
+                    return;
+                  }
                   setShowSendPopup(true);
                 },
               },
@@ -135,6 +167,10 @@ const CouponDetail: React.FC = () => {
                 iconColor: '#00E0A8',
                 iconBorderColor: '#00E0A8',
                 onClick: () => {
+                  if(!accessToken){
+                    displayLoginPopup();
+                    return;
+                  }
                   history.replace({ pathname: '/token-mint', state: { token } });
                 },
               },

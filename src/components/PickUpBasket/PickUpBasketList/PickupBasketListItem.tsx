@@ -6,7 +6,7 @@ import { getTokenSymbol } from 'src/utils/helper';
 import { getPickupBasketData } from 'src/redux/actions/Chain';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-
+import { getThumbUrl } from 'src/api/firstlife';
 interface IProps {
   pickupBasket: IPickupBasketData;
   tokenList: any;
@@ -43,7 +43,7 @@ const PickupBasketListItem: React.FC<IProps> = ({ pickupBasket, tokenList }) => 
           height: '70px'
         }}>
           <Image
-            src={pickupBasket?.logoURL}
+            src={getThumbUrl(pickupBasket?.logoURL)}
             sx={{
               objectFit: 'contain',
               width: '100%',

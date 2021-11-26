@@ -26,6 +26,7 @@ import {
   IMember,
   IProfile,
 } from '../interfaces';
+import { setModalData } from 'src/redux/actions/Modal';
 import IconButton from '../components/IconButton';
 import Loading from 'src/components/Loading';
 import ToolBar from 'src/components/ToolBar';
@@ -50,14 +51,14 @@ const SearchUser = () => {
 
   const _handleKeyDown = async (e: any) => {
     e.preventDefault();
-    if(!search) return;
+    if(!search.trim() || search.trim().length < 2) return;
     try {
       const res = await getMemberBySearchString(accessToken, search)
       console.log(res);
       setResult(res.result)
       setLoader(false);
       console.log("res in searchUser", res.result)
-      console.log("result", result)
+      // console.log("result", result)
     } catch (e) {
       console.log("e", e)
     }
@@ -89,6 +90,17 @@ const SearchUser = () => {
       console.log("profile searchUser", profile)
       dispatch(setToAddress(profile?.result?.blockchain_public_key));
       to = profile?.result?.blockchain_public_key;
+      if(!to){
+        dispatch(
+          setModalData(
+            true,
+            t('common.invalid_receiver'),
+            t('common.invalid_receiver_msg'),
+            'permission',
+          ),
+        );
+        return;
+      }
       setTransferToken(location?.state?.token);
       console.log("result", result)
     } catch (e) {

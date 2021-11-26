@@ -4,6 +4,7 @@ import Avatar from '../../Avatar';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setTransferToken } from '../../../redux/actions/Wallet';
+import { getThumbUrl } from 'src/api/firstlife';
 
 const TokenListItem = ({ logoURL, name, symbol, amount, decimals, ...rest }: any) => {
   const history = useHistory();
@@ -36,9 +37,9 @@ const TokenListItem = ({ logoURL, name, symbol, amount, decimals, ...rest }: any
       paddingTop="14px"
       paddingX={7}
     >
-      <Avatar image={logoURL} size="s12" />
+      <Avatar image={getThumbUrl(logoURL)} size="s12" />
       <Flex flexDirection="column" justifyContent="center" alignItems="flex-start" paddingLeft={3}>
-        <Text fontFamily="sans" fontSize={2} fontWeight="regular" textAlign="left">
+        <Text className="token-list-name" fontFamily="sans" fontSize={2} fontWeight="regular" textAlign="left">
           {name}
         </Text>
         <Text fontFamily="sans" fontSize="11px" fontWeight="regular" textAlign="left">
@@ -46,7 +47,7 @@ const TokenListItem = ({ logoURL, name, symbol, amount, decimals, ...rest }: any
         </Text>
         {/* <Badge marginY={1}>{symbol}</Badge> */}
       </Flex>
-      <Text fontFamily="sans" fontSize={2} fontWeight="bold" marginLeft="auto" marginBottom={5}>
+      <Text className="token-list-symbol" fontFamily="sans" fontSize={2} fontWeight="bold" marginLeft="auto" marginBottom={5}>
         {decimals > 0 ? amount / 100 : amount}
       </Text>
     </Flex>

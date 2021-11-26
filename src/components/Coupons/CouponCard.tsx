@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Flex, Image, Text } from 'rebass';
+import { getThumbUrl } from 'src/api/firstlife';
 
 const CouponCard = ({ coupon }: { coupon: any }) => {
     const metadata = coupon.logoURL && coupon.logoURL.includes('description') && JSON.parse(coupon.logoURL);
@@ -16,7 +17,7 @@ const CouponCard = ({ coupon }: { coupon: any }) => {
                 minHeight: 80,
             }}>
                 <Image
-                    src={metadata.logoURL}
+                    src={getThumbUrl(metadata?.logoURL)}
                     sx={{
                         objectFit: 'cover',
                         width: '100%',

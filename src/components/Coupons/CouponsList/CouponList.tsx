@@ -7,7 +7,7 @@ import CouponListPlaceholder from './CouponListPlaceholder';
 const CouponList = (props: any) => {
   return (
     <Box style={{ marginBottom: '40px' }}>
-      <Flex alignItems="center" justifyContent="space-between" flexWrap="wrap" margin="0px 10px">
+      <Flex alignItems="start" justifyContent="space-between" flexWrap="wrap"  style={{ width: '100%' }}>
         {props.tokenLoading ? (
           <CouponListPlaceholder counter={3} />
         ) : (

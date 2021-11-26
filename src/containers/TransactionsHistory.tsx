@@ -41,7 +41,6 @@ const TransactionsHistory: React.FC = () => {
     },
   });
 
-  console.log(data);
   useEffect(() => {
     if (ethAddress) {
       balanceTokenQuery();

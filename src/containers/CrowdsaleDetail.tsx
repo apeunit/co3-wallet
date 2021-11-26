@@ -15,6 +15,7 @@ import { getTokenSymbol, getTokenName } from 'src/utils/helper'
 import { getCrowdsaleData } from 'src/redux/actions/Chain';
 import axios from 'axios';
 import CouponCard from '../components/Coupons/CouponCard';
+import { getThumbUrl } from 'src/api/firstlife';
 // import { GET_TOKEN } from '../api/middleware';
 
 
@@ -209,7 +210,7 @@ const CrowdsaleDetail: React.FC = (props) => {
               padding="0px"
               name=""
               symbol=""
-              icon={crowdsaleData?.icon || crowdsaleData?.logoURL}
+              icon={getThumbUrl(crowdsaleData?.icon || crowdsaleData?.logoURL)}
               uploading={false}
               type=""
               uploadIcon="crowdsale"

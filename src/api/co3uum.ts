@@ -29,6 +29,11 @@ export const getUserProfile = async (accessToken: string): Promise<Object> => {
   return (await axios.get(`${API_URL}/profile?access_token=${accessToken}`)).data;
 };
 
+
+export const getUserDetailsByAddress = async (accessToken: string, address: string): Promise<any> => {
+  return (await axios.get(`${API_URL}/api/1/member?access_token=${accessToken}&profile_blockchain_public_key=${address}`)).data;
+};
+
 export const saveUserPublicKey = async (
   publicKey: string,
   accessToken: string,

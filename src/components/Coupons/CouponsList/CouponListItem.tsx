@@ -3,6 +3,7 @@ import { Box, Flex, Image, Text } from 'rebass';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setTransferToken } from '../../../redux/actions/Wallet';
+import { getThumbUrl } from 'src/api/firstlife';
 
 const CouponListItem = ({ logoURL, symbol, name, description, amount, ...rest }: any) => {
   const history = useHistory();
@@ -30,14 +31,15 @@ const CouponListItem = ({ logoURL, symbol, name, description, amount, ...rest }:
       flexDirection="column"
       backgroundColor="#fff"
       sx={{ flexShrink: '0' }}
+      style={{ width: 'calc(50% - 5px)' }}
     >
       <Box
         backgroundColor="#f0f0f0"
         sx={{ borderRadius: 8, position: 'relative', overflow: 'hidden', display: 'flex' }}
-        style={{ width: '163px', height: '163px' }}
+        style={{ width: '100%' }}
       >
         <Image
-          src={logoURL}
+          src={getThumbUrl(logoURL)}
           margin="auto"
           sx={{
             width: ['100%', '50%'],
