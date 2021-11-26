@@ -232,20 +232,18 @@ const MultiToken: React.FC = () => {
       height="100vh"
       backgroundColor="white"
     >
-      <ToolBar className="head-title" position="absolute" color="background">
-        <ToolBarTitle marginLeft="20px" className="multitoken-title" fontSize="40px" color="#3752F5">
-          {t('multitoken.label')}
-        </ToolBarTitle>
-      </ToolBar>
-
-      <Flex className="pending-token" />
-
       <Flex flexDirection="column" style={{ overflow: 'hidden' }}>
-        <Flex flexDirection="column" className="action-buttons-container">
+        <Flex flexDirection="column">
+          <ToolBar position="relative" color="background">
+            <ToolBarTitle marginLeft="20px" paddingTop="10px" paddingBottom="10px" className="multitoken-title" fontSize="40px" color="#3752F5">
+              {t('multitoken.label')}
+            </ToolBarTitle>
+          </ToolBar>
           <ActionButtonGroup
             className="action-buttons-group"
             alignItems="flex-start"
             marginLeft="12px"
+            paddingBottom="20px"
             color="background"
             loading={tokenList === undefined || tokenLoading}
             buttons={buttons}
@@ -254,18 +252,12 @@ const MultiToken: React.FC = () => {
         {/* -------------------------------------------------------------- */}
         <Flex
           flexDirection="column"
-          style={{ overflow: 'hidden' }}
-          flex={couponList.length > 0 ? 1 : 'auto'}
-          maxHeight={couponList.length > 0 ? 'auto' : 'max-content'}
-          margin={`auto 0 75px 0`}
-          className={`${tokenList.length > 0 && tokenList.length <= 3 && couponList.length === 0 ? 'set-height' : ''}`}
-        >
+          style={{ overflowY: 'scroll' }}>
           <Flex
             flexDirection="column"
             style={{
               position: 'relative',
               zIndex: 12,
-              overflow: 'hidden',
               flex: 1,
             }}
           >
@@ -286,7 +278,7 @@ const MultiToken: React.FC = () => {
                   </Flex>
                 </>
               ) : (
-                <Box className="tokenBoxHeight" paddingTop={9} overflowY="scroll" paddingBottom="180px">
+                <Box paddingTop={9} overflowY="scroll" paddingBottom="180px">
                   {(tokenLoading || tokenList.length > 0) && (
                     <>
                       <Flex alignItems="flex-start" paddingX={7}>

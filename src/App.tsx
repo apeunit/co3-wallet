@@ -22,7 +22,7 @@ import { LISTENER_POLL_INTERVAL } from './config';
 import { getAllToken } from './redux/actions/Chain';
 import _isEqual from 'lodash/isEqual';
 import { setModalData } from 'src/redux/actions/Modal'
-import { Button } from 'rebass';
+import { Box, Button } from 'rebass';
 import { savePublicKeyAPI } from 'src/api/co3uum';
 
 
@@ -83,7 +83,7 @@ const App = () => {
     const pubKey = await getPublicKey(token);
     dispatch(setPublicKey(_get(pubKey, 'result.blockchain_public_key')));
   }
-  
+
   useEffect(() => {
     (async () => {
       dispatch(getMnemonic());
@@ -112,17 +112,17 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-   const importWallet = () => {
+  const importWallet = () => {
     history.push('/import-wallet')
     dispatch(setModalData(false));
     window.location.reload();
-   }
+  }
 
-   const keepWallet = () => {
+  const keepWallet = () => {
     savePublicKeyAPI(accessToken, ethAddress)
     dispatch(setModalData(false));
-   }
-   
+  }
+
 
   useEffect(() => {
     // -------------------------------------------------------------------------- */
@@ -141,41 +141,49 @@ const App = () => {
 
 
   useEffect(() => {
-    if(ethAddress && publicKey && ethAddress !== publicKey && params.get('access_token')){
+    if (ethAddress && publicKey && ethAddress !== publicKey && params.get('access_token')) {
       dispatch(
         setModalData(
           true,
           t('app_settings.address_mismatch_title'),
-          [ t('app_settings.address_mismatch_description'), 
-          [ <Button
-            className="modal-login-btn"
-            height="30px"
-            margin="20px 5px 0px"
-            margin-right="10px"
-            width="130px"
-            style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
-            onClick={() => keepWallet()}
-          >
-           keep
-          </Button>, 
-          
-          <Button
-          className="modal-login-btn"
-          height="30px"
-          margin="20px 5px 0px"
-          width="130px"
-          style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
-          onClick={() => importWallet()}
-        >
-          import
-        </Button> 
-        
-        ] ],
+          [t('app_settings.address_mismatch_description'),
+          [<Box textAlign="center" display="block">
+            <Box textAlign="center" display="block">
+              <Button
+                className="modal-login-btn"
+                height="30px"
+                margin="20px 5px 0px"
+                margin-right="10px"
+                width="130px"
+                style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
+                onClick={() => keepWallet()}
+              >
+                keep
+              </Button>
+            </Box>
+
+            <Box textAlign="center" display="block">
+              <Button
+                className="modal-login-btn"
+                height="30px"
+                margin="20px 5px 0px"
+                width="130px"
+                style={{ padding: '0px', borderRadius: '30px', background: '#3752F5' }}
+                onClick={() => importWallet()}
+              >
+                import
+              </Button>
+            </Box>
+          </Box>
+
+
+
+          ]],
           'permission',
         ),
       );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ethAddress, publicKey, accessToken]);
 
   return (

@@ -32,8 +32,7 @@ code {
   margin-top: 28px !important;
 }
 .action-buttons-group {
-  top: 135px;
-  position: absolute;
+  position: relative; 
 }
 @media only screen and (max-height: 800px) {
   .set-height .react-draggable {
@@ -54,10 +53,6 @@ code {
   }
   .multitoken-title {
     margin-top: 5px !important;
-  }
-  .action-buttons-group {
-    top: 85px;
-    position: absolute;
   }
   .error-modal-text {
     width: 13rem !important;
@@ -84,10 +79,6 @@ code {
   }
   .multitoken-title {
     margin-top: 10px !important;
-  }
-  .action-buttons-group {
-    top: 100px;
-    position: absolute;
   }
 }
 
