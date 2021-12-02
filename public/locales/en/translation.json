@@ -37,7 +37,10 @@
     "tokens": "Tokens",
     "discounts": "Discounts",
     "add": "Add",
-    "app": "From AR"
+    "app": "From AR",
+    "warning_1": "This wallet is not backed up yet. ",
+    "warning_2": "Do it now!"
+
   },
   "new_coupon": {
     "label": "New Coupon",
@@ -85,7 +88,7 @@
     "aca_to_attach": "Attach ACA",
     "aca_to_attach_message": "Which ACA do you want to attach?",
     "invalid_receiver": "Invalid user",
-    "invalid_receiver_msg": "The user has not signed in yet"
+    "invalid_receiver_msg": "The recipient must setup and backup the wallet to receive transfers"
   },
   "new_crowdsale" : {
     "label": "New Crowdsale",

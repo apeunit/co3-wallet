@@ -12,11 +12,14 @@ import { AssetPopup } from '../components/AssetPopup';
 import { PayPopup } from '../components/PayPopup';
 import CouponList from '../components/Coupons/CouponsList/CouponList';
 import { useTranslation } from 'react-i18next';
-import { COUPON_PURPOSE, SSO_LOGIN_URL, TOKEN_PURPOSE } from 'src/config';
+import { COUPON_PURPOSE, SSO_LOGIN_URL, TOKEN_PURPOSE, BACKUP_WALLET } from 'src/config';
 import { setModalData } from 'src/redux/actions/Modal';
 import { getApolloConnected } from 'src';
 import EmptyImg from '../images/empty.png';
 import { getMyProfileWithRoles } from 'src/api/co3uum';
+
+
+const backupWallet = localStorage.getItem('co3-app-backup') || BACKUP_WALLET;
 
 /**
  * Loads the token list from node and get its balance
@@ -270,6 +273,21 @@ const MultiToken: React.FC = () => {
                 height: '100%',
               }}
             >
+               {backupWallet !== 'true' && (
+                           <Box style={{ padding: '10px 10px' }}>
+                <Button
+                  className="modal-login-btn"
+                  margin="10px"
+                  style={{ padding: '10px', borderRadius: '30px', background: '#F5E0E0', color: '#584848', border: '1px solid #DEB5B5' }}
+                  onClick={() => history.replace('/new-wallet')}
+                >
+                  <Flex style={{ alignItems: "center" }}>
+                    <div style={{ width: '20px', height: '20px', borderRadius: '50px', background: '#C73434', color: '#FFF2F2', border: '1px solid #DEB5B5' }}><Text fontSize={1}>!</Text></div>
+                    <Text fontSize={1} padding="0 4px"><Flex><p>{t('multitoken.warning_1')}</p><p style={{ textDecoration: "underline", paddingLeft: "3px" }}>{t('multitoken.warning_2')}</p></Flex></Text>
+                  </Flex>
+                </Button>
+              </Box>
+                )}
               {!tokenLoading && tokensDataList.length === 0 && (tokenList.length === 0 && couponList.length === 0) ? (
                 <>
                   <Flex height="55vh" width="212px" margin="auto" paddingTop={10} flexDirection="column">

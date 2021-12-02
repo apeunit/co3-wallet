@@ -36,7 +36,10 @@
     "error_login_msg": "Questa operazione richiede il login, vuoi procedere?",
     "tokens": "Tokens",
     "discounts": "Discounts",
-    "add": "Da AR"
+    "add": "Inserisci",
+    "app": "Da AR",
+    "warning_1": "Backup non ancora eseguito. ",
+    "warning_2": "Fallo ora!"
   },
   "new_coupon": {
     "label": "Nuovo coupon",
@@ -80,7 +83,11 @@
     "token_expire": "Il token è scaduto",
     "token_expire_msg": "Il token è scaduto o non valido. Esegui l'accesso di nuovo!",
     "downloading": "Download in corso...",
-    "download_error": "Download del file non riuscito"
+    "download_error": "Download del file non riuscito",
+    "aca_to_attach": "Allega ACA",
+    "aca_to_attach_message": "Quale ACA vuoi allegare?",
+    "invalid_receiver": "Utente non valido",
+    "invalid_receiver_msg": "Il destinatario deve configurare e eseguire il backup del portafoglio per ricevere i trasferimenti"
   },
   "new_crowdsale" : {
     "label": "Nuovo crowdsale",
