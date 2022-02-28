@@ -241,6 +241,7 @@ const NewToken: React.FC = () => {
             'permission',
           ),
         );
+        console.log("res", res)
         const resData = res?.events?.TokenAdded?.returnValues;
         const restoken = {
           amount: resData?._hardCap,
@@ -259,6 +260,7 @@ const NewToken: React.FC = () => {
           token_symbol: resData?._symbol,
         }
         dispatch(setTransferToken(restoken));
+        console.log("restoken",restoken)
         setTimeout(() => {
           dispatch(setModalData(false, '', '', '' ));
           history.push('/token-mint');

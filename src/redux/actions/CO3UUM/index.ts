@@ -36,8 +36,8 @@ const {
       publicKeySaved,
     };
   },
-  [UPDATE_USER_PUBKEY]: async (publicKey: string, accessToken: string) => {
-    const data: any = await saveUserPublicKey(publicKey, accessToken);
+  [UPDATE_USER_PUBKEY]: async (publicKey: string, privateKey: any, accessToken: string) => {
+    const data: any = await saveUserPublicKey(publicKey, privateKey, accessToken);
     if (data.status === 'ok') {
       return {
         publicKey,

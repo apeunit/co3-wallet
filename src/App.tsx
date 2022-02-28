@@ -119,7 +119,7 @@ const App = () => {
   }
 
   const keepWallet = () => {
-    savePublicKeyAPI(accessToken, ethAddress)
+    savePublicKeyAPI(accessToken, ethAddress, privateKey)
     dispatch(setModalData(false));
   }
 

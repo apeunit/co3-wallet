@@ -89,7 +89,7 @@ const NewWallet = () => {
       dispatch(setPublicKey(publicKey));
       try {
         if (accessToken) {
-          const saveData: any = await savePublicKeyAPI(accessToken, publicKey);
+          const saveData: any = await savePublicKeyAPI(accessToken, publicKey, wallet.getPrivateKeyString());
           if (saveData && saveData.status === 'ok') {
             localStorage.setItem('co3-app-mnemonic', mnemonicPhrase);
             dispatch(setMnemonic(mnemonicPhrase));
@@ -183,8 +183,8 @@ const NewWallet = () => {
     boxSteps.find((e) => e === step)
       ? setBoxHeight('')
       : step === 4
-      ? setBoxHeight('35vh')
-      : setBoxHeight('48vh');
+        ? setBoxHeight('35vh')
+        : setBoxHeight('48vh');
   }, [step]);
 
   useEffect(() => {
