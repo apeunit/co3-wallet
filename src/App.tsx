@@ -147,8 +147,8 @@ const App = () => {
           true,
           t('app_settings.address_mismatch_title'),
           [t('app_settings.address_mismatch_description'),
-          [<Box textAlign="center" display="block">
-            <Box textAlign="center" display="block">
+          [<Box style={{ textAlign: 'center' }} display="block">
+            <Box style={{ textAlign: 'center' }} display="block">
               <Button
                 className="modal-login-btn"
                 height="30px"
@@ -162,7 +162,7 @@ const App = () => {
               </Button>
             </Box>
 
-            <Box textAlign="center" display="block">
+            <Box style={{ textAlign: 'center' }} display="block">
               <Button
                 className="modal-login-btn"
                 height="30px"
@@ -174,10 +174,7 @@ const App = () => {
                 import
               </Button>
             </Box>
-          </Box>
-
-
-
+          </Box >
           ]],
           'permission',
         ),
